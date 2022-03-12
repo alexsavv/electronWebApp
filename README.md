@@ -9,7 +9,11 @@ You can learn more about: <br/>
    
 ## To Use
 
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+To clone and run this repository you'll need: <br/>
+  &nbsp;&nbsp;&nbsp; [Git](https://git-scm.com)
+  &nbsp;&nbsp;&nbsp; [Node.js](https://nodejs.org/en/download/)
+  
+You can run the below commands from your command line:
 
 ```bash
 # Clone this repository
