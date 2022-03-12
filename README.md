@@ -3,9 +3,9 @@
 This is a Electron Web Application with a SQL database interacting with Leaflet Map.
 
 You can learn more about:
-  Electron.js framework (https://electronjs.org/docs/latest/tutorial/quick-start)
+  ```Electron.js framework (https://electronjs.org/docs/latest/tutorial/quick-start)
   SQL database (https://www.w3schools.com/sql/sql_intro.asp)
-  Leaflet (https://leafletjs.com/SlavaUkraini/examples/quick-start/)
+  Leaflet (https://leafletjs.com/SlavaUkraini/examples/quick-start/)```
   
 ## To Use
 
