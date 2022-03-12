@@ -39,7 +39,25 @@ function createWindow() {
     evt.preventDefault();
     mapWindow.hide();
   });
-  
+
+  // Create the sqlWindow.
+  const sqlWindow = new BrowserWindow({
+    show: false,
+    width: 1000,
+    height: 850,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  })
+
+  //load map html page to mapWindow
+  sqlWindow.loadFile('./pages/sql.html');
+  sqlWindow.on('close', function (evt) {
+    evt.preventDefault();
+    sqlWindow.hide();
+  });
+
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
@@ -48,6 +66,22 @@ function createWindow() {
       case "map":
         mapWindow.show();
         mainWindow.close();
+        break;
+      case "sql":
+        sqlWindow.show();
+        mainWindow.close();
+        break;
+      case "sqlTomain":
+        mainWindow.show();
+        sqlWindow.close();
+        break;
+      case "sqlTomap":
+        mapWindow.show();
+        sqlWindow.close();
+        break;
+      case "sqlTosql":
+        sqlWindow.close();
+        sqlWindow.show();
         break;
       case "main":
         mainWindow.show();

@@ -1,0 +1,66 @@
+<!doctype html>
+
+
+<head>
+    <title>SQL</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/sql.js"></script>
+
+    <style>
+        body {
+            background: rgba(222, 184, 135, 0.384);
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #connectDatabase {
+            margin: 20px auto;
+            width: 320px;
+            padding: 10px;
+            border: 5px solid gray;
+        }
+
+        input[type=text],
+        input[type=password] {
+            width: 95%;
+            padding: 8px 15px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <button type="button" onclick="ipcRenderer.send('changeWindow', 'sqlTomain');" style="margin:10px;"> HomePage </button>
+
+    <form id="connectDatabase" onsubmit="checkExistDB()">
+        <img src="../img/sql.png" alt="Avatar" class="avatar center">
+
+        <div class="container">
+            <label for="hostSql"><b>Host</b></label>
+            <input type="text" placeholder="Enter Host" id="hostSql" value="localhost">
+
+            <label for="unameSql"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" id="unameSql" value="electronwebapp">
+
+            <label for="pwdSql"></label><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" id="pwdSql" value="electronwebapp">
+            <input type="checkbox" onclick="showPassword('pwdSql')">Show Password
+
+            <br><br>
+            <label for="dbSql"><b>Database</b></label>
+            <input type="text" placeholder="Enter Database" id="dbSql" value="electronwebappDB">
+            <br><br>
+            <div>
+                <button type="submit">Connect to Database</button>
+            </div>
+        </div>
+    </form>
+</body>

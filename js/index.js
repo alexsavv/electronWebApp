@@ -11,11 +11,7 @@ var mysql = require('mysql');
  * show databases;
  * SELECT User, Host FROM mysql.user;
  */
-const con = mysql.createConnection({
-    host: "localhost",
-    user: "electronwebapp",
-    password: "electronwebapp"
-});
+
 
 function showPassword(pwdID) {
     var x = document.getElementById(pwdID);
@@ -41,25 +37,27 @@ function login() {
         return
     }
 
-    // con.connect(function (err) {
-    //     if (err) throw err;
-    //     console.warn("Connected!");
-    //     con.query("CREATE DATABASE IF NOT EXISTS electronwebappDB", function (err, result) {
-    //         if (err) throw err;
-    //         console.warn("Database created");
-    //     });
-    // });
+    var host = document.getElementById("hostSql").value;
+    var username = document.getElementById("unameSql").value;
+    var pwd = document.getElementById("pwdSql").value;
+    var database = document.getElementById("dbSql").value;
+
+    const con = mysql.createConnection({
+        host: host,
+        user: username,
+        password: pwd
+    });
 
     con.connect(function (err) {
         if (err) throw err;
-        console.warn("Connected!");
+        // console.warn("Connected!");
         con.query("SELECT * FROM users", function (err, result) {
             if (err) throw err;
             console.warn("sss");
         });
     });
 
-    ipcRenderer.send("changeWindow", "map");
+    // ipcRenderer.send("changeWindow", "map");
 }
 
 function signUp() {
@@ -70,28 +68,26 @@ function signUp() {
     document.getElementById("signInForm").hidden = false;
 }
 
-function checkExistDB() {
-    var host = document.getElementById("hostSql").value;
-    var username = document.getElementById("unameSql").value;
-    var pwd = document.getElementById("pwdSql").value;
-    var database = document.getElementById("dbSql").value;
+// function checkExistDB() {
+//     var host = document.getElementById("hostSql").value;
+//     var username = document.getElementById("unameSql").value;
+//     var pwd = document.getElementById("pwdSql").value;
+//     var database = document.getElementById("dbSql").value;
 
-    const con1 = mysql.createConnection({
-        host: host,
-        user: username,
-        password: pwd
-    });
+//     const con1 = mysql.createConnection({
+//         host: host,
+//         user: username,
+//         password: pwd
+//     });
 
-    con1.connect(function (err) {
-        if (err) throw alert(err);
-        alert("Connected!");
-        let sqlQuery = "use " + database;
-        con1.query(sqlQuery, function (err, result) {
-            if (err) throw alert(err);
-            alert("Database created");
-            //find a way to send data to js
-        });
-    });
-
-    //if true go to login page form otherwise error and reload Sql form and print with sql create connection in command line instrucions
-}
+//     con1.connect(function (err) {
+//         if (err) throw alert(err);
+//         let sqlQuery = "use " + database;
+//         con1.query(sqlQuery, function (err, result) {
+//             if (err) throw alert(err);
+//             ipcRenderer.send("changeWindow", "map");
+            
+//             con1.destroy();
+//         });
+//     });
+// }

@@ -8,7 +8,7 @@
     margin-right: auto;
 }
 
-#loginForm, #signUpForm, #connectDatabase {
+#loginForm, #signUpForm {
     margin: 20px auto;
     width: 320px;
     padding: 10px;
