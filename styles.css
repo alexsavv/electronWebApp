@@ -8,14 +8,7 @@
     margin-right: auto;
 }
 
-#loginForm {
-    margin: 20px auto;
-    width: 320px;
-    padding: 10px;
-    border: 5px solid gray;
-}
-
-#signUpForm {
+#loginForm, #signUpForm, #connectDatabase {
     margin: 20px auto;
     width: 320px;
     padding: 10px;

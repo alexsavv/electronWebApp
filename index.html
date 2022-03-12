@@ -27,7 +27,7 @@
 
             <label for="pwd"></label><b>Password</b></label>
             <input type="password" placeholder="Enter Password" id="pwdLogin" required>
-            <input type="checkbox" onclick="showPassword()">Show Password
+            <input type="checkbox" onclick="showPassword('pwdLogin')">Show Password
 
             <br><br>
             <div>
@@ -41,8 +41,6 @@
             <span class="pwd">Forgot <a href="#">password?</a></span>
         </div> -->
     </form>
-
-    <input type="text" id="resultss" value="">Showvalue
 
     <form id="signUpForm" hidden>
         <img src="./img/signUp.png" alt="Avatar" class="avatar center">
@@ -66,8 +64,8 @@
 
             <label for="pwd"><b>Password</b></label>
             <input type="password" placeholder="Enter Password" id="pwdSignUp" required>
-            <input type="checkbox" onclick="showPassword()">Show Password
-            
+            <input type="checkbox" onclick="showPassword('pwdSignUp')">Show Password
+
             <br><br>
             <label for="pwd-repeat"><b>Repeat Password</b></label>
             <input type="password" placeholder="Repeat Password" id="pwd-repeat" required>
@@ -89,5 +87,27 @@
         }
     </script>
 
+    <form id="connectDatabase" onsubmit="checkExistDB()">
+        <img src="./img/sql.png" alt="Avatar" class="avatar center">
 
+        <div class="container">
+            <label for="hostSql"><b>Host</b></label>
+            <input type="text" placeholder="Enter Host" id="hostSql" value="localhost">
+
+            <label for="unameSql"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" id="unameSql" value="electronwebapp">
+
+            <label for="pwdSql"></label><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" id="pwdSql" value="electronwebapp">
+            <input type="checkbox" onclick="showPassword('pwdSql')">Show Password
+
+            <br><br>
+            <label for="dbSql"><b>Database</b></label>
+            <input type="text" placeholder="Enter Database" id="dbSql" value="electronwebappDB">
+            <br><br>
+            <div>
+                <button type="submit">Connect to Database</button>
+            </div>
+        </div>
+    </form>
 </body>

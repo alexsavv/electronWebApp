@@ -17,16 +17,16 @@ const con = mysql.createConnection({
     password: "electronwebapp"
 });
 
-function showPassword(){
-        var x = document.getElementById("pwd");
-        if (x.type === "password") {
-            x.type = "text";
-        } else {
-            x.type = "password";
-        }
+function showPassword(pwdID) {
+    var x = document.getElementById(pwdID);
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
 }
 
-function checkLoginCorrectness(){
+function checkLoginCorrectness() {
     var loginName = document.getElementById('uname').value
 
     var loginPwd = document.getElementById('pwd').value
@@ -36,7 +36,7 @@ function checkLoginCorrectness(){
 }
 
 function login() {
-    if(!checkLoginCorrectness()){
+    if (!checkLoginCorrectness()) {
         document.getElementById('loginError').textContent = "ggg";
         return
     }
@@ -68,4 +68,30 @@ function signUp() {
     }
 
     document.getElementById("signInForm").hidden = false;
+}
+
+function checkExistDB() {
+    var host = document.getElementById("hostSql").value;
+    var username = document.getElementById("unameSql").value;
+    var pwd = document.getElementById("pwdSql").value;
+    var database = document.getElementById("dbSql").value;
+
+    const con1 = mysql.createConnection({
+        host: host,
+        user: username,
+        password: pwd
+    });
+
+    con1.connect(function (err) {
+        if (err) throw alert(err);
+        alert("Connected!");
+        let sqlQuery = "use " + database;
+        con1.query(sqlQuery, function (err, result) {
+            if (err) throw alert(err);
+            alert("Database created");
+            //find a way to send data to js
+        });
+    });
+
+    //if true go to login page form otherwise error and reload Sql form and print with sql create connection in command line instrucions
 }
