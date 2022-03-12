@@ -3,15 +3,15 @@
 This is a Electron Web Application with a SQL database interacting with Leaflet Map.
 
 You can learn more about: <br/>
-  &nbsp;&nbsp;&nbsp; 1)[Electron.js framework ](https://electronjs.org/docs/latest/tutorial/quick-start) <br/>
-  &nbsp;&nbsp;&nbsp; 2)[SQL database](https://www.w3schools.com/sql/sql_intro.asp) <br/>
-  &nbsp;&nbsp;&nbsp; 3)[Leaflet](https://leafletjs.com/SlavaUkraini/examples/quick-start/) <br/>
+  &nbsp;&nbsp;&nbsp; [Electron.js framework ](https://electronjs.org/docs/latest/tutorial/quick-start) <br/>
+  &nbsp;&nbsp;&nbsp; [SQL database](https://www.w3schools.com/sql/sql_intro.asp) <br/>
+  &nbsp;&nbsp;&nbsp; [Leaflet](https://leafletjs.com/SlavaUkraini/examples/quick-start/) <br/>
    
 ## To Use
 
 To clone and run this repository you'll need: <br/>
-  &nbsp;&nbsp;&nbsp; 1)[Git](https://git-scm.com) <br/>
-  &nbsp;&nbsp;&nbsp; 2)[Node.js](https://nodejs.org/en/download/)
+  &nbsp;&nbsp;&nbsp; [Git](https://git-scm.com) <br/>
+  &nbsp;&nbsp;&nbsp; [Node.js](https://nodejs.org/en/download/)
   
 You can run the project with the above commands from your command line:
 
