@@ -62,7 +62,7 @@ function login() {
     ipcRenderer.send("changeWindow", "map");
 }
 
-function signIn() {
+function signUp() {
     if (document.getElementById("loginForm").hidden == false) {
         document.getElementById("loginForm").hidden = true;
     }
