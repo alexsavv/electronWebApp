@@ -10,7 +10,7 @@ You can learn more about: <br/>
 ## To Use
 
 To clone and run this repository you'll need: <br/>
-  &nbsp;&nbsp;&nbsp; [Git](https://git-scm.com)
+  &nbsp;&nbsp;&nbsp; [Git](https://git-scm.com) <br/>
   &nbsp;&nbsp;&nbsp; [Node.js](https://nodejs.org/en/download/)
   
 You can run the below commands from your command line:
