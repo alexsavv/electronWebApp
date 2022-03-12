@@ -13,7 +13,7 @@ To clone and run this repository you'll need: <br/>
   &nbsp;&nbsp;&nbsp; [Git](https://git-scm.com) <br/>
   &nbsp;&nbsp;&nbsp; [Node.js](https://nodejs.org/en/download/)
   
-You can run the below commands from your command line:
+You can run the project with the above commands from your command line:
 
 ```bash
 # Clone this repository
