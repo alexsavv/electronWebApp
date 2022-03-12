@@ -1,5 +1,5 @@
 {
-  "name": "electron-quick-start",
+  "name": "electron-webapp",
   "version": "1.0.0",
   "description": "A minimal Electron application",
   "main": "main.js",
@@ -18,5 +18,10 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^17.1.0"
+  },
+  "dependencies": {
+    "leaflet": "^1.7.1",
+    "leaflet.coordinates": "^0.1.5",
+    "mysql": "^2.18.1"
   }
 }
