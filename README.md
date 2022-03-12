@@ -22,7 +22,7 @@ git clone https://github.com/alexsavv/electronWebApp.git
 cd electronWebApp
 # Install dependencies
 npm install
-# Run the app
+# Run the WebApp
 npm start
 ```
 
