@@ -1,4 +1,4 @@
-# electronWebApp
+# electronWebApp with SQL database
 
 This is a Electron Web Application with a SQL database interacting with Leaflet Map.
 
