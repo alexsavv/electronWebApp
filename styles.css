@@ -24,7 +24,7 @@ input[type=text], input[type=password] {
     box-sizing: border-box;
 }
 
-#gender{
+#genderSignUp{
     width: 95%;
     padding: 8px 15px;
     margin: 8px 0;

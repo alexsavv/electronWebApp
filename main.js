@@ -61,29 +61,29 @@ function createWindow() {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
-  ipcMain.on("changeWindow", function (event, arg) {
+  ipcMain.on('changeWindow', function (event, arg) {
     switch (arg) {
-      case "map":
+      case 'map':
         mapWindow.show();
         mainWindow.close();
         break;
-      case "sql":
+      case 'sql':
         sqlWindow.show();
         mainWindow.close();
         break;
-      case "sqlTomain":
+      case 'sqlTomain':
         mainWindow.show();
         sqlWindow.close();
         break;
-      case "sqlTomap":
+      case 'sqlTomap':
         mapWindow.show();
         sqlWindow.close();
         break;
-      case "sqlTosql":
+      case 'sqlTosql':
         sqlWindow.close();
         sqlWindow.show();
         break;
-      case "main":
+      case 'main':
         mainWindow.show();
         mapWindow.close();
         break;

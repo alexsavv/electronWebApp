@@ -5,7 +5,7 @@ require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.
 // require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
 
 function disconnect() {
-    ipcRenderer.send("changeWindow", "main");
+    ipcRenderer.send('changeWindow', 'main');
 }
 
 function profile() {
@@ -28,7 +28,7 @@ function createMap() {
     mymap.setView([37, 25], 8);
 
     L.control.coordinates({
-        position: "bottomright", //optional default "bootomright"
+        position: 'bottomright', //optional default "bootomright"
 
         decimals: 2,
         decimalSeparator: '.',

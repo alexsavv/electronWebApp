@@ -1,29 +1,33 @@
-const { ipcRenderer } = require("electron");
+const { ipcRenderer } = require('electron');
 var mysql = require('mysql');
 
-function checkExistDB() {
-    var host = document.getElementById("hostSql").value;
-    var username = document.getElementById("unameSql").value;
-    var pwd = document.getElementById("pwdSql").value;
-    var database = document.getElementById("dbSql").value;
+// let mysqlConnection = "aa";
+// module.exports = {mysqlConnection};
 
-    const con1 = mysql.createConnection({
+function checkExistDB() {
+    var host = document.getElementById('hostSql').value;
+    var username = document.getElementById('unameSql').value;
+    var pwd = document.getElementById('pwdSql').value;
+    var database = document.getElementById('dbSql').value;
+
+   let mysqlConnection1 = mysql.createConnection({
         host: host,
         user: username,
-        password: pwd
+        password: pwd,
+        database: database
     });
 
-    con1.connect(function (err) {
-        if (err) throw ipcRenderer.send("changeWindow", "sqlTosql");
-        // alert("Den yparxei syndesi sti mysql me to host poy edwses")
-        
-        let sqlQuery = "use " + database;
-        con1.query(sqlQuery, function (err, result) {
-            if (err) throw ipcRenderer.send("changeWindow", "sqlTosql");
-            //alert("Den yparxei basi me to onoma poy edwses");
-            ipcRenderer.send("changeWindow", "sqlTomap");
-            
-            con1.destroy();
-        });
+    //Delay because mysql con is asynchronous
+    var i=0;
+    while(i<1500){
+        console.warn(i);
+        i++;
+    }
+
+    mysqlConnection1.connect(function (err) {
+        if (err) throw alert('Den yparxei basi me ta stoixeia poy edwses');
+        ipcRenderer.send('changeWindow', 'sqlTomain');
     });
+
+    // module.exports = mysqlConnection1;
 }
