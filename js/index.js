@@ -12,6 +12,12 @@ var mysql = require('mysql');
  * SELECT User, Host FROM mysql.user;
  */
 
+/*
+    Object.keys(result).forEach(function(key) {
+      var row = result[key];
+      console.log(row.name)
+    });
+*/
 
 //Get information from SQL html page
 // var hostSql = document.getElementById('hostSql').value;
@@ -43,12 +49,10 @@ function showPassword(pwdID) {
 }
 
 function login() {
-    // var usernameLogin = document.getElementById('unameLogin').value;
-    // var passwordLogin = document.getElementById('pwdLogin').value; 
+    var usernameLogin = document.getElementById('unameLogin').value;
+    var passwordLogin = document.getElementById('pwdLogin').value;
 
     con.connect(function (err) {
-        var usernameLogin = document.getElementById('unameLogin').value;
-        var passwordLogin = document.getElementById('pwdLogin').value;
         if (err) throw alert(err);
         let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '" AND password="' + passwordLogin + '"';
         var result = con.query(sqlQuery, function (err, result) {
