@@ -25,19 +25,7 @@ var mysql = require('mysql');
 // var passwordSql = document.getElementById('pwdSql').value;
 // var databaseSql = document.getElementById('dbSql').value;
 
-const con = mysql.createConnection({
-    host: 'localhost',
-    user: 'electronwebapp',
-    password: 'electronwebapp',
-    database: 'electronwebappDB'
-});
-
-//Delay because mysql con is asynchronous
-var i = 0;
-while (i < 1500) {
-    console.warn(i);
-    i++;
-}
+let con = null;
 
 function showPassword(pwdID) {
     var x = document.getElementById(pwdID);
@@ -49,10 +37,24 @@ function showPassword(pwdID) {
 }
 
 function login() {
+    if (con == null) {
+        con = mysql.createConnection({
+            host: 'localhost',
+            user: 'electronwebapp',
+            password: 'electronwebapp',
+            database: 'electronwebappDB'
+        });
+
+        console.warn("connect");
+    }
+
     var usernameLogin = document.getElementById('unameLogin').value;
     var passwordLogin = document.getElementById('pwdLogin').value;
 
+    console.warn("geia");
+
     con.connect(function (err) {
+        alert("geia");
         if (err) throw alert(err);
         let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '" AND password="' + passwordLogin + '"';
         var result = con.query(sqlQuery, function (err, result) {
@@ -65,6 +67,8 @@ function login() {
             }
         });
     });
+
+    console.warn("11111111111111");
 }
 
 function signUpButton() {
@@ -75,9 +79,15 @@ function signUpButton() {
     document.getElementById('signUpForm').hidden = false;
 }
 
-// const mysqlConnection = require('../js/index.js');
 function signUp() {
-    // alert(mysqlConnection);
+    if (con == null) {
+        con = mysql.createConnection({
+            host: 'localhost',
+            user: 'electronwebapp',
+            password: 'electronwebapp',
+            database: 'electronwebappDB'
+        });
+    }
 
     var usernameSignUp = document.getElementById('unameSignUp').value;
     var genderSignUp = document.getElementById('genderSignUp').value;

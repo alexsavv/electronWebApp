@@ -1,8 +1,9 @@
 const { ipcRenderer } = require('electron');
 var mysql = require('mysql');
 
-// let mysqlConnection = "aa";
 // module.exports = {mysqlConnection};
+
+let mysqlConnection1 = null;
 
 function checkExistDB() {
     var host = document.getElementById('hostSql').value;
@@ -10,18 +11,13 @@ function checkExistDB() {
     var pwd = document.getElementById('pwdSql').value;
     var database = document.getElementById('dbSql').value;
 
-   let mysqlConnection1 = mysql.createConnection({
-        host: host,
-        user: username,
-        password: pwd,
-        database: database
-    });
-
-    //Delay because mysql con is asynchronous
-    var i=0;
-    while(i<1500){
-        console.warn(i);
-        i++;
+    if (mysqlConnection1 == null) {
+        mysqlConnection1 = mysql.createConnection({
+            host: host,
+            user: username,
+            password: pwd,
+            database: database
+        });
     }
 
     mysqlConnection1.connect(function (err) {

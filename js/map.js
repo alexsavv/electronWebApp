@@ -5,21 +5,20 @@ var mysql = require('mysql');
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
 // require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
 
-function disconnect() {
-    ipcRenderer.send('changeWindow', 'main');
-}
+const con = mysql.createConnection({
+    host: 'localhost',
+    user: 'electronwebapp',
+    password: 'electronwebapp',
+    database: 'electronwebappDB'
+});
 
-function profile() {
-    document.getElementById('leafletMap').hidden = true;
-    document.getElementById('profile').hidden = false;
+let username=null;
+let gender=null;
+GetUsername();
 
-    const con = mysql.createConnection({
-        host: 'localhost',
-        user: 'electronwebapp',
-        password: 'electronwebapp',
-        database: 'electronwebappDB'
-    });
+if (username) document.getElementById('username').value = username;
 
+function GetUsername() {
     con.connect(function (err) {
         if (err) throw alert(err);
 
@@ -28,16 +27,34 @@ function profile() {
         var result = con.query(sqlQuery, function (err, result) {
             if (err) throw alert(err);
 
-            document.getElementById('unameProfile').value = result[0]['username'];
-            document.getElementById('genderProfile').value = result[0]['gender'];
+            username = result[0]['username'];
+            gender = result[0]['gender'];
 
-            if (result[0]['gender'] == "female") {
+            if (result[0]['gender'] == 'female') {
                 document.getElementById('imgProfile').src = "../img/femaleProfile.png";
-            }else if(result[0]['gender'] == "other"){
+            } else if (result[0]['gender'] == 'other') {
                 document.getElementById('imgProfile').src = "../img/otherProfile.png";
             }
         });
     });
+}
+
+function disconnect() {
+    ipcRenderer.send('changeWindow', 'main');
+}
+
+function profile() {
+    document.getElementById('leafletMap').hidden = true;
+    document.getElementById('profile').hidden = false;
+
+    document.getElementById('unameProfile').value = username;
+    document.getElementById('genderProfile').value = gender;
+
+    if (result[0]['gender'] == "female") {
+        document.getElementById('imgProfile').src = "../img/femaleProfile.png";
+    } else if (result[0]['gender'] == "other") {
+        document.getElementById('imgProfile').src = "../img/otherProfile.png";
+    }
 }
 
 function createMap() {
@@ -53,7 +70,7 @@ function createMap() {
     mymap.setView([37, 25], 8);
 
     L.control.coordinates({
-        position: 'bottomright', //optional default "bootomright"
+        position: 'bottomright',
 
         decimals: 2,
         decimalSeparator: '.',
@@ -63,10 +80,8 @@ function createMap() {
         labelTemplateLat: 'Lat: {y}',
         labelTemplateLng: 'Lng: {x}',
 
-        enableUserInput: false, //optional default true
+        enableUserInput: false,
 
-        customLabelFcn: function (latLonObj, opts) { "Geohash: " + encodeGeoHash(latLonObj.lat, latLonObj.lng) } //optional default none
+        customLabelFcn: function (latLonObj, opts) { "Geohash: " + encodeGeoHash(latLonObj.lat, latLonObj.lng) }
     }).addTo(mymap);
-
-
 }
