@@ -51,10 +51,7 @@ function login() {
     var usernameLogin = document.getElementById('unameLogin').value;
     var passwordLogin = document.getElementById('pwdLogin').value;
 
-    console.warn("geia");
-
     con.connect(function (err) {
-        alert("geia");
         if (err) throw alert(err);
         let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '" AND password="' + passwordLogin + '"';
         var result = con.query(sqlQuery, function (err, result) {
@@ -63,12 +60,10 @@ function login() {
             if (result != "") {
                 ipcRenderer.send('changeWindow', 'map');
             } else {
-                alert("Den yparxei o xristis");
+                alert("Ο χρήστης δεν υπάρχει, παρακαλώ φτιάξτε νέο χρήστη.");
             }
         });
     });
-
-    console.warn("11111111111111");
 }
 
 function signUpButton() {
@@ -95,9 +90,9 @@ function signUp() {
 
     con.connect(function (err) {
         if (err) throw err;
-        let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';;
+        let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';
         con.query(sqlQuery, function (err, result) {
-            if (err) throw alert("yparxei idi o user");
+            if (err) throw alert("Ο χρήστης υπάρχει ήδη. Εισάγεται τα στοιχεία του ή φτιάξτε καινούριο χρήστη.");
 
             ipcRenderer.send('changeWindow', 'sqlTomain');
         });

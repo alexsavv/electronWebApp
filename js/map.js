@@ -5,6 +5,8 @@ var mysql = require('mysql');
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
 // require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
 
+require('leaflet.bigimage');
+
 const con = mysql.createConnection({
     host: 'localhost',
     user: 'electronwebapp',
@@ -68,6 +70,8 @@ function createMap() {
         id: 'map',
     }).addTo(mymap);
     mymap.setView([37, 25], 8);
+
+    L.control.BigImage({}).addTo(mymap);
 
     L.control.coordinates({
         position: 'bottomright',
