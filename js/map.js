@@ -3,7 +3,7 @@ const L = require('leaflet');
 var mysql = require('mysql');
 
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
-// require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
+// require('..//node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
 
 require('leaflet.bigimage');
 
@@ -14,11 +14,9 @@ const con = mysql.createConnection({
     database: 'electronwebappDB'
 });
 
-let username=null;
-let gender=null;
+let username = null;
+let gender = null;
 GetUsername();
-
-if (username) document.getElementById('username').value = username;
 
 function GetUsername() {
     con.connect(function (err) {
@@ -26,18 +24,24 @@ function GetUsername() {
 
         // let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '"';
         let sqlQuery = 'SELECT * FROM users WHERE username="alex"'; //kapws na pairnw to onoma toy user!!!
-        var result = con.query(sqlQuery, function (err, result) {
+        con.query(sqlQuery, function (err, result) {
             if (err) throw alert(err);
 
             username = result[0]['username'];
             gender = result[0]['gender'];
+
+            document.getElementById('unameProfile').value = username;
+            document.getElementById('genderProfile').value = gender;
 
             if (result[0]['gender'] == 'female') {
                 document.getElementById('imgProfile').src = "../img/femaleProfile.png";
             } else if (result[0]['gender'] == 'other') {
                 document.getElementById('imgProfile').src = "../img/otherProfile.png";
             }
+
+            return result;
         });
+
     });
 }
 
@@ -49,12 +53,9 @@ function profile() {
     document.getElementById('leafletMap').hidden = true;
     document.getElementById('profile').hidden = false;
 
-    document.getElementById('unameProfile').value = username;
-    document.getElementById('genderProfile').value = gender;
-
-    if (result[0]['gender'] == "female") {
+    if (gender == "female") {
         document.getElementById('imgProfile').src = "../img/femaleProfile.png";
-    } else if (result[0]['gender'] == "other") {
+    } else if (gender == "other") {
         document.getElementById('imgProfile').src = "../img/otherProfile.png";
     }
 }

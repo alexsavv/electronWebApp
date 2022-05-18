@@ -20,6 +20,7 @@
     "electron": "^17.1.0"
   },
   "dependencies": {
+    "bootstrap": "4.5.2",
     "leaflet": "^1.7.1",
     "leaflet.bigimage": "^1.0.1",
     "leaflet.coordinates": "^0.1.5",
