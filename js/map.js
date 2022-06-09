@@ -64,7 +64,12 @@ function createMap() {
     document.getElementById('profile').hidden = true;
     document.getElementById('leafletMap').hidden = false;
 
-    const mymap = L.map('leafletMap', { worldCopyJump: true }).setView([0, 0], 1);
+    var mapParameters = {
+        worldCopyJump: true,
+        attributionControl: false
+    }
+
+    const mymap = L.map('leafletMap', mapParameters).setView([0, 0], 1);
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright"> \
         OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -87,6 +92,6 @@ function createMap() {
 
         enableUserInput: false,
 
-        customLabelFcn: function (latLonObj, opts) { "Geohash: " + encodeGeoHash(latLonObj.lat, latLonObj.lng) }
+        // customLabelFcn: function (latLonObj, opts) { "Geohash: " + encodeGeoHash(latLonObj.lat, latLonObj.lng) }
     }).addTo(mymap);
 }

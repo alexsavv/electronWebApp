@@ -27,3 +27,12 @@ function checkExistDB() {
 
     // module.exports = mysqlConnection1;
 }
+
+function showPassword(pwdID) {
+    var x = document.getElementById(pwdID);
+    if (x.type === 'password') {
+        x.type = 'text';
+    } else {
+        x.type = 'password';
+    }
+}

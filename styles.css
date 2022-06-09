@@ -2,6 +2,10 @@
 
 /* Add styles here to customize the appearance of your app */
 
+body{
+    background: rgba(222, 184, 135, 0.384);
+}
+
 .center {
     display: block;
     margin-left: auto;
@@ -31,8 +35,4 @@ input[type=text], input[type=password] {
     display: inline-block;
     border: 1px solid rgb(245, 241, 241);
     box-sizing: border-box;
-}
-
-body{
-    background: rgba(222, 184, 135, 0.384);
 }

@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="../node_modules/leaflet.bigimage/dist/Leaflet.BigImage.min.css">
 
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         #leafletMap {
@@ -39,15 +40,20 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
         }
+
+        button{
+            margin-top: 5px;
+            margin-left: 5px;
+        }
     </style>
 </head>
 
 <body>
-    <button type="button" onclick="disconnect()"> Disconnect </button>
+    <button class="btn btn-primary" type="button" onclick="disconnect()"> Disconnect </button>
 
-    <button type="button" onclick="createMap()"> Show Map </button>
+    <button class="btn btn-primary"  type="button" onclick="createMap()"> Show Map </button>
 
-    <button type="button" onclick="profile()"> Profile </button>
+    <button class="btn btn-primary"  type="button" onclick="profile()"> Profile </button>
 
     <div id="profile" style="margin: 30px;" hidden>
         <img src="../img/maleProfile.png" id="imgProfile" alt="Avatar" class="avatar center">

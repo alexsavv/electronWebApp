@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../js/sql.js"></script>
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
@@ -38,7 +39,7 @@
 </head>
 
 <body>
-    <button type="button" onclick="ipcRenderer.send('changeWindow', 'sqlTomain');" style="margin:10px;"> HomePage </button>
+    <button class="btn btn-primary" type="button" onclick="ipcRenderer.send('changeWindow', 'sqlTomain');" style="margin:10px;"> HomePage </button>
 
     <form id="connectDatabase" onsubmit="checkExistDB()">
         <img src="../img/sql.png" alt="Avatar" class="avatar center">
@@ -52,14 +53,14 @@
 
             <label for="pwdSql"></label><b>Password</b></label>
             <input type="password" placeholder="Enter Password" id="pwdSql" value="electronwebapp">
-            <input type="checkbox" onclick="showPassword('pwdSql')">Show Password
+            <input type="checkbox" onclick="showPassword('pwdSql')"> Show Password
 
             <br><br>
             <label for="dbSql"><b>Database</b></label>
             <input type="text" placeholder="Enter Database" id="dbSql" value="electronwebappDB">
             <br><br>
             <div>
-                <button type="submit">Connect to Database</button>
+                <button class="btn btn-secondary" type="submit">Connect to Database</button>
             </div>
         </div>
     </form>
