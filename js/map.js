@@ -10,7 +10,7 @@ require('leaflet.bigimage');
 const con = mysql.createConnection({
     host: 'localhost',
     user: 'electronwebapp',
-    password: 'electronwebapp',
+    password: 'electronwebAPP13!',
     database: 'electronwebappDB'
 });
 

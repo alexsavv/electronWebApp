@@ -38,10 +38,11 @@ function showPassword(pwdID) {
 
 function login() {
     if (con == null) {
+        console.warn("geiaa");
         con = mysql.createConnection({
             host: 'localhost',
             user: 'electronwebapp',
-            password: 'electronwebapp',
+            password: 'electronwebAPP13!',
             database: 'electronwebappDB'
         });
 
@@ -79,7 +80,7 @@ function signUp() {
         con = mysql.createConnection({
             host: 'localhost',
             user: 'electronwebapp',
-            password: 'electronwebapp',
+            password: 'electronwebAPP13!',
             database: 'electronwebappDB'
         });
     }

@@ -17,7 +17,7 @@ function userLogin() {
     var con = mysql.createConnection({
         host: "localhost",
         user: "electronwebapp",
-        password: "electronwebapp"
+        password: "electronwebAPP13!"
     });
 
     con.connect(function (err) {

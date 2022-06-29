@@ -11,6 +11,8 @@ function checkExistDB() {
     var pwd = document.getElementById('pwdSql').value;
     var database = document.getElementById('dbSql').value;
 
+    console.warn("host: " + host + " u: " + username + " pwd: " + pwd + " db: " + database);
+
     if (mysqlConnection1 == null) {
         mysqlConnection1 = mysql.createConnection({
             host: host,
