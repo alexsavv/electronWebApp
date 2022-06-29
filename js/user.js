@@ -4,7 +4,7 @@ function userLogin() {
     /*
      * mysql connection
      * user: electronwebapp 
-     * pwd: electronwebapp
+     * pwd: electronwebAPP13!
      */
 
     /*

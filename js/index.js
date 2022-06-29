@@ -4,7 +4,7 @@ var mysql = require('mysql');
 /*
  * mysql connection
  * user: electronwebapp 
- * pwd: electronwebapp
+ * pwd: electronwebAPP13!
 */
 
 /*
