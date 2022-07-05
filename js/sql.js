@@ -1,9 +1,16 @@
 const { ipcRenderer } = require('electron');
 var mysql = require('mysql');
 
-// module.exports = {mysqlConnection};
+function getConnectionDB(host, user, password, database, table = null){
+    var con = mysql.createConnection({
+        host: host,
+        user: user,
+        password: password,
+        database: database
+    });
 
-let mysqlConnection1 = null;
+    return con;
+}
 
 function checkExistDB() {
     var host = document.getElementById('hostSql').value;
@@ -11,23 +18,11 @@ function checkExistDB() {
     var pwd = document.getElementById('pwdSql').value;
     var database = document.getElementById('dbSql').value;
 
-    console.warn("host: " + host + " u: " + username + " pwd: " + pwd + " db: " + database);
-
-    if (mysqlConnection1 == null) {
-        mysqlConnection1 = mysql.createConnection({
-            host: host,
-            user: username,
-            password: pwd,
-            database: database
-        });
-    }
-
-    mysqlConnection1.connect(function (err) {
-        if (err) throw alert('Den yparxei basi me ta stoixeia poy edwses');
+    let con = getConnectionDB(host, username, pwd, database);
+    con.connect(function (err) {
+        if (err) throw alert('There is not database with these credentials. Please check the credentials.');
         ipcRenderer.send('changeWindow', 'sqlTomain');
     });
-
-    // module.exports = mysqlConnection1;
 }
 
 function showPassword(pwdID) {

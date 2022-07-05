@@ -1,31 +1,26 @@
 const { ipcRenderer } = require('electron');
 var mysql = require('mysql');
 
-/*
- * mysql connection
- * user: electronwebapp 
- * pwd: electronwebAPP13!
-*/
+const infoDB = {
+    host: 'localhost',
+    user: 'electronwebapp',
+    password: 'electronwebAPP13!',
+    database: 'electronwebappDB',
+    table: 'users'
+};
 
-/*
- * show databases;
- * SELECT User, Host FROM mysql.user;
- */
+let con = getConnectionDB(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-/*
-    Object.keys(result).forEach(function(key) {
-      var row = result[key];
-      console.log(row.name)
+function getConnectionDB(host, user, password, database, table = null){
+    var con = mysql.createConnection({
+        host: host,
+        user: user,
+        password: password,
+        database: database
     });
-*/
 
-//Get information from SQL html page
-// var hostSql = document.getElementById('hostSql').value;
-// var usernameSql = document.getElementById('unameSql').value;
-// var passwordSql = document.getElementById('pwdSql').value;
-// var databaseSql = document.getElementById('dbSql').value;
-
-let con = null;
+    return con;
+}
 
 function showPassword(pwdID) {
     var x = document.getElementById(pwdID);
@@ -61,7 +56,7 @@ function login() {
             if (result != "") {
                 ipcRenderer.send('changeWindow', 'map');
             } else {
-                alert("Ο χρήστης δεν υπάρχει, παρακαλώ φτιάξτε νέο χρήστη.");
+                alert("There is not user with these credentials. Please check the user's credentials or create a new one.");
             }
         });
     });
@@ -93,7 +88,7 @@ function signUp() {
         if (err) throw err;
         let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';
         con.query(sqlQuery, function (err, result) {
-            if (err) throw alert("Ο χρήστης υπάρχει ήδη. Εισάγεται τα στοιχεία του ή φτιάξτε καινούριο χρήστη.");
+            if (err) throw alert("There is already user with these credentials. You can login to the user account.");
 
             ipcRenderer.send('changeWindow', 'sqlTomain');
         });

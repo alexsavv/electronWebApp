@@ -1,0 +1,28 @@
+#leafletMap {
+    height: 800px;
+}
+
+body {
+    background: rgba(222, 184, 135, 0.384);
+}
+
+#profile {
+    margin: 20px auto;
+    width: 320px;
+    padding: 10px;
+    border: 5px solid gray;
+}
+
+input[type=text] {
+    width: 95%;
+    padding: 8px 15px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    margin-top: 5px;
+    margin-left: 5px;
+}

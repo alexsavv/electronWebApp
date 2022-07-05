@@ -4,7 +4,9 @@
     <title>Map</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <script src="../js/map.js"></script>
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
@@ -15,52 +17,61 @@
     <link rel="stylesheet" href="../node_modules/leaflet.bigimage/dist/Leaflet.BigImage.min.css">
 
     <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../node_modules/@fortawesome/fontawesome-free/css/all.css" rel="stylesheet">
 
-    <style>
-        #leafletMap {
-            height: 800px;
-        }
+    <!-- <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script> -->
 
-        body {
-            background: rgba(222, 184, 135, 0.384);
-        }
-
-        #profile {
-            margin: 20px auto;
-            width: 320px;
-            padding: 10px;
-            border: 5px solid gray;
-        }
-
-        input[type=text] {
-            width: 95%;
-            padding: 8px 15px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-
-        button{
-            margin-top: 5px;
-            margin-left: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/map.css">
 </head>
 
 <body>
+    <!-- <script>
+        $(function () {
+            $('#userProfile').click(function () {
+                alert("functional");
+            })
+        })
+    </script> -->
+
     <button class="btn btn-primary" type="button" onclick="disconnect()"> Disconnect </button>
 
-    <button class="btn btn-primary"  type="button" onclick="createMap()"> Show Map </button>
+    <button class="btn btn-primary" type="button" onclick="createMap()"> Show Map </button>
 
-    <button class="btn btn-primary"  type="button" onclick="profile()"> Profile </button>
+    <button class="btn btn-primary" type="button" id="userProfile" onclick="profile()"> Profile </button>
 
-    <div id="profile" style="margin: 30px;" hidden>
+    <div id="profile" class="container" style="margin: 30px;" hidden>
         <img src="../img/maleProfile.png" id="imgProfile" alt="Avatar" class="avatar center">
 
+        <label for="unameProfile"><b>Username</b></label>
         <input type="text" id="unameProfile" disabled></input>
+
+        <label for="genderProfile"><b>Gender</b></label>
         <input type="text" id="genderProfile" disabled></input>
+
+        <div>
+            <label for="rePwd"></label><b>Password</b></label>
+            <input type="password" placeholder="Change Password" id='rePwd' disabled>
+
+            <div>
+                <input type="checkbox" onclick="showRePassword('rePwd')" id='showRePwd' disabled> Show Password
+            </div>
+
+            <div>
+                <button type="button" class="btn btn-primary" id='editRePwd' onclick="editRePassword(false)">Edit
+                    <i class="fas fa-pen"></i>
+                </button>
+                <button type="button" class="btn btn-primary" id='submitRePwd' onclick="submitPwd()" disabled>Submit
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <hr>
+            <button type="button" class='btn btn-outline-danger rounded-2' id="removeUser" onclick="removeUser()">Delete User
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
     </div>
 
-    <div id="leafletMap" style="margin: 30px;" hidden></div>
+    <div id="mapContainer"></div>
 </body>
