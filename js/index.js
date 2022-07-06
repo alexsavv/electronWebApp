@@ -11,7 +11,7 @@ const infoDB = {
 
 let con = getConnectionDB(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-function getConnectionDB(host, user, password, database, table = null){
+function getConnectionDB(host, user, password, database, table = null) {
     var con = mysql.createConnection({
         host: host,
         user: user,
@@ -70,6 +70,25 @@ function signUpButton() {
     document.getElementById('signUpForm').hidden = false;
 }
 
+function usernameValidation(username) {
+    var valid = false;
+    valid = /^[a-zA-Z][a-z-A-Z0-9_]{7,20}$/.test(username);
+
+    return valid;
+}
+
+function passwordValidation(password, repassword) {
+    var valid = true;
+    if (password !== repassword) {
+        alert('Verified password is wrong');
+        valid = false;
+    } else {
+        valid = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,20}$/.test(password);
+    }
+
+    return valid;
+}
+
 function signUp() {
     if (con == null) {
         con = mysql.createConnection({
@@ -80,17 +99,31 @@ function signUp() {
         });
     }
 
-    var usernameSignUp = document.getElementById('unameSignUp').value;
     var genderSignUp = document.getElementById('genderSignUp').value;
+
+    var usernameSignUp = document.getElementById('unameSignUp').value;
+    var validatedUsername = usernameValidation(usernameSignUp);
+
     var passwordSignUp = document.getElementById('pwdSignUp').value;
+    var repassword = document.getElementById('pwdRepeat').value;
+    var validatedPassword = passwordValidation(passwordSignUp, repassword);
 
-    con.connect(function (err) {
-        if (err) throw err;
-        let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';
-        con.query(sqlQuery, function (err, result) {
-            if (err) throw alert("There is already user with these credentials. You can login to the user account.");
+    if (validatedUsername && validatedPassword) {
+        // con.connect(function (err) {
+        //     if (err) throw err;
+        //     let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';
+        //     con.query(sqlQuery, function (err, result) {
+        //         if (err) throw alert("There is already user with these credentials. You can login to the user account.");
 
-            ipcRenderer.send('changeWindow', 'sqlTomain');
-        });
-    });
+        //         ipcRenderer.send('changeWindow', 'sqlTomain');
+        //     });
+        // });
+    } else {
+        privacyTerms();
+        document.getElementById('cancelSignUp').click();
+    }
+}
+
+function privacyTerms() {
+    alert("Username = between 7 to 20 characters which start with a char and followed by letters or digits or underscore, Password = between 7 to 20 characters which contain at least one numeric digit and a special character");
 }

@@ -68,32 +68,16 @@
             <input type="checkbox" onclick="showPassword('pwdSignUp')"> Show Password
 
             <br><br>
-            <label for="pwd-repeat"><b>Repeat Password</b></label>
-            <input type="password" placeholder="Repeat Password" id="pwd-repeat" value="a">
+            <label for="pwdRepeat"><b>Repeat Password</b></label>
+            <input type="password" placeholder="Repeat Password" id="pwdRepeat" value="a">
 
             <p>By creating an account you agree to our <a href="#" style="color:dodgerblue" onclick="privacyTerms()">Terms & Privacy</a>.</p>
 
             <div class="clearfix">
-                <button class="btn btn-secondary" type="button" onclick="document.getElementById('signUpForm').hidden=true;
+                <button class="btn btn-secondary" type="button" id='cancelSignUp' onclick="document.getElementById('signUpForm').hidden=true;
                     document.getElementById('loginForm').hidden=false;">Cancel</button>
                 <button class="btn btn-secondary" type="submit">Sign Up</button>
             </div>
         </div>
     </form>
-
-    <script>
-        function privacyTerms() {
-            alert("Onoma, Gender, Password");
-        }
-    </script>
 </body>
-
-<script>
-function burgerSwitch(nav) {
-    if (nav.className == "open") {
-        nav.className = "close";
-    } else {
-        nav.className = "open";
-    }
-}
-</script>
