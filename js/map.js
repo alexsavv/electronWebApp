@@ -8,9 +8,6 @@ require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.
 
 require('leaflet.bigimage');
 
-let username = null;
-let gender = null;
-
 const infoDB = {
     host: 'localhost',
     user: 'electronwebapp',
@@ -20,6 +17,12 @@ const infoDB = {
 };
 
 let con = getConnectionDB(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+
+let userInfo = {
+    'username' : localStorage.getItem('userID'),
+    'gender' : '',
+    'profileImage': ''
+}
 
 GetUsername();
 
@@ -34,25 +37,23 @@ function getConnectionDB(host, user, password, database, table = null) {
     return con;
 }
 
+//get username, gender, profileImage
 function GetUsername() {
     con.connect(function (err) {
         if (err) throw alert(err);
 
-        // let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '"';
-        let sqlQuery = 'SELECT * FROM users WHERE username="alex"'; //kapws na pairnw to onoma toy user!!!
+        let sqlQuery = 'SELECT * FROM users WHERE username="'+userInfo['username']+'"'; //kapws na pairnw to onoma toy user!!!
         con.query(sqlQuery, function (err, result) {
             if (err) throw alert(err);
 
-            username = result[0]['username'];
-            gender = result[0]['gender'];
-
-            document.getElementById('unameProfile').value = username;
-            document.getElementById('genderProfile').value = gender;
+            userInfo['gender'] = result[0]['gender'];
 
             if (result[0]['gender'] == 'female') {
-                document.getElementById('imgProfile').src = "../img/femaleProfile.png";
-            } else if (result[0]['gender'] == 'other') {
-                document.getElementById('imgProfile').src = "../img/otherProfile.png";
+                userInfo['profileImage'] = "../img/femaleProfile.png";
+            } else if (result[0]['gender'] == 'male') {
+                userInfo['profileImage'] = "../img/maleProfile.png";
+            }else{
+                userInfo['profileImage'] = "../img/otherProfile.png";
             }
 
             return result;
@@ -62,6 +63,9 @@ function GetUsername() {
 }
 
 function disconnect() {
+    document.getElementById('profile').hidden = true;
+    if(document.getElementById('leafletMap') != null) document.getElementById('leafletMap').hidden = false;
+
     ipcRenderer.send('changeWindow', 'main');
 }
 
@@ -70,11 +74,10 @@ function profile() {
 
     document.getElementById('profile').hidden = false;
 
-    if (gender == "female") {
-        document.getElementById('imgProfile').src = "../img/femaleProfile.png";
-    } else if (gender == "other") {
-        document.getElementById('imgProfile').src = "../img/otherProfile.png";
-    }
+    document.getElementById('unameProfile').value = userInfo['username'];
+    document.getElementById('genderProfile').value = userInfo['gender'];
+
+    document.getElementById('imgProfile').src = userInfo['profileImage'];
 }
 
 function createMap() {

@@ -33,7 +33,6 @@ function showPassword(pwdID) {
 
 function login() {
     if (con == null) {
-        console.warn("geiaa");
         con = mysql.createConnection({
             host: 'localhost',
             user: 'electronwebapp',
@@ -54,12 +53,15 @@ function login() {
             if (err) throw alert(err);
 
             if (result != "") {
+                localStorage.setItem('userID', usernameLogin);
                 ipcRenderer.send('changeWindow', 'map');
             } else {
                 alert("There is not user with these credentials. Please check the user's credentials or create a new one.");
             }
         });
     });
+
+
 }
 
 function signUpButton() {
