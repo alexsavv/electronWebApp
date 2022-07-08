@@ -2,11 +2,16 @@ const { ipcRenderer } = require('electron');
 const L = require('leaflet');
 var mysql = require('mysql');
 
+require('leaflet.bigimage');
+require('leaflet-sidebar-v2');
+
+const fs = require('fs');
+const readline = require('readline');
+const path = require('path');
 
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
-// require('..//node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
+// require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
 
-require('leaflet.bigimage');
 
 const infoDB = {
     host: 'localhost',
@@ -19,8 +24,8 @@ const infoDB = {
 let con = getConnectionDB(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
 let userInfo = {
-    'username' : localStorage.getItem('userID'),
-    'gender' : '',
+    'username': localStorage.getItem('userID'),
+    'gender': '',
     'profileImage': ''
 }
 
@@ -42,7 +47,7 @@ function GetUsername() {
     con.connect(function (err) {
         if (err) throw alert(err);
 
-        let sqlQuery = 'SELECT * FROM users WHERE username="'+userInfo['username']+'"'; //kapws na pairnw to onoma toy user!!!
+        let sqlQuery = 'SELECT * FROM users WHERE username="' + userInfo['username'] + '"';
         con.query(sqlQuery, function (err, result) {
             if (err) throw alert(err);
 
@@ -52,25 +57,24 @@ function GetUsername() {
                 userInfo['profileImage'] = "../img/femaleProfile.png";
             } else if (result[0]['gender'] == 'male') {
                 userInfo['profileImage'] = "../img/maleProfile.png";
-            }else{
+            } else {
                 userInfo['profileImage'] = "../img/otherProfile.png";
             }
 
             return result;
         });
-
     });
 }
 
 function disconnect() {
     document.getElementById('profile').hidden = true;
-    if(document.getElementById('leafletMap') != null) document.getElementById('leafletMap').hidden = false;
+    if (document.getElementById('leafletMap') != null) document.getElementById('leafletMap').hidden = false;
 
     ipcRenderer.send('changeWindow', 'main');
 }
 
 function profile() {
-    if(document.getElementById('leafletMap') != null) document.getElementById('leafletMap').hidden = true;
+    if (document.getElementById('leafletMap') != null) document.getElementById('leafletMap').hidden = true;
 
     document.getElementById('profile').hidden = false;
 
@@ -84,15 +88,15 @@ function createMap() {
     document.getElementById('profile').hidden = true;
 
     var leafletMap = document.getElementById('leafletMap');
-    if(leafletMap == null){
+    if (leafletMap == null) {
         var divElem = document.createElement('div');
         divElem.id = 'leafletMap';
         divElem.style = 'margin: 30px';
         divElem.hidden = false;
 
         document.getElementById('mapContainer').appendChild(divElem);
-    }else{
-        if(leafletMap.hidden == false) return;
+    } else {
+        if (leafletMap.hidden == false) return;
         leafletMap.hidden = false;
         return;
     }
@@ -117,16 +121,26 @@ function createMap() {
 
         decimals: 2,
         decimalSeparator: '.',
+
+        labelTemplateLat: '{y}',
+        labelTemplateLng: '- {x}',
+
+        centerUserCoordinates: true,
+
         useDMS: true,
         useLatLngOrder: true,
 
-        labelTemplateLat: 'Lat: {y}',
-        labelTemplateLng: 'Lng: {x}',
-
-        enableUserInput: false,
+        enableUserInput: true,
 
         // customLabelFcn: function (latLonObj, opts) { "Geohash: " + encodeGeoHash(latLonObj.lat, latLonObj.lng) }
     }).addTo(mymap);
+
+    // var sidebar = L.control.sidebar({
+    //     autopan: true,       // whether to maintain the centered map point when opening the sidebar
+    //     closeButton: true,    // whether t add a close button to the panes
+    //     container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
+    //     position: 'left',     // left or right
+    // }).addTo(mymap);
 }
 
 function removeUser() {
@@ -145,7 +159,6 @@ function removeUser() {
 
             return result;
         });
-
     });
 }
 
@@ -192,4 +205,23 @@ function showRePassword(pwdID) {
     } else {
         x.type = 'password';
     }
+}
+
+function getCountries() { //read from file and create option to selection html for each element
+    const coolPath = path.join(__dirname, '../countries_codes_and_coordinates.csv');
+    const stream = fs.createReadStream(coolPath);
+
+    var reader = readline.createInterface({ input: stream });
+    reader.on("line", (row) => { 
+        var dict = {};
+        var stringArray = row.split(",");
+        for (var i=0; i <= 0; i++){
+            var optionElem = document.createElement('option');
+            optionElem.value = stringArray[i];
+            optionElem.innerHTML = stringArray[i];
+            document.getElementById('selectCountry').appendChild(optionElem);
+        }
+
+        console.warn('country: ' + dict);
+    });
 }
