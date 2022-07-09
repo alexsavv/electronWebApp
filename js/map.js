@@ -141,6 +141,8 @@ function createMap() {
     //     container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
     //     position: 'left',     // left or right
     // }).addTo(mymap);
+
+    getCountries();
 }
 
 function removeUser() {
@@ -208,20 +210,37 @@ function showRePassword(pwdID) {
 }
 
 function getCountries() { //read from file and create option to selection html for each element
-    const coolPath = path.join(__dirname, '../countries_codes_and_coordinates.csv');
-    const stream = fs.createReadStream(coolPath);
+    var countryForm = document.getElementById('countryForm');
 
-    var reader = readline.createInterface({ input: stream });
-    reader.on("line", (row) => { 
-        var dict = {};
-        var stringArray = row.split(",");
-        for (var i=0; i <= 0; i++){
-            var optionElem = document.createElement('option');
-            optionElem.value = stringArray[i];
-            optionElem.innerHTML = stringArray[i];
-            document.getElementById('selectCountry').appendChild(optionElem);
-        }
+    if (countryForm.hidden) {
+        var labelElem = document.createElement('label');
+        labelElem.innerHTML = 'CountrySelection';
+        labelElem.setAttribute('for', 'selectCountry');
+        countryForm.appendChild(labelElem);
 
-        console.warn('country: ' + dict);
-    });
+        var selectElem = document.createElement('select');
+
+        const relativePath = path.join(__dirname, '../countries_codes_and_coordinates.csv');
+        const streamFile = fs.createReadStream(relativePath);
+
+        var stringArray = null;
+        var optionElem = null;
+        var countryElem = null; 
+        var reader = readline.createInterface({ input: streamFile });
+        reader.on("line", (row) => {
+            stringArray = row.split(",");
+            optionElem = null;
+
+            countryElem = stringArray[0].replace(/"/g, "");
+            if (countryElem.toLowerCase() != 'country') {
+                optionElem = document.createElement('option');
+                optionElem.value = countryElem;
+                optionElem.innerHTML = countryElem;
+                selectElem.appendChild(optionElem);
+            }
+        });
+
+        countryForm.appendChild(selectElem);
+        countryForm.hidden = false;
+    }
 }
