@@ -19,26 +19,17 @@
     <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../node_modules/@fortawesome/fontawesome-free/css/all.css" rel="stylesheet">
 
-    <!-- <script src="../node_modules/jquery/dist/jquery.js"></script>
-    <script src="../node_modules/jquery/dist/jquery.min.js"></script> -->
-
     <link rel="stylesheet" href="../css/map.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
 </head>
 
 <body>
-    <!-- <script>
-        $(function () {
-            $('#userProfile').click(function () {
-                alert("functional");
-            })
-        })
-    </script> -->
 
-    <button class="btn btn-primary" type="button" onclick="disconnect()"> Disconnect </button>
+    <button id='disconnect' class="btn btn-primary" type="button"> Disconnect </button>
 
-    <button class="btn btn-primary" type="button" onclick="createMap()"> Show Map </button>
+    <button id='createMap' class="btn btn-primary" type="button"> Show Map </button>
 
-    <button class="btn btn-primary" type="button" id="userProfile" onclick="profile()"> Profile </button>
+    <button id='userProfile' class="btn btn-primary" type="button" id="userProfile"> Profile </button>
 
     <div id="profile" class="container" style="margin: 30px;" hidden>
         <img src="../img/maleProfile.png" id="imgProfile" alt="Avatar" class="avatar center">
@@ -54,20 +45,20 @@
             <input type="password" placeholder="Change Password" id='rePwd' disabled>
 
             <div>
-                <input type="checkbox" onclick="showRePassword('rePwd')" id='showRePwd' disabled> Show Password
+                <input id='showRePwd' type="checkbox" disabled> Show Password
             </div>
 
             <div>
-                <button type="button" class="btn btn-primary" id='editRePwd' onclick="editRePassword(false)">Edit
+                <button id='editRePwd' type="button" class="btn btn-primary">Edit
                     <i class="fas fa-pen"></i>
                 </button>
-                <button type="button" class="btn btn-primary" id='submitRePwd' onclick="submitPwd()" disabled>Submit
+                <button id='submitRePwd' type="button" class="btn btn-primary" disabled>Submit
                     <i class="fa fa-paper-plane" aria-hidden="true"></i>
                 </button>
             </div>
 
             <hr>
-            <button type="button" class='btn btn-outline-danger rounded-2' id="removeUser" onclick="removeUser()">Delete
+            <button id="deleteUser" type="button" class='btn btn-outline-danger rounded-2' >Delete
                 User
                 <i class="fa fa-trash"></i>
             </button>
@@ -75,32 +66,26 @@
     </div>
 
     <div id="mapContainer" hidden>
-        <div id="countryForm"></div>
-    </div>
+        <div id="sidebar" class="leaflet-sidebar collapsed">
+            <div class="leaflet-sidebar-tabs">
+                <ul id="sidebarsList" role="tablist">
+                    <li class="border-top border-bottom" title="Test">
+                        <a href="#sidebar-pane1" role="tab"><i class="far fa-id-badge"></i></a>
+                    </li>
+                </ul>
+            </div>
 
-    <!-- <div id="sidebar" class="leaflet-sidebar collapsed hidden">
-        <div class="leaflet-sidebar-tabs">
-            <ul id="sidebarsList" role="tablist">
-                <li class="disabled" title="Test">
-                    <a href="#sidebar-pane1" role="tab"><i class="far fa-id-badge"></i></a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="leaflet-sidebar-content">
-        <div id="sidebar-pane1" class="leaflet-sidebar-pane">
-            <h1>
-                Test
-                <div class="xIcon leaflet-sidebar-close"><i class="fas fa-times"></i></div>
-            </h1>
-            <div id="sidebar-pane1-body">
-                <label for="selectCountry">Dialekse</label>
-                <select id="selectCountry">
-                    <option value="dm"></option> 
-                    <option value="op"></option> 
-                </select>
+            <div class="leaflet-sidebar-content">
+                <div id="sidebar-pane1" class="leaflet-sidebar-pane">
+                    <h1 class="leaflet-sidebar-header">
+                        Country
+                        <div class="leaflet-sidebar-close"><i class="fas fa-times"></i></div>
+                    </h1>
+                    <br>
+                    <div id="countryForm"></div>
+                    <button id="countrySubmit" class="btn btn-primary">Submit</button>
+                </div>
             </div>
         </div>
-    </div> -->
+    </div>
 </body>

@@ -60,8 +60,6 @@ function login() {
             }
         });
     });
-
-
 }
 
 function signUpButton() {
@@ -111,15 +109,15 @@ function signUp() {
     var validatedPassword = passwordValidation(passwordSignUp, repassword);
 
     if (validatedUsername && validatedPassword) {
-        // con.connect(function (err) {
-        //     if (err) throw err;
-        //     let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';
-        //     con.query(sqlQuery, function (err, result) {
-        //         if (err) throw alert("There is already user with these credentials. You can login to the user account.");
+        con.connect(function (err) {
+            if (err) throw err;
+            let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';
+            con.query(sqlQuery, function (err, result) {
+                if (err) throw alert("There is already user with these credentials. You can login to the user account.");
 
-        //         ipcRenderer.send('changeWindow', 'sqlTomain');
-        //     });
-        // });
+                ipcRenderer.send('changeWindow', 'sqlTomain');
+            });
+        });
     } else {
         privacyTerms();
         document.getElementById('cancelSignUp').click();

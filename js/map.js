@@ -12,6 +12,45 @@ const path = require('path');
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
 // require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
 
+window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
+// require('../node_modules/jquery/dist/jquery.min.js');
+
+$(document).ready(function () {
+    $('#countrySubmit').on('click', () => {
+        console.warn('geia');
+    });
+
+    $('#disconnect').on('click', () => {
+        disconnect();
+    });
+
+    $('#userProfile').on('click', () => {
+        profile();
+    });
+    
+    $('#createMap').on('click', () => {
+        createMap();
+    });
+
+    //Password functionality
+    $('#showRePwd').on('click', () => {
+        showRePassword('rePwd');
+    });
+
+    $('#editRePwd').on('click', () => {
+        editRePassword(false);
+    });
+
+    $('#submitRePwd').on('click', () => {
+        submitPwd();
+    });
+
+    //End Password functionality
+
+    $('#deleteUser').on('click', () => {
+        submitPremoveUserwd();
+    });
+});
 
 const infoDB = {
     host: 'localhost',
@@ -89,18 +128,19 @@ function createMap() {
     document.getElementById('mapContainer').hidden = false;
 
     var leafletMap = document.getElementById('leafletMap');
-    if (leafletMap == null) {
-        var divElem = document.createElement('div');
-        divElem.id = 'leafletMap';
-        divElem.style = 'margin: 30px';
-        divElem.hidden = false;
-
-        document.getElementById('mapContainer').appendChild(divElem);
-    } else {
+    if (leafletMap != null) {
         if (leafletMap.hidden == false) return;
         leafletMap.hidden = false;
         return;
     }
+
+    var divElem = document.createElement('div');
+    divElem.id = 'leafletMap';
+    divElem.style = 'margin: 30px';
+    divElem.hidden = false;
+
+    document.getElementById('mapContainer').appendChild(divElem);
+
 
     var mapParameters = {
         worldCopyJump: true,
@@ -132,16 +172,14 @@ function createMap() {
         useLatLngOrder: true,
 
         enableUserInput: true,
-
-        // customLabelFcn: function (latLonObj, opts) { "Geohash: " + encodeGeoHash(latLonObj.lat, latLonObj.lng) }
     }).addTo(mymap);
 
-    // var sidebar = L.control.sidebar({
-    //     autopan: true,       // whether to maintain the centered map point when opening the sidebar
-    //     closeButton: true,    // whether t add a close button to the panes
-    //     container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
-    //     position: 'left',     // left or right
-    // }).addTo(mymap);
+    var sidebar = L.control.sidebar({
+        autopan: true,       // whether to maintain the centered map point when opening the sidebar
+        closeButton: true,    // whether t add a close button to the panes
+        container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
+        position: 'left',     // left or right
+    }).addTo(mymap);
 
     getCountries();
 }
@@ -215,7 +253,7 @@ function getCountries() { //read from file and create option to selection html f
 
     if (countryForm.innerHTML == '') {
         var labelElem = document.createElement('label');
-        labelElem.innerHTML = 'CountrySelection';
+        // labelElem.innerHTML = 'CountrySelection';
         labelElem.setAttribute('for', 'selectCountry');
         countryForm.appendChild(labelElem);
 
@@ -228,7 +266,7 @@ function getCountries() { //read from file and create option to selection html f
 
         var stringArray = null;
         var optionElem = null;
-        var countryElem = null; 
+        var countryElem = null;
         var reader = readline.createInterface({ input: streamFile });
         reader.on("line", (row) => {
             stringArray = row.split(",");
@@ -239,7 +277,7 @@ function getCountries() { //read from file and create option to selection html f
             if (countryElem.toLowerCase() != 'country') {
                 optionElem.value = countryElem;
                 optionElem.innerHTML = countryElem;
-            }else{
+            } else {
                 optionElem.selected = true;
                 optionElem.value = 'selectCountry';
                 optionElem.innerHTML = 'Select Country';
