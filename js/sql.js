@@ -1,6 +1,14 @@
 const { ipcRenderer } = require('electron');
 var mysql = require('mysql');
 
+window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
+
+$(document).ready(function () {
+    $('#homePage-btn').on('click', () => {
+        ipcRenderer.send('changeWindow', 'sqlTomain');
+    });
+});
+
 function getConnectionDB(host, user, password, database, table = null){
     var con = mysql.createConnection({
         host: host,

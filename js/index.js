@@ -1,6 +1,32 @@
 const { ipcRenderer } = require('electron');
 var mysql = require('mysql');
 
+window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
+
+$(document).ready(function () {
+    $('#showPassword-login-btn').on('click', () => {
+        showPassword('pwdLogin');
+    });
+
+    $('#signUp-btn').on('click', () => {
+        signUpButton();
+    });
+
+    $('#showPassword-signUp-btn').on('click', () => {
+        showPassword('pwdSignUp');
+    });
+
+    $('#privacyTerms-btn').on('click', () => {
+        privacyTerms();
+    });
+
+    $('#cancelSignUp').on('click', () => {
+        document.getElementById('signUpForm').hidden=true;
+        document.getElementById('loginForm').hidden=false;
+    });
+
+});
+
 const infoDB = {
     host: 'localhost',
     user: 'electronwebapp',

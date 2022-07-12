@@ -18,16 +18,28 @@ $(document).ready(function () {
         console.warn('geia');
     });
 
-    $('#disconnect').on('click', () => {
+    $('#sidebar-disconnect').on('click', () => {
         disconnect();
     });
 
-    $('#userProfile').on('click', () => {
+    $('#sidebar-userProfile-btn').on('click', () => {
         profile();
     });
-    
+
+    $('#logOut-btn').on('click', () => {
+        disconnect();
+    });
+
     $('#createMap').on('click', () => {
         createMap();
+    });
+
+    $('#intro-info').on('click', () => {
+        document.getElementById('intro-login').hidden = false;
+        document.getElementById('intro-info').disabled = true;
+
+        document.getElementById('mapContainer').hidden = true;
+        document.getElementById('createMap').disabled = false;
     });
 
     //Password functionality
@@ -42,11 +54,10 @@ $(document).ready(function () {
     $('#submitRePwd').on('click', () => {
         submitPwd();
     });
-
     //End Password functionality
 
     $('#deleteUser').on('click', () => {
-        submitPremoveUserwd();
+        deleteUser();
     });
 });
 
@@ -104,17 +115,16 @@ function GetUsername() {
 }
 
 function disconnect() {
-    document.getElementById('profile').hidden = true;
-    document.getElementById('mapContainer').hidden = false;
+    document.getElementById('intro-login').hidden = false;
+    document.getElementById('intro-info').disabled = true;
+
+    document.getElementById('mapContainer').hidden = true;
+    document.getElementById('createMap').disabled = false;
 
     ipcRenderer.send('changeWindow', 'main');
 }
 
 function profile() {
-    document.getElementById('mapContainer').hidden = true;
-
-    document.getElementById('profile').hidden = false;
-
     document.getElementById('unameProfile').value = userInfo['username'];
     document.getElementById('genderProfile').value = userInfo['gender'];
 
@@ -122,13 +132,14 @@ function profile() {
 }
 
 function createMap() {
-    document.getElementById('profile').hidden = true;
+    document.getElementById('intro-login').hidden = true;
+    document.getElementById('intro-info').disabled = false;
+
     document.getElementById('mapContainer').hidden = false;
+    document.getElementById('createMap').disabled = true;
 
     var leafletMap = document.getElementById('leafletMap');
     if (leafletMap != null) {
-        if (leafletMap.hidden == false) return;
-        leafletMap.hidden = false;
         return;
     }
 
@@ -136,9 +147,8 @@ function createMap() {
     divElem.id = 'leafletMap';
     divElem.style = 'margin: 30px';
     divElem.hidden = false;
-
+    
     document.getElementById('mapContainer').appendChild(divElem);
-
 
     var mapParameters = {
         worldCopyJump: true,
@@ -182,7 +192,7 @@ function createMap() {
     getCountries();
 }
 
-function removeUser() {
+function deleteUser() {
     var confirmDelete = window.confirm('Are you sure that you want to delete the user?');
     if (!confirmDelete) return;
 
