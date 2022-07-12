@@ -10,10 +10,8 @@ const readline = require('readline');
 const path = require('path');
 
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
-// require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.css');
 
 window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
-// require('../node_modules/jquery/dist/jquery.min.js');
 
 $(document).ready(function () {
     $('#countrySubmit').on('click', () => {
@@ -253,7 +251,6 @@ function getCountries() { //read from file and create option to selection html f
 
     if (countryForm.innerHTML == '') {
         var labelElem = document.createElement('label');
-        // labelElem.innerHTML = 'CountrySelection';
         labelElem.setAttribute('for', 'selectCountry');
         countryForm.appendChild(labelElem);
 
