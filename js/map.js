@@ -30,8 +30,8 @@ $(document).ready(function () {
         disconnect();
     });
 
-    $('#createMap').on('click', () => {
-        createMap();
+    $('#mapFunctionality-btn').on('click', () => {
+        mapFunctionality();
     });
 
     $('#intro-info').on('click', () => {
@@ -39,7 +39,7 @@ $(document).ready(function () {
         document.getElementById('intro-info').disabled = true;
 
         document.getElementById('mapContainer').hidden = true;
-        document.getElementById('createMap').disabled = false;
+        document.getElementById('mapFunctionality-btn').disabled = false;
     });
 
     //Password functionality
@@ -123,7 +123,7 @@ function disconnect() {
     document.getElementById('intro-info').disabled = true;
 
     document.getElementById('mapContainer').hidden = true;
-    document.getElementById('createMap').disabled = false;
+    document.getElementById('mapFunctionality-btn').disabled = false;
 
     ipcRenderer.send('changeWindow', 'main');
 }
@@ -135,12 +135,12 @@ function profile() {
     document.getElementById('imgProfile').src = userInfo['profileImage'];
 }
 
-function createMap() {
+function mapFunctionality() {
     document.getElementById('intro-login').hidden = true;
     document.getElementById('intro-info').disabled = false;
 
     document.getElementById('mapContainer').hidden = false;
-    document.getElementById('createMap').disabled = true;
+    document.getElementById('mapFunctionality-btn').disabled = true;
 
     var leafletMap = document.getElementById('leafletMap');
     if (leafletMap != null) {
