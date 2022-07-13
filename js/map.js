@@ -167,7 +167,7 @@ function createMap() {
     }).addTo(mymap);
     mymap.setView([37, 25], 8);
 
-    L.control.BigImage({position: 'topleft'}).addTo(mymap);
+    L.control.BigImage({ position: 'topleft' }).addTo(mymap);
 
     L.control.coordinates({
         position: 'bottomright',
@@ -219,7 +219,7 @@ function editRePassword(value) {
     document.getElementById('changePwd').disabled = value;
     document.getElementById('showRePwd').disabled = value;
     document.getElementById('changePwdRepeat').disabled = value;
-    
+
     document.getElementById('submitRePwd').disabled = value;
     document.getElementById('editRePwd').disabled = !value;
 }

@@ -59,7 +59,7 @@ function createWindow() {
     evt.preventDefault();
     sqlWindow.hide();
   });
-  
+
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 

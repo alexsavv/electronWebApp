@@ -21,8 +21,8 @@ $(document).ready(function () {
     });
 
     $('#cancelSignUp').on('click', () => {
-        document.getElementById('signUpForm').hidden=true;
-        document.getElementById('loginForm').hidden=false;
+        document.getElementById('signUpForm').hidden = true;
+        document.getElementById('loginForm').hidden = false;
     });
 
 });

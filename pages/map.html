@@ -20,7 +20,7 @@
     <script src="../js/map.js"></script>
 
     <link rel="stylesheet" href="../css/map.css">
-    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/leafletSidebar.css">
 </head>
 
 <body>
@@ -74,50 +74,53 @@
                     </h1>
 
                     <div id="sidebar-userProfile-body">
-                        <img src="../img/maleProfile.png" id="imgProfile" alt="Avatar" class="avatar center">
+                        <form>
+                            <img src="../img/maleProfile.png" id="imgProfile" alt="Avatar" class="avatar center">
 
-                        <div class="container">
-                            <label for="unameProfile"><b>Username</b></label>
-                            <input type="text" id="unameProfile" disabled></input>
+                            <div class="container">
+                                <label for="unameProfile"><b>Username</b></label>
+                                <input type="text" id="unameProfile" disabled></input>
 
-                            <label for="genderProfile"><b>Gender</b></label>
-                            <input type="text" id="genderProfile" disabled></input>
+                                <label for="genderProfile"><b>Gender</b></label>
+                                <input type="text" id="genderProfile" disabled></input>
 
-                            <br>
+                                <br><br>
 
-                            <label for="changePwd"></label><b>Password</b></label>
-                            <br>
-                            <input id='changePwd' type="password" style='margin-top: 10px; width: 90%;'
-                                placeholder="Change Password" disabled>
-                            <br>
-                            <input id='showRePwd' style='margin-top: 10px;' type="checkbox" disabled> Show Password
-
-
-                            <br><br>
-                            <label for="changePwdRepeat"><b>Repeat Password</b></label>
-                            <br>
-                            <input id="changePwdRepeat" type="password" placeholder="Repeat Password" value="" disabled>
-                            <br>
-                            <p>By creating an account you agree to our <a href="#" id='privacyTerms-btn-change'
-                                    style="color:dodgerblue">Terms & Privacy</a>.</p>
+                                <label for="changePwd"></label><b>Password</b></label>
+                                <br>
+                                <input id='changePwd' type="password" style='margin-top: 5px; width: 90%;'
+                                    placeholder="Change Password" disabled>
+                                <br>
+                                <input id='showRePwd' style='margin-top: 5px;' type="checkbox" disabled> Show Password
 
 
-                            <div style="margin-top: 10px;">
-                                <button id='editRePwd' type="button" class="btn btn-primary">Edit
-                                    <i class="fas fa-pen"></i>
+                                <br><br>
+                                <label for="changePwdRepeat"><b>Repeat Password</b></label>
+                                <br>
+                                <input id="changePwdRepeat" type="password" style='margin-top: 5px; width: 90%;'
+                                    placeholder="Repeat Password" value="" disabled>
+                                <br>
+                                <p>By creating an account you agree to our <a href="#" id='privacyTerms-btn-change'
+                                        style="color:dodgerblue;">Terms & Privacy</a>.</p>
+
+
+                                <div style="margin-top: 5px;">
+                                    <button id='editRePwd' type="button" class="btn btn-primary">Edit
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                    <button id='submitRePwd' type="button" class="btn btn-primary" disabled>Submit
+                                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+
+                                <hr>
+                                <button id="deleteUser" type="button" class='btn btn-outline-danger rounded-2'>Delete
+                                    User
+                                    <i class="fa fa-trash"></i>
                                 </button>
-                                <button id='submitRePwd' type="button" class="btn btn-primary" disabled>Submit
-                                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                                </button>
+
                             </div>
-
-                            <hr>
-                            <button id="deleteUser" type="button" class='btn btn-outline-danger rounded-2'>Delete
-                                User
-                                <i class="fa fa-trash"></i>
-                            </button>
-
-                        </div>
+                        </form>
                     </div>
                 </div>
 
