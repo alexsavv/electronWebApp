@@ -4,10 +4,15 @@ var mysql = require('mysql');
 window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
 
 $(document).ready(function () {
+    $('#login-btn').on('click', () => {
+        alert('Welcome to the Electron Web App. \n\n If you dont see the map window, please click again the Login button');
+        login();
+    });
+
     $('#showPassword-login-btn').on('click', () => {
         showPassword('pwdLogin');
     });
-
+    
     $('#signUp-btn').on('click', () => {
         signUpButton();
     });
@@ -58,24 +63,13 @@ function showPassword(pwdID) {
 }
 
 function login() {
-    if (con == null) {
-        con = mysql.createConnection({
-            host: 'localhost',
-            user: 'electronwebapp',
-            password: 'electronwebAPP13!',
-            database: 'electronwebappDB'
-        });
-
-        console.warn("connect");
-    }
-
     var usernameLogin = document.getElementById('unameLogin').value;
     var passwordLogin = document.getElementById('pwdLogin').value;
 
     con.connect(function (err) {
         if (err) throw alert(err);
         let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '" AND password="' + passwordLogin + '"';
-        var result = con.query(sqlQuery, function (err, result) {
+        var resultQuery = con.query(sqlQuery, function (err, result) {
             if (err) throw alert(err);
 
             if (result != "") {
