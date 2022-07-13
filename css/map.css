@@ -26,3 +26,23 @@ button {
     margin-top: 5px;
     margin-left: 5px;
 }
+
+.leaflet-control-zoom a:link {
+    color: rgba(4, 255, 58, 0.767);
+    background-color: rgba(22, 101, 175, 0.808);
+}
+
+.leaflet-control-zoom a:link:hover{
+    color: rgba(22, 86, 146, 0.808);
+    background-color: rgba(4, 255, 58, 0.767);
+}
+
+#print-btn{
+    color: rgba(4, 255, 58, 0.767);
+    background-color: rgba(22, 101, 175, 0.808);
+}
+
+#print-btn:hover{
+    color: rgba(22, 86, 146, 0.808);
+    background-color: rgba(4, 255, 58, 0.767);
+}

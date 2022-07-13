@@ -24,12 +24,14 @@
 </head>
 
 <body>
-    <button id='logOut-btn' class="btn btn-primary" type="button"><i class="fa fa-sign-out"
-            aria-hidden="true"></i></button>
+    <button id='logOut-btn' style="overflow:hidden" title="LogOut" class="btn btn-primary" type="button"><i
+            class="fa fa-sign-out" aria-hidden="true"></i></button>
 
-    <button id='createMap' class="btn btn-primary" type="button"><i class="fas fa-map"></i></button>
+    <button id='createMap' style="overflow:hidden" title="Map Functionality" class="btn btn-primary" type="button"><i
+            class="fas fa-map"></i></button>
 
-    <button id='intro-info' class="btn btn-primary" type="button" disabled><i class="fas fa-info-circle"></i></button>
+    <button id='intro-info' style="overflow:hidden" title="Web Application Info" class="btn btn-primary" type="button"
+        disabled><i class="fas fa-info-circle"></i></button>
 
     <div id='intro-login' class="imgcontainer">
         <img src="../img/electronWeb.png" alt="Avatar" class="avatar center"
@@ -47,16 +49,18 @@
     <div id="mapContainer" hidden>
         <div id="sidebar" class="leaflet-sidebar collapsed">
             <div class="leaflet-sidebar-tabs">
-                <ul id="sidebarsList" role="tablist">
+                <ul role="tablist">
                     <li class="border-top border-bottom">
-                        <a href="#sidebar-userProfile" id="sidebar-userProfile-btn" role="tab"><i
-                                class="far fa-user"></i></a>
+                        <a href="#sidebar-userProfile" id="sidebar-userProfile-btn" style="overflow:hidden"
+                            title="User Profile" role="tab"><i class="far fa-user"></i></a>
                     </li>
                     <li class="border-top border-bottom">
-                        <a href="#sidebar-country" role="tab"><i class="far fa-flag"></i></a>
+                        <a href="#sidebar-country" style="overflow:hidden" title="Country Information" role="tab"><i
+                                class="far fa-flag"></i></a>
                     </li>
                     <li class="border-top border-bottom">
-                        <a id="sidebar-disconnect" role="tab"><i class="fas fa-sign-out-alt"></i></a>
+                        <a id="sidebar-disconnect" style="overflow:hidden" title="LogOut" role="tab"><i
+                                class="fas fa-sign-out-alt"></i></a>
                     </li>
                 </ul>
             </div>
@@ -65,7 +69,8 @@
                 <div id="sidebar-userProfile" class="leaflet-sidebar-pane">
                     <h1 class="leaflet-sidebar-header">
                         User Profile
-                        <div class="leaflet-sidebar-close"><i class="fas fa-times"></i></div>
+                        <div class="leaflet-sidebar-close"><i style="overflow:hidden" title="Close"
+                                class="fas fa-times"></i></div>
                     </h1>
 
                     <div id="sidebar-userProfile-body">
@@ -80,12 +85,22 @@
 
                             <br>
 
-                            <label for="rePwd"></label><b>Password</b></label>
+                            <label for="changePwd"></label><b>Password</b></label>
                             <br>
-                            <input type="password" style='margin-top: 10px; width: 90%;' placeholder="Change Password"
-                                id='rePwd' disabled>
+                            <input id='changePwd' type="password" style='margin-top: 10px; width: 90%;'
+                                placeholder="Change Password" disabled>
                             <br>
                             <input id='showRePwd' style='margin-top: 10px;' type="checkbox" disabled> Show Password
+
+
+                            <br><br>
+                            <label for="changePwdRepeat"><b>Repeat Password</b></label>
+                            <br>
+                            <input id="changePwdRepeat" type="password" placeholder="Repeat Password" value="" disabled>
+                            <br>
+                            <p>By creating an account you agree to our <a href="#" id='privacyTerms-btn-change'
+                                    style="color:dodgerblue">Terms & Privacy</a>.</p>
+
 
                             <div style="margin-top: 10px;">
                                 <button id='editRePwd' type="button" class="btn btn-primary">Edit
@@ -109,7 +124,8 @@
                 <div id="sidebar-country" class="leaflet-sidebar-pane">
                     <h1 class="leaflet-sidebar-header">
                         Country
-                        <div class="leaflet-sidebar-close"><i class="fas fa-times"></i></div>
+                        <div class="leaflet-sidebar-close"><i style="overflow:hidden" title="Close"
+                                class="fas fa-times"></i></div>
                     </h1>
                     <br>
                     <div id="countryForm"></div>

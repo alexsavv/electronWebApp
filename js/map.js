@@ -44,7 +44,7 @@ $(document).ready(function () {
 
     //Password functionality
     $('#showRePwd').on('click', () => {
-        showRePassword('rePwd');
+        showRePassword('changePwd');
     });
 
     $('#editRePwd').on('click', () => {
@@ -53,6 +53,10 @@ $(document).ready(function () {
 
     $('#submitRePwd').on('click', () => {
         submitPwd();
+    });
+
+    $('#privacyTerms-changePwd-btn').on('click', () => {
+        privacyTerms();
     });
     //End Password functionality
 
@@ -147,7 +151,7 @@ function createMap() {
     divElem.id = 'leafletMap';
     divElem.style = 'margin: 30px';
     divElem.hidden = false;
-    
+
     document.getElementById('mapContainer').appendChild(divElem);
 
     var mapParameters = {
@@ -163,7 +167,7 @@ function createMap() {
     }).addTo(mymap);
     mymap.setView([37, 25], 8);
 
-    L.control.BigImage({}).addTo(mymap);
+    L.control.BigImage({position: 'topleft'}).addTo(mymap);
 
     L.control.coordinates({
         position: 'bottomright',
@@ -182,7 +186,7 @@ function createMap() {
         enableUserInput: true,
     }).addTo(mymap);
 
-    var sidebar = L.control.sidebar({
+    L.control.sidebar({
         autopan: true,       // whether to maintain the centered map point when opening the sidebar
         closeButton: true,    // whether t add a close button to the panes
         container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
@@ -212,29 +216,33 @@ function deleteUser() {
 }
 
 function editRePassword(value) {
-    document.getElementById('rePwd').disabled = value;
+    document.getElementById('changePwd').disabled = value;
     document.getElementById('showRePwd').disabled = value;
+    document.getElementById('changePwdRepeat').disabled = value;
+    
     document.getElementById('submitRePwd').disabled = value;
-
     document.getElementById('editRePwd').disabled = !value;
 }
 
 function submitPwd() {
-    var rePwdValue = document.getElementById('rePwd').value;
+    var changePwdValue = document.getElementById('changePwd').value;
+    var changePwdRepeatValue = document.getElementById('changePwdRepeat').value;
 
-    if (rePwdValue == null || rePwdValue == '') {
-        window.alert('Please give me a new password');
-        editRePassword(true);
-        return;
-    } else {
+    var validatedPassword = passwordReValidation(changePwdValue, changePwdRepeatValue);
+
+    if (validatedPassword) {
         var confirmChangePwd = window.confirm('Are you sure that you want to change the user\'s password');
         if (!confirmChangePwd) {
             editRePassword(true);
             return;
         }
+    } else {
+        privacyPwdTerms();
+        editRePassword(true);
+        return;
     }
 
-    rePwdValue = document.getElementById('rePwd').value;
+    rePwdValue = document.getElementById('changePwd').value;
 
     let sqlQuery = 'UPDATE ' + infoDB['table'] + ' SET password = "' + rePwdValue + '" WHERE username = "' + username + '";';
     con.query(sqlQuery, function (err, result) {
@@ -243,7 +251,7 @@ function submitPwd() {
         return result;
     });
 
-    document.getElementById('rePwd').value = '';
+    document.getElementById('changePwd').value = '';
     editRePassword(true);
 }
 
@@ -254,6 +262,22 @@ function showRePassword(pwdID) {
     } else {
         x.type = 'password';
     }
+}
+
+function passwordReValidation(password, repassword) {
+    var valid = true;
+    if (password == null || password == '' | password !== repassword) {
+        alert('Verified password is wrong');
+        valid = false;
+    } else {
+        valid = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,20}$/.test(password);
+    }
+
+    return valid;
+}
+
+function privacyPwdTerms() {
+    alert("The username has to contain from 7 to 20 characters/numbers/underscore, starting with character.\n\nThe password has to contain from 7 to 20 characters, containing at least a number and special character");
 }
 
 function getCountries() { //read from file and create option to selection html for each element

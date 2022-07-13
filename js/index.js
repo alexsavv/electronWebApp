@@ -17,7 +17,7 @@ $(document).ready(function () {
     });
 
     $('#privacyTerms-btn').on('click', () => {
-        privacyTerms();
+        privacyPwdTerms();
     });
 
     $('#cancelSignUp').on('click', () => {
@@ -105,7 +105,7 @@ function usernameValidation(username) {
 
 function passwordValidation(password, repassword) {
     var valid = true;
-    if (password !== repassword) {
+    if (password == null || password == '' | password !== repassword) {
         alert('Verified password is wrong');
         valid = false;
     } else {
@@ -131,7 +131,7 @@ function signUp() {
     var validatedUsername = usernameValidation(usernameSignUp);
 
     var passwordSignUp = document.getElementById('pwdSignUp').value;
-    var repassword = document.getElementById('pwdRepeat').value;
+    var repassword = document.getElementById('changePwdRepeat').value;
     var validatedPassword = passwordValidation(passwordSignUp, repassword);
 
     if (validatedUsername && validatedPassword) {
@@ -145,11 +145,11 @@ function signUp() {
             });
         });
     } else {
-        privacyTerms();
+        privacyPwdTerms();
         document.getElementById('cancelSignUp').click();
     }
 }
 
-function privacyTerms() {
-    alert("Username = between 7 to 20 characters which start with a char and followed by letters or digits or underscore, Password = between 7 to 20 characters which contain at least one numeric digit and a special character");
+function privacyPwdTerms() {
+    alert("The username has to contain from 7 to 20 characters/numbers/underscore, starting with character.\n\nThe password has to contain from 7 to 20 characters, containing at least a number and special character");
 }

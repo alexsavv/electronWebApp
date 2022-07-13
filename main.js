@@ -22,6 +22,8 @@ function createWindow() {
     mainWindow.hide();
   });
 
+  mainWindow.maximize();
+
   // Create the mapWindow.
   const mapWindow = new BrowserWindow({
     show: false,
@@ -57,7 +59,7 @@ function createWindow() {
     evt.preventDefault();
     sqlWindow.hide();
   });
-
+  
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
@@ -65,26 +67,32 @@ function createWindow() {
     switch (arg) {
       case 'map':
         mapWindow.show();
+        mapWindow.maximize();
         mainWindow.close();
         break;
       case 'sql':
         sqlWindow.show();
+        sqlWindow.maximize();
         mainWindow.close();
         break;
       case 'sqlTomain':
         mainWindow.show();
+        mainWindow.maximize();
         sqlWindow.close();
         break;
       case 'sqlTomap':
         mapWindow.show();
+        mapWindow.maximize();
         sqlWindow.close();
         break;
       case 'sqlTosql':
-        sqlWindow.close();
         sqlWindow.show();
+        sqlWindow.maximize();
+        sqlWindow.close();
         break;
       case 'main':
         mainWindow.show();
+        mainWindow.maximize();
         mapWindow.close();
         break;
     }
