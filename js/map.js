@@ -5,19 +5,17 @@ var mysql = require('mysql');
 require('leaflet.bigimage');
 require('leaflet-sidebar-v2');
 
-const fs = require('fs');
-const readline = require('readline');
-const path = require('path');
+const country = require('countries-list');
 
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
+
+const path = require('path');
+const fs = require('fs');
+const readline = require('readline');
 
 window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
 
 $(document).ready(function () {
-    $('#countrySubmit').on('click', () => {
-        console.warn('geia');
-    });
-
     $('#sidebar-disconnect').on('click', () => {
         disconnect();
     });
@@ -62,6 +60,35 @@ $(document).ready(function () {
 
     $('#deleteUser').on('click', () => {
         deleteUser();
+    });
+
+    //Country Information
+    $('#countrySubmit').on('click', () => {
+        document.getElementById('countryData').innerHTML = '';
+
+        var countryHtmlElem = document.getElementById('countrySelection').value;
+
+        var countryData = document.getElementById('countryData');
+
+        var varString = '';
+
+        var countrySelected = country['countries'][countryHtmlElem];
+
+        var preElem = document.createElement('pre');
+        preElem.innerHTML = 'Country Information:';
+        countryData.appendChild(preElem);
+
+        for (var key in countrySelected) {
+            varString = key + ' : ' + countrySelected[key];
+
+            preElem = document.createElement('pre');
+            preElem.class = 'tab2';
+            preElem.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;' + varString;
+
+            countryData.appendChild(preElem);
+        }
+
+        // getCountryInfo();
     });
 });
 
@@ -183,7 +210,7 @@ function mapFunctionality() {
         useDMS: true,
         useLatLngOrder: true,
 
-        enableUserInput: true,
+        enableUserInput: true
     }).addTo(mymap);
 
     L.control.sidebar({
@@ -281,41 +308,43 @@ function privacyPwdTerms() {
 }
 
 function getCountries() { //read from file and create option to selection html for each element
-    var countryForm = document.getElementById('countryForm');
+    var countrySelectElems = document.getElementById('countrySelection');
+    var countryElemLen = countrySelectElems.childNodes.length;
 
-    if (countryForm.innerHTML == '') {
-        var labelElem = document.createElement('label');
-        labelElem.setAttribute('for', 'selectCountry');
-        countryForm.appendChild(labelElem);
-
-        var selectElem = document.createElement('select');
-        selectElem.setAttribute('class', 'form-select form-select-sm');
-        selectElem.id = 'CountrySelection';
-
-        const relativePath = path.join(__dirname, '../countries_codes_and_coordinates.csv');
-        const streamFile = fs.createReadStream(relativePath);
-
-        var stringArray = null;
+    if (countryElemLen == 3) {
         var optionElem = null;
         var countryElem = null;
-        var reader = readline.createInterface({ input: streamFile });
-        reader.on("line", (row) => {
-            stringArray = row.split(",");
-            optionElem = null;
+        for (var key in country['countries']) {
+            countryElem = country['countries'][key]['name'];
 
-            countryElem = stringArray[0].replace(/"/g, "");
             optionElem = document.createElement('option');
-            if (countryElem.toLowerCase() != 'country') {
-                optionElem.value = countryElem;
-                optionElem.innerHTML = countryElem;
-            } else {
-                optionElem.selected = true;
-                optionElem.value = 'selectCountry';
-                optionElem.innerHTML = 'Select Country';
-            }
-            selectElem.appendChild(optionElem);
-        });
-
-        countryForm.appendChild(selectElem);
+            optionElem.value = key;
+            optionElem.innerHTML = country['countries'][key]['emoji'] + ' ' + countryElem;
+            countrySelectElems.appendChild(optionElem);
+        }
     }
 }
+
+// function getCountryInfo() { //read from file and create option to selection html for each element
+//     const relativePath = path.join(__dirname, '../countryData/worldcities.csv');
+//     const streamFile = fs.createReadStream(relativePath);
+
+//     var stringArray = null;
+//     var countriesJson = {};
+//     var countryData = null;
+//     var reader = readline.createInterface({ input: streamFile });
+//     reader.on("line", (row) => {
+//         stringArray = row.split(",");
+
+//         countryData = {};
+//         countryData['population'] = stringArray[9].replace(/"/g, "");
+//         countryData['lat'] = stringArray[2].replace(/"/g, "");
+//         countryData['lng'] = stringArray[3].replace(/"/g, "");
+
+//         countriesJson[stringArray[4].replace(/"/g, "")] = countryData;
+//         console.warn("geia : " + JSON.stringify(countriesJson));
+//     });
+
+//     // console.warn("geia : "+ JSON.stringify(countriesJson));
+//     localStorage.setItem('country', JSON.stringify(countriesJson));
+// }

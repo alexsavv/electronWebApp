@@ -27,8 +27,8 @@
     <button id='logOut-btn' style="overflow:hidden" title="LogOut" class="btn btn-primary" type="button"><i
             class="fa fa-sign-out" aria-hidden="true"></i></button>
 
-    <button id='mapFunctionality-btn' style="overflow:hidden" title="Map Functionality" class="btn btn-primary" type="button"><i
-            class="fas fa-map"></i></button>
+    <button id='mapFunctionality-btn' style="overflow:hidden" title="Map Functionality" class="btn btn-primary"
+        type="button"><i class="fas fa-map"></i></button>
 
     <button id='intro-info' style="overflow:hidden" title="Web Application Info" class="btn btn-primary" type="button"
         disabled><i class="fas fa-info-circle"></i></button>
@@ -131,8 +131,17 @@
                                 class="fas fa-times"></i></div>
                     </h1>
                     <br>
-                    <div id="countryForm"></div>
-                    <button id="countrySubmit" class="btn btn-primary">Submit</button>
+                    <div id="sidebar-country-body">
+                        <div id="countryForm">
+                            <select id="countrySelection" class="form-select form-select-sm" required>
+                                <option value="" selected disabled>Select Country</option>
+                            </select>
+                        </div>
+                        <br>
+                        <button id="countrySubmit" class="btn btn-primary">Submit</button>
+                        <hr>
+                        <div id="countryData"></div>
+                    </div>
                 </div>
             </div>
         </div>
