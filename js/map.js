@@ -10,11 +10,9 @@ const currencyCountry = require('iso-country-currency');
 const currencyList = require('currency-codes');
 
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
-
-const path = require('path');
 const fs = require('fs');
-const readline = require('readline');
-const os = require('os');
+const csv = require('csv-parser');
+const path = require('path');
 
 window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
 
@@ -69,6 +67,7 @@ $(document).ready(function () {
     $('#countrySubmit').on('click', () => {
         document.getElementById('countryData').innerHTML = '';
 
+        var countryJson = JSON.parse(localStorage.getItem('country'));
         var continentJson = JSON.parse(localStorage.getItem('continents'));
         var languagesJson = JSON.parse(localStorage.getItem('languages'));
 
@@ -85,13 +84,18 @@ $(document).ready(function () {
         countryData.appendChild(preElem);
 
         var outputValue = null;
+
         for (var key in countrySelected) {
             outputValue = null;
 
             if (key == 'emojiU' || key == 'native') {
                 continue;
             } else if (key == 'name') {
-                outputValue = '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + countrySelected[key] + ' (' + countrySelected['native'] + ')';
+                //find other way more stable from npm package for lat lng population
+                outputValue = '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + countrySelected[key] + ' (' + countrySelected['native'] + ')' +
+                                '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + ' population :' + countryJson[countrySelected[key]]['population'] ;
+                
+                
             } else if (key == 'continent') {
                 outputValue = continentJson[countrySelected[key]] + ' (' + countrySelected[key] + ')';
             } else if (key == 'languages') {
@@ -134,17 +138,17 @@ $(document).ready(function () {
             if (key == 'emoji') {
                 var divCont = document.createElement('div');
                 divCont.id = 'emojiContainer';
-                divCont.innerHTML='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                divCont.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 
                 var divElemSymbol = document.createElement('div');
                 divElemSymbol.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;' + key + ':  ';
-                divElemSymbol.id='preElem';
-                divElemSymbol.style='display: inline';
+                divElemSymbol.id = 'preElem';
+                divElemSymbol.style = 'display: inline';
 
                 var divElem = document.createElement('div');
                 divElem.innerHTML = outputValue;
-                divElem.style='zoom: 500%; display: inline';
-                divElem.id='emojiSymbol';
+                divElem.style = 'zoom: 500%; display: inline';
+                divElem.id = 'emojiSymbol';
 
                 divCont.appendChild(divElemSymbol);
                 divCont.appendChild(divElem);
@@ -159,11 +163,7 @@ $(document).ready(function () {
 
                 countryData.appendChild(preElem);
             }
-
-            
         }
-
-        getCountryInfo();
     });
 });
 
@@ -413,32 +413,28 @@ function getCountriesLanguages() { //read from file and create option to selecti
             optionElem.innerHTML = country['countries'][key]['emoji'] + ' ' + countryElem;
             countrySelectElems.appendChild(optionElem);
         }
+
+        getCountryInfo();
     }
 }
 
 function getCountryInfo() { //read from file and create option to selection html for each element
-    const relativePath = path.join(__dirname, '../countryData/worldcities.csv');
-    const streamFile = fs.createReadStream(relativePath);
-
-    var stringArray = null;
-
     var countriesJson = {};
     var countryData = null;
-    var reader = readline.createInterface({ input: streamFile });
-    reader.on("line", (row) => {
-        stringArray = row.split(",");
 
-        countryData = {};
-        countryData['population'] = stringArray[9].replace(/"/g, "");
-        countryData['lat'] = stringArray[2].replace(/"/g, "");
-        countryData['lng'] = stringArray[3].replace(/"/g, "");
+    const relativePath = path.join(__dirname, '../countryData/worldcities.csv');
 
-        countriesJson[stringArray[4].replace(/"/g, "")] = countryData;
+    fs.createReadStream(relativePath)
+        .pipe(csv())
+        .on('data', (row) => {
+            countryData = {};
+            countryData['population'] = row['population'];
+            countryData['lat'] = row['lat'];
+            countryData['lng'] = row['lng'];
 
-        // if (row == '' || row == os.EOL) {
-        //     console.warn("geia : " + JSON.stringify(countriesJson));
-        // }
-    });
-
-    localStorage.setItem('country', JSON.stringify(countriesJson));
+            countriesJson[row['country']] = countryData;
+        })
+        .on('end', () => {
+            localStorage.setItem('country', JSON.stringify(countriesJson));
+        });
 }
