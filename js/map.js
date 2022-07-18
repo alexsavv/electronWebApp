@@ -180,8 +180,7 @@ $(document).ready(function () {
                 divElem.innerHTML = outputValue;
                 divElem.style = 'zoom: 500%; display: inline';
                 divElem.id = 'emojiSymbol';
-
-                divCont.appendChild(divElemSymbol);
+                let infoDB = JSON.parse(localStorage.getItem('infoDB'));
                 divCont.appendChild(divElem);
 
                 countryData.appendChild(divCont);
@@ -198,13 +197,7 @@ $(document).ready(function () {
     });
 });
 
-const infoDB = {
-    host: 'localhost',
-    user: 'electronwebapp',
-    password: 'electronwebAPP13!',
-    database: 'electronwebappDB',
-    table: 'users'
-};
+let infoDB = JSON.parse(localStorage.getItem('infoDB'));
 
 let con = null;
 

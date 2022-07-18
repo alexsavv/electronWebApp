@@ -3,6 +3,11 @@ var mysql = require('mysql');
 
 window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
 
+if(document.getElementById('unameSql') == null){
+    ipcRenderer.send('changeWindow', 'sql');
+}
+
+
 $(document).ready(function () {
     $('#login-btn').on('click', () => {
         document.getElementById('progress').hidden = false;
@@ -102,7 +107,7 @@ function login(host, user, password, database, table = null) {
                 localStorage.setItem('userID', usernameLogin);
                 ipcRenderer.send('changeWindow', 'map');
             } else {
-                alert("There is not user with these credentials. Please check the user's credentials or create a new one.");
+                alert("There is not user with these credentials or you try to connect to wrong database. Please check the user's and database credentials or create a new user or even a new database.");
             }
         });
     });
@@ -146,7 +151,7 @@ function signUp() {
     var validatedPassword = passwordValidation(passwordSignUp, repassword);
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
-    
+
     if (validatedUsername && validatedPassword) {
         con.connect(function (err) {
             if (err) throw err;
