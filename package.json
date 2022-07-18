@@ -35,8 +35,7 @@
     "leaflet-sidebar-v2": "^3.2.3",
     "leaflet.bigimage": "^1.0.1",
     "leaflet.coordinates": "^0.1.5",
-    "mysql": "^2.18.1",
-    "os": "^0.1.2"
+    "mysql": "^2.18.1"
   },
   "bugs": {
     "url": "https://github.com/alexsavv/electronWebApp/issues"
