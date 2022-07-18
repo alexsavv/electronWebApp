@@ -3,14 +3,20 @@ var mysql = require('mysql');
 
 window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
 
+let con = null;
+
 $(document).ready(function () {
     $('#homePage-btn').on('click', () => {
         ipcRenderer.send('changeWindow', 'sqlTomain');
     });
 });
 
-function getConnectionDB(host, user, password, database, table = null){
-    var con = mysql.createConnection({
+function getConnectionDB(con, host, user, password, database, table = null){
+    if(con){
+        con.end();
+    }
+
+    con = mysql.createConnection({
         host: host,
         user: user,
         password: password,
@@ -26,7 +32,8 @@ function checkExistDB() {
     var pwd = document.getElementById('pwdSql').value;
     var database = document.getElementById('dbSql').value;
 
-    let con = getConnectionDB(host, username, pwd, database);
+    con = getConnectionDB(con, host, username, pwd, database);
+
     con.connect(function (err) {
         if (err) throw alert('There is not database with these credentials. Please check the credentials.');
         ipcRenderer.send('changeWindow', 'sqlTomain');

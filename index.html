@@ -15,7 +15,8 @@
 
 <body>
     <button class="btn btn-primary" style="overflow:hidden" title="SQL Database" type="button"
-        onclick="ipcRenderer.send('changeWindow', 'sql');" style="margin:10px;"> Connect to Database <i class="fas fa-database"></i></button>
+        onclick="ipcRenderer.send('changeWindow', 'sql');" style="margin:10px;"> Connect to Database <i
+            class="fas fa-database"></i></button>
 
     <div class="imgcontainer" style="margin:30px;">
         <img src="./img/electronWeb.png" alt="Avatar" class="avatar center">
@@ -23,7 +24,13 @@
         <h2 align="center" style="margin-top: 30px; color: rgba(22, 86, 146, 0.808);"> Electron WebApp </h2>
     </div>
 
-    <form id="loginForm">
+    <div class="progress" id="progress"hidden>
+        <div id="progressbar" class="progress-bar" role="progressbar" min=0 max=100 value=0 style="width: 100%;">
+            <div id="progressText" style="text-align: center;">0</div>
+        </div>
+    </div>
+
+    <div id="loginForm">
         <img src="./img/login.png" alt="Avatar" class="avatar center">
 
         <div class="container">
@@ -36,11 +43,11 @@
 
             <br><br>
             <div>
-                <button id="login-btn" class="btn btn-secondary" type="submit">Login</button>
+                <button id="login-btn" class="btn btn-secondary">Login</button>
                 <button id='signUp-btn' class="btn btn-secondary" type="button" style="margin:10px;">SignUp</button>
             </div>
         </div>
-    </form>
+    </div>
 
     <form id="signUpForm" style="width: 20%" onsubmit="signUp()" hidden>
         <img src="./img/signUp.png" alt="Avatar" class="avatar center">

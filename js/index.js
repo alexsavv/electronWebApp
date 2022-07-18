@@ -5,14 +5,34 @@ window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
 
 $(document).ready(function () {
     $('#login-btn').on('click', () => {
-        alert('Welcome to the Electron Web App. \n\n If you dont see the map window, please click again the Login button');
-        login();
+        document.getElementById('progress').hidden = false;
+
+        var maxTimer = document.getElementById('progressbar').getAttribute('max');
+        var minTimer = document.getElementById('progressbar').getAttribute('min');
+        var timerValue = -1;
+
+        document.getElementById('progressbar').setAttribute('value', minTimer);
+        document.getElementById('progressbar').style = 'width: ' + minTimer + ' %;';
+        var counterBack = setInterval(function () {
+            timerValue = Number(document.getElementById('progressbar').getAttribute('value'));
+
+            if (timerValue <= maxTimer) {
+                document.getElementById('progressbar').setAttribute('value', (timerValue + 1));
+                $('.progress-bar').css('width', timerValue + '%');
+                document.getElementById('progressText').innerHTML = timerValue + '%';
+            } else {
+                clearInterval(counterBack);
+                login(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+
+                document.getElementById('progress').hidden = true;
+            }
+        }, 10);
     });
 
     $('#showPassword-login-btn').on('click', () => {
         showPassword('pwdLogin');
     });
-    
+
     $('#signUp-btn').on('click', () => {
         signUpButton();
     });
@@ -40,10 +60,14 @@ const infoDB = {
     table: 'users'
 };
 
-let con = getConnectionDB(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+let con = null;
 
-function getConnectionDB(host, user, password, database, table = null) {
-    var con = mysql.createConnection({
+function getConnectionDB(con, host, user, password, database, table = null) {
+    if(con){
+        con.end();
+    }
+
+    con = mysql.createConnection({
         host: host,
         user: user,
         password: password,
@@ -62,9 +86,11 @@ function showPassword(pwdID) {
     }
 }
 
-function login() {
+function login(host, user, password, database, table = null) {
     var usernameLogin = document.getElementById('unameLogin').value;
     var passwordLogin = document.getElementById('pwdLogin').value;
+
+    con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
     con.connect(function (err) {
         if (err) throw alert(err);
@@ -110,15 +136,6 @@ function passwordValidation(password, repassword) {
 }
 
 function signUp() {
-    if (con == null) {
-        con = mysql.createConnection({
-            host: 'localhost',
-            user: 'electronwebapp',
-            password: 'electronwebAPP13!',
-            database: 'electronwebappDB'
-        });
-    }
-
     var genderSignUp = document.getElementById('genderSignUp').value;
 
     var usernameSignUp = document.getElementById('unameSignUp').value;
@@ -128,6 +145,8 @@ function signUp() {
     var repassword = document.getElementById('changePwdRepeat').value;
     var validatedPassword = passwordValidation(passwordSignUp, repassword);
 
+    con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+    
     if (validatedUsername && validatedPassword) {
         con.connect(function (err) {
             if (err) throw err;

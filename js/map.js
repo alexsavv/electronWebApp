@@ -206,7 +206,7 @@ const infoDB = {
     table: 'users'
 };
 
-let con = getConnectionDB(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+let con = null;
 
 let userInfo = {
     'username': localStorage.getItem('userID'),
@@ -216,8 +216,12 @@ let userInfo = {
 
 GetUsername();
 
-function getConnectionDB(host, user, password, database, table = null) {
-    var con = mysql.createConnection({
+function getConnectionDB(con, host, user, password, database, table = null) {
+    if(con){
+        con.end();
+    }
+
+    con = mysql.createConnection({
         host: host,
         user: user,
         password: password,
@@ -229,6 +233,8 @@ function getConnectionDB(host, user, password, database, table = null) {
 
 //get username, gender, profileImage
 function GetUsername() {
+    con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+
     con.connect(function (err) {
         if (err) throw alert(err);
 
@@ -333,6 +339,8 @@ function deleteUser() {
     var confirmDelete = window.confirm('Are you sure that you want to delete the user?');
     if (!confirmDelete) return;
 
+    con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+
     con.connect(function (err) {
         if (err) throw alert(err);
 
@@ -376,6 +384,8 @@ function submitPwd() {
     }
 
     rePwdValue = document.getElementById('changePwd').value;
+
+    con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
     let sqlQuery = 'UPDATE ' + infoDB['table'] + ' SET password = "' + rePwdValue + '" WHERE username = "' + username + '";';
     con.query(sqlQuery, function (err, result) {
