@@ -3,7 +3,7 @@ var mysql = require('mysql');
 
 window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
 
-if(document.getElementById('unameSql') == null){
+if (document.getElementById('unameSql') == null) {
     ipcRenderer.send('changeWindow', 'sql');
 }
 
@@ -39,7 +39,7 @@ $(document).ready(function () {
     });
 
     $('#signUp-btn').on('click', () => {
-        signUpButton();
+        signUpButton(true);
     });
 
     $('#showPassword-signUp-btn').on('click', () => {
@@ -51,8 +51,32 @@ $(document).ready(function () {
     });
 
     $('#cancelSignUp').on('click', () => {
-        document.getElementById('signUpForm').hidden = true;
-        document.getElementById('loginForm').hidden = false;
+        signUpButton(false);
+    });
+
+    $('#submitSignUp').on('click', () => {
+        document.getElementById('progress').hidden = false;
+
+        var maxTimer = document.getElementById('progressbar').getAttribute('max');
+        var minTimer = document.getElementById('progressbar').getAttribute('min');
+        var timerValue = -1;
+
+        document.getElementById('progressbar').setAttribute('value', minTimer);
+        document.getElementById('progressbar').style = 'width: ' + minTimer + ' %;';
+        var counterBack = setInterval(function () {
+            timerValue = Number(document.getElementById('progressbar').getAttribute('value'));
+
+            if (timerValue <= maxTimer) {
+                document.getElementById('progressbar').setAttribute('value', (timerValue + 1));
+                $('.progress-bar').css('width', timerValue + '%');
+                document.getElementById('progressText').innerHTML = timerValue + '%';
+            } else {
+                clearInterval(counterBack);
+                signUp();
+
+                document.getElementById('progress').hidden = true;
+            }
+        }, 10);
     });
 
 });
@@ -68,7 +92,7 @@ const infoDB = {
 let con = null;
 
 function getConnectionDB(con, host, user, password, database, table = null) {
-    if(con){
+    if (con) {
         con.end();
     }
 
@@ -113,12 +137,9 @@ function login(host, user, password, database, table = null) {
     });
 }
 
-function signUpButton() {
-    if (document.getElementById('loginForm').hidden == false) {
-        document.getElementById('loginForm').hidden = true;
-    }
-
-    document.getElementById('signUpForm').hidden = false;
+function signUpButton(value) {
+    document.getElementById('loginForm').hidden = value;
+    document.getElementById('signUpForm').hidden = !value;
 }
 
 function usernameValidation(username) {
@@ -157,14 +178,16 @@ function signUp() {
             if (err) throw err;
             let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';
             con.query(sqlQuery, function (err, result) {
-                if (err) throw alert("There is already user with these credentials. You can login to the user account.");
-
-                ipcRenderer.send('changeWindow', 'sqlTomain');
+                if (err)
+                    throw alert("There is already user with these credentials. You can login to the user account.");
+                
+                    document.getElementById('cancelSignUp').click();
             });
         });
     } else {
         privacyPwdTerms();
-        document.getElementById('cancelSignUp').click();
+
+        signUpButton(true);
     }
 }
 
