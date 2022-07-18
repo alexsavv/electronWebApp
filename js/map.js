@@ -7,15 +7,19 @@ require('leaflet-sidebar-v2');
 
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
 
+//npm packages for country information
 const country = require('countries-list');
+const countryjs = require('countryjs');
+
+//npm packages for currency information
 const currencyCountry = require('iso-country-currency');
 const currencyList = require('currency-codes');
 
-const countryjs = require('countryjs');
-
+//jQuery npm package
 window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
 
 let mymap = null;
+var circleMarkers = [];
 
 $(document).ready(function () {
     $('#sidebar-disconnect').on('click', () => {
@@ -64,6 +68,14 @@ $(document).ready(function () {
         deleteUser();
     });
 
+    $('#removeMarkers').on('click', () => {
+        for(var i = 0; i < circleMarkers.length; i++){
+            mymap.removeLayer(circleMarkers[i]);
+        }
+
+        circleMarkers = [];
+    });
+
     //Country Information
     $('#countrySubmit').on('click', () => {
         document.getElementById('countryData').innerHTML = '';
@@ -78,7 +90,7 @@ $(document).ready(function () {
 
         var countryInfoJson = {};
         var preElem = document.createElement('pre');
-        if (!countryjs.info(countryHtmlElem.value))  {
+        if (!countryjs.info(countryHtmlElem.value)) {
             outputValue = 'No Information for this country';
 
             varString = outputValue;
@@ -104,14 +116,20 @@ $(document).ready(function () {
         countryInfoJson['currencies'] = countryjs.info(countryHtmlElem.value)['currencies'];
         countryInfoJson['timezones'] = countryjs.info(countryHtmlElem.value)['timezones'];
 
-        countryInfoJson['latlng'] = countryjs.info(countryHtmlElem.value)['latlng']; //array two elements
+        countryInfoJson['latlng'] = countryjs.info(countryHtmlElem.value)['latlng'];
 
         var countrySelected = country['countries'][countryHtmlElem.value];
 
         countryInfoJson['emoji'] = countrySelected['emoji'];
 
         for (var key in countryInfoJson) {
-            if (key == 'latlng'){
+            if (key == 'latlng') {
+                var markerPoint = L.circleMarker(countryInfoJson['latlng']).addTo(mymap);
+                markerPoint.on('click', function (e) {
+                    mymap.removeLayer(markerPoint);
+                })
+                circleMarkers.push(markerPoint);
+
                 mymap.setView(countryInfoJson['latlng'], 5);
                 continue;
             }
@@ -119,15 +137,30 @@ $(document).ready(function () {
             outputValue = '';
 
             if (typeof (countryInfoJson[key]) == 'object') {
+                var outputJvalue = '';
                 for (var jKey in countryInfoJson[key]) {
-
+                    outputJvalue = '';
                     if (key == 'languages') {
-                        countryInfoJson[key][jKey] = languagesJson[countryInfoJson[key][jKey]]['name'] + ' (' + languagesJson[countryInfoJson[key][jKey]]['native'] + ')';
+                        var languangeName = languagesJson[countryInfoJson[key][jKey]]['name'];
+                        var languangeNative = languagesJson[countryInfoJson[key][jKey]]['native'];
+                        if (languangeName && languangeNative) {
+                            outputJvalue = languangeName + ' (' + languangeNative + ')';
+                        } else {
+                            outputJvalue = countryInfoJson[key][jKey];
+                        }
                     }
                     else if (key == 'currencies') {
-                        countryInfoJson[key][jKey] = currencyList.code(countryInfoJson[key][jKey])['currency'] + ' (' + currencyCountry.getAllInfoByISO(countryHtmlElem.value)['symbol'] + ')';
+                        var currencyName = currencyList.code(countryInfoJson[key][jKey])['currency'];
+                        var currencySymbol = currencyCountry.getAllInfoByISO(countryHtmlElem.value)['symbol'];
+                        if (currencyName && currencySymbol) {
+                            outputJvalue = currencyName + ' (' + currencySymbol + ')';
+                        }else{
+                            outputJvalue = countryInfoJson[key][jKey];
+                        }
+                    } else {
+                        outputJvalue = countryInfoJson[key][jKey];
                     }
-                    outputValue += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + countryInfoJson[key][jKey];
+                    outputValue += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + outputJvalue;
                 }
             } else {
                 outputValue = countryInfoJson[key];

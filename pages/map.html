@@ -105,10 +105,10 @@
 
 
                                 <div style="margin-top: 5px;">
-                                    <button id='editRePwd' type="button" class="btn btn-primary">Edit
+                                    <button id='editRePwd' type="button" class="btn btn-info">Edit Password
                                         <i class="fas fa-pen"></i>
                                     </button>
-                                    <button id='submitRePwd' type="button" class="btn btn-primary" disabled>Submit
+                                    <button id='submitRePwd' type="button" class="btn btn-warning" disabled>Change Password
                                         <i class="fa fa-paper-plane" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -138,7 +138,13 @@
                             </select>
                         </div>
                         <br>
-                        <button id="countrySubmit" class="btn btn-primary">Submit</button>
+                        <div id="buttonContainer" style="display: flex;">
+                            <button id="countrySubmit" class="btn btn-outline-success">Search Country <i
+                                    class="fas fa-search"></i></button>
+                            <button id="removeMarkers" class="btn btn-outline-danger">Delete Markers
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </div>
                         <hr>
                         <div id="countryData"></div>
                     </div>
