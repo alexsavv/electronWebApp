@@ -5,16 +5,17 @@ var mysql = require('mysql');
 require('leaflet.bigimage');
 require('leaflet-sidebar-v2');
 
+require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
+
 const country = require('countries-list');
 const currencyCountry = require('iso-country-currency');
 const currencyList = require('currency-codes');
 
-require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
-const fs = require('fs');
-const csv = require('csv-parser');
-const path = require('path');
+const countryjs = require('countryjs');
 
 window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
+
+let mymap = null;
 
 $(document).ready(function () {
     $('#sidebar-disconnect').on('click', () => {
@@ -67,72 +68,69 @@ $(document).ready(function () {
     $('#countrySubmit').on('click', () => {
         document.getElementById('countryData').innerHTML = '';
 
-        var countryJson = JSON.parse(localStorage.getItem('country'));
-        var continentJson = JSON.parse(localStorage.getItem('continents'));
         var languagesJson = JSON.parse(localStorage.getItem('languages'));
 
         var countryHtmlElem = document.getElementById('countrySelection');
-
         var countryData = document.getElementById('countryData');
 
         var varString = '';
+        var outputValue = '';
+
+        var countryInfoJson = {};
+        var preElem = document.createElement('pre');
+        if (!countryjs.info(countryHtmlElem.value))  {
+            outputValue = 'No Information for this country';
+
+            varString = outputValue;
+
+            preElem = document.createElement('pre');
+            preElem.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;' + varString;
+
+            countryData.appendChild(preElem);
+            return;
+        }
+
+        countryInfoJson['name'] = countryjs.info(countryHtmlElem.value)['name'];
+        countryInfoJson['nativeName'] = countryjs.info(countryHtmlElem.value)['nativeName'];
+        countryInfoJson['capital'] = countryjs.info(countryHtmlElem.value)['capital'];
+        countryInfoJson['population'] = countryjs.info(countryHtmlElem.value)['population'];
+
+        countryInfoJson['region'] = countryjs.info(countryHtmlElem.value)['region'];
+        countryInfoJson['subregion'] = countryjs.info(countryHtmlElem.value)['subregion'];
+
+        countryInfoJson['languages'] = countryjs.info(countryHtmlElem.value)['languages'];
+
+        countryInfoJson['callingCodes'] = countryjs.info(countryHtmlElem.value)['callingCodes'];
+        countryInfoJson['currencies'] = countryjs.info(countryHtmlElem.value)['currencies'];
+        countryInfoJson['timezones'] = countryjs.info(countryHtmlElem.value)['timezones'];
+
+        countryInfoJson['latlng'] = countryjs.info(countryHtmlElem.value)['latlng']; //array two elements
 
         var countrySelected = country['countries'][countryHtmlElem.value];
 
-        var preElem = document.createElement('pre');
-        preElem.innerHTML = 'Country Information:';
-        countryData.appendChild(preElem);
+        countryInfoJson['emoji'] = countrySelected['emoji'];
 
-        var outputValue = null;
-
-        for (var key in countrySelected) {
-            outputValue = null;
-
-            if (key == 'emojiU' || key == 'native') {
+        for (var key in countryInfoJson) {
+            if (key == 'latlng'){
+                mymap.setView(countryInfoJson['latlng'], 5);
                 continue;
-            } else if (key == 'name') {
-                //find other way more stable from npm package for lat lng population
-                outputValue = '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + countrySelected[key] + ' (' + countrySelected['native'] + ')' +
-                                '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + ' population :' + countryJson[countrySelected[key]]['population'] ;
-                
-                
-            } else if (key == 'continent') {
-                outputValue = continentJson[countrySelected[key]] + ' (' + countrySelected[key] + ')';
-            } else if (key == 'languages') {
-                var currentLanguageJson = {};
-                for (var languageItem in countrySelected[key]) {
-                    currentLanguageJson[languagesJson[countrySelected[key][languageItem]]['name']] =
-                        languagesJson[countrySelected[key][languageItem]]['native'];
-                }
+            }
 
-                outputValue = '';
-                for (var jKey in currentLanguageJson) {
-                    outputValue += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + jKey + ' (' + currentLanguageJson[jKey] + ')';
-                }
+            outputValue = '';
 
-            } else if (key == 'currency') {
-                var currencyItem = currencyCountry.getAllInfoByISO(countryHtmlElem.value);
+            if (typeof (countryInfoJson[key]) == 'object') {
+                for (var jKey in countryInfoJson[key]) {
 
-                if (currencyItem['currency']) {
-                    var currencyInfo = currencyList.code(currencyItem['currency'])['currency'];
-                    if (currencyInfo) {
-                        outputValue = currencyInfo + ' (' + currencyItem['symbol'] + ')'
-                    } else {
-                        outputValue = '';
+                    if (key == 'languages') {
+                        countryInfoJson[key][jKey] = languagesJson[countryInfoJson[key][jKey]]['name'] + ' (' + languagesJson[countryInfoJson[key][jKey]]['native'] + ')';
                     }
-                } else {
-                    outputValue = '';
+                    else if (key == 'currencies') {
+                        countryInfoJson[key][jKey] = currencyList.code(countryInfoJson[key][jKey])['currency'] + ' (' + currencyCountry.getAllInfoByISO(countryHtmlElem.value)['symbol'] + ')';
+                    }
+                    outputValue += '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + countryInfoJson[key][jKey];
                 }
-
-                if (currencyCountry.getAllInfoByISO(countryHtmlElem.value)['dateFormat']) {
-                    outputValue += ' <br><br> &nbsp;&nbsp; date format : ' +
-                        currencyCountry.getAllInfoByISO(countryHtmlElem.value)['dateFormat'];
-                } else {
-                    outputValue += ' ';
-                }
-
             } else {
-                outputValue = countrySelected[key];
+                outputValue = countryInfoJson[key];
             }
 
             if (key == 'emoji') {
@@ -261,7 +259,7 @@ function mapFunctionality() {
         attributionControl: false
     }
 
-    const mymap = L.map('leafletMap', mapParameters).setView([0, 0], 1);
+    mymap = L.map('leafletMap', mapParameters).setView([0, 0], 1);
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright"> \
         OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -387,14 +385,6 @@ function getCountriesLanguages() { //read from file and create option to selecti
     var countryElemLen = countrySelectElems.childNodes.length;
 
     if (countryElemLen == 3) {
-        var continentJson = {};
-        for (var key in country['continents']) {
-            continentElem = country['continents'][key];
-
-            continentJson[key] = continentElem;
-        }
-        localStorage.setItem('continents', JSON.stringify(continentJson));
-
         var languageJson = {};
         for (var key in country['languages']) {
             languageElem = country['languages'][key];
@@ -413,28 +403,5 @@ function getCountriesLanguages() { //read from file and create option to selecti
             optionElem.innerHTML = country['countries'][key]['emoji'] + ' ' + countryElem;
             countrySelectElems.appendChild(optionElem);
         }
-
-        getCountryInfo();
     }
-}
-
-function getCountryInfo() { //read from file and create option to selection html for each element
-    var countriesJson = {};
-    var countryData = null;
-
-    const relativePath = path.join(__dirname, '../countryData/worldcities.csv');
-
-    fs.createReadStream(relativePath)
-        .pipe(csv())
-        .on('data', (row) => {
-            countryData = {};
-            countryData['population'] = row['population'];
-            countryData['lat'] = row['lat'];
-            countryData['lng'] = row['lng'];
-
-            countriesJson[row['country']] = countryData;
-        })
-        .on('end', () => {
-            localStorage.setItem('country', JSON.stringify(countriesJson));
-        });
 }
