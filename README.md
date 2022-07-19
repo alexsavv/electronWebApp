@@ -55,6 +55,9 @@ usefull SQL commands
 ```bash
 ##check password policy
 SHOW VARIABLES LIKE 'validate_password%';
+
+##change validate password length
+SET GLOBAL validate_password.length = 6;
 ```
 
 ## License
