@@ -69,7 +69,7 @@ $(document).ready(function () {
     });
 
     $('#removeMarkers').on('click', () => {
-        for(var i = 0; i < circleMarkers.length; i++){
+        for (var i = 0; i < circleMarkers.length; i++) {
             mymap.removeLayer(circleMarkers[i]);
         }
 
@@ -154,7 +154,7 @@ $(document).ready(function () {
                         var currencySymbol = currencyCountry.getAllInfoByISO(countryHtmlElem.value)['symbol'];
                         if (currencyName && currencySymbol) {
                             outputJvalue = currencyName + ' (' + currencySymbol + ')';
-                        }else{
+                        } else {
                             outputJvalue = countryInfoJson[key][jKey];
                         }
                     } else {
@@ -210,7 +210,7 @@ let userInfo = {
 GetUsername();
 
 function getConnectionDB(con, host, user, password, database, table = null) {
-    if(con){
+    if (con) {
         con.end();
     }
 

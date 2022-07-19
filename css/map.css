@@ -22,3 +22,20 @@ button {
     margin-top: 5px;
     margin-left: 5px;
 }
+
+/* introduction info text */
+.column {
+    text-align: center;
+    width: 50%;
+    padding: 10px;
+    height: 300px;
+
+    background-color: rgba(169, 175, 209);
+}
+
+.row:after {
+    text-align: center;
+    content: "";
+    display: table;
+    clear: both;
+}
