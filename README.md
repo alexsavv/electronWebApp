@@ -25,7 +25,37 @@ npm install
 # Run the WebApp
 npm start
 ```
+<hr>
 
-## License
+SQL installation
+```bash
+sudo apt update
 
-[CC0 1.0 (Public Domain)](LICENSE.md)
+sudo apt install mysql-server
+sudo systemctl start mysql.service
+
+##Set mySQL secure installation. Be carefull, it will be asked to set the password policy.
+sudo mysql_secure_installation
+
+##Login as root to mysql command line
+mysql -u root -p
+```
+<hr>
+
+Create SQL user with grand permissions (The host could be localhost)
+```bash
+CREATE USER '<username>'@'<host>' IDENTIFIED WITH mysql_native_password BY '<password>';
+GRANT ALL PRIVILEGES ON *.* TO '<username>'@'<host>';
+FLUSH PRIVILEGES;
+```
+
+<hr>
+
+Usefull SQL commands
+```bash
+##check password policy
+SHOW VARIABLES LIKE 'validate_password%';
+
+##change validate password length
+SET GLOBAL validate_password.length = 6;
+```
