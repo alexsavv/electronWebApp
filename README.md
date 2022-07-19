@@ -43,7 +43,7 @@ mysql -u root -p
 <hr>
 
 Create SQL user with grand permissions (The host could be localhost)
-bash```
+```bash
 CREATE USER '<username>'@'<host>' IDENTIFIED WITH mysql_native_password BY '<password>';
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'<host>';
 FLUSH PRIVILEGES;
@@ -52,7 +52,7 @@ FLUSH PRIVILEGES;
 <hr>
 
 usefull SQL commands
-bash```
+```bash
 ##check password policy
 SHOW VARIABLES LIKE 'validate_password%';
 ```
