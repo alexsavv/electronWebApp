@@ -59,7 +59,3 @@ SHOW VARIABLES LIKE 'validate_password%';
 ##change validate password length
 SET GLOBAL validate_password.length = 6;
 ```
-
-## License
-
-[CC0 1.0 (Public Domain)](LICENSE.md)
