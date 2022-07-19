@@ -26,6 +26,17 @@ npm install
 npm start
 ```
 
+SQL installation
+```bash
+sudo apt update
+
+sudo apt install mysql-server
+sudo systemctl start mysql.service
+
+##Set mySQL secure installation. Be carefull, it will be asked to set the password strong level.
+sudo mysql_secure_installation
+```
+
 ## License
 
 [CC0 1.0 (Public Domain)](LICENSE.md)
