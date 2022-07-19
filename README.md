@@ -51,7 +51,7 @@ FLUSH PRIVILEGES;
 
 <hr>
 
-usefull SQL commands
+Usefull SQL commands
 ```bash
 ##check password policy
 SHOW VARIABLES LIKE 'validate_password%';
