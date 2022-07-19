@@ -7,9 +7,9 @@ if (document.getElementById('unameSql') == null) {
     ipcRenderer.send('changeWindow', 'sql');
 }
 
-
 $(document).ready(function () {
     $('#login-btn').on('click', () => {
+        actionTOInputsButtons(true);
         document.getElementById('progress').hidden = false;
 
         var maxTimer = document.getElementById('progressbar').getAttribute('max');
@@ -30,6 +30,7 @@ $(document).ready(function () {
                 login(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
                 document.getElementById('progress').hidden = true;
+                actionTOInputsButtons(false);
             }
         }, 10);
     });
@@ -55,6 +56,7 @@ $(document).ready(function () {
     });
 
     $('#submitSignUp').on('click', () => {
+        actionTOInputsButtons(true);
         document.getElementById('progress').hidden = false;
 
         var maxTimer = document.getElementById('progressbar').getAttribute('max');
@@ -75,6 +77,7 @@ $(document).ready(function () {
                 signUp();
 
                 document.getElementById('progress').hidden = true;
+                actionTOInputsButtons(false);
             }
         }, 10);
     });
@@ -104,6 +107,15 @@ function getConnectionDB(con, host, user, password, database, table = null) {
     });
 
     return con;
+}
+
+function actionTOInputsButtons(value){
+    for (const buttons of document.getElementsByClassName('btn')) {
+        buttons.disabled = value;
+    }
+    for (const input of document.getElementsByTagName('input')) {
+        input.disabled = value;
+    }
 }
 
 function showPassword(pwdID) {
@@ -180,13 +192,12 @@ function signUp() {
             con.query(sqlQuery, function (err, result) {
                 if (err)
                     throw alert("There is already user with these credentials. You can login to the user account.");
-                
-                    document.getElementById('cancelSignUp').click();
+
+                document.getElementById('cancelSignUp').click();
             });
         });
     } else {
         privacyPwdTerms();
-
         signUpButton(true);
     }
 }

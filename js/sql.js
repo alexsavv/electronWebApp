@@ -11,6 +11,7 @@ $(document).ready(function () {
     });
 
     $('#submitDB').on('click', () => {
+        actionTOInputsButtons(true);
         document.getElementById('progressSql').hidden = false;
 
         var maxTimer = document.getElementById('progressbarSql').getAttribute('max');
@@ -31,6 +32,7 @@ $(document).ready(function () {
                 checkExistDB();
 
                 document.getElementById('progressSql').hidden = true;
+                actionTOInputsButtons(false);
             }
         }, 10);
     });
@@ -73,6 +75,15 @@ function checkExistDB() {
         if (err) throw alert('There is not database with these credentials. Please check the credentials.');
         ipcRenderer.send('changeWindow', 'sqlTomain');
     });
+}
+
+function actionTOInputsButtons(value){
+    for (const buttons of document.getElementsByClassName('btn')) {
+        buttons.disabled = value;
+    }
+    for (const input of document.getElementsByTagName('input')) {
+        input.disabled = value;
+    }
 }
 
 function showPassword(pwdID) {
