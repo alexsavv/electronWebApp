@@ -14,12 +14,15 @@ const countryjs = require('countryjs');
 //npm packages for currency information
 const currencyCountry = require('iso-country-currency');
 const currencyList = require('currency-codes');
+require('fontawesome');
 
 //jQuery npm package
 window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
 
 let mymap = null;
 var circleMarkers = [];
+
+let questionsArray = [];
 
 $(document).ready(function () {
     $('#sidebar-disconnect').on('click', () => {
@@ -83,6 +86,10 @@ $(document).ready(function () {
         var languagesJson = JSON.parse(localStorage.getItem('languages'));
 
         var countryHtmlElem = document.getElementById('countrySelection');
+        if (countryHtmlElem.value == '') {
+            alert('Select a country');
+            return;
+        }
         var countryData = document.getElementById('countryData');
 
         var varString = '';
@@ -194,6 +201,128 @@ $(document).ready(function () {
                 countryData.appendChild(preElem);
             }
         }
+    });
+
+    //Quiz
+    $('#sidebar-quiz').on('click', () => {
+        $('#quizModal').show('modal');
+
+        $('#defaultBody').show();
+        $('#quizBody').hide();
+
+        $('#quizQuestions').html('');
+        document.getElementById('modalTitle').innerHTML = 'Quiz for Countries';
+    });
+
+    $('#closeQuizModal').on('click', () => {
+        //set all categories to false
+        var quizCategory = document.getElementsByName('quizCategory');
+        for (var i = 0, length = quizCategory.length; i < length; i++) {
+            quizCategory[i].checked = false;
+        }
+
+        $('#defaultBody').show();
+        $('#quizBody').hide();
+
+        $('#quizModal').hide('modal');
+    });
+
+    $('#startQuiz').on('click', () => {
+        questionsArray = [];
+
+        localStorage.setItem('quizGrade', JSON.stringify({ 'grade': 0, 'total': 0 }));
+
+        var quizCategory = document.getElementsByName('quizCategory');
+        var categoryKey = null;
+        for (var i = 0, length = quizCategory.length; i < length; i++) {
+            if (quizCategory[i].checked) {
+                categoryKey = quizCategory[i].value;
+                break;
+            }
+        }
+
+        var quizSize = document.getElementsByName('quizSize');
+        var quizLen = null;
+        for (var i = 0, length = quizSize.length; i < length; i++) {
+            if (quizSize[i].checked) {
+                quizLen = quizSize[i].value;
+                break;
+            }
+        }
+
+        if (!categoryKey || !quizLen) {
+            alert('Please select the quiz category and size in order to start the quiz');
+        } else {
+            $('#defaultBody').hide();
+            $('#quizBody').show();
+
+            var categoryValue = null;
+            if (categoryKey == 'capital') {
+                categoryKey = 'country';
+                categoryValue = 'capital'
+            } else {
+                categoryValue = 'country';
+            }
+
+            var categoryJson = { 'key': categoryKey, 'value': categoryValue, 'size':  quizLen}
+            localStorage.setItem('quizCategory', JSON.stringify(categoryJson));
+
+            $('#nextQuestion').click();
+        }
+    });
+
+    $('#nextQuestion').on('click', () => {
+        var categoryJSON = JSON.parse(localStorage.getItem('quizCategory'));
+
+        var gradeJSON = JSON.parse(localStorage.getItem('quizGrade'));
+
+        if (document.getElementById('quizQuestions').innerHTML) {
+            var quizCategory = document.getElementsByName('quizAnswer');
+            var checkedAnswer = null;
+            for (var i = 0, length = quizCategory.length; i < length; i++) {
+                if (quizCategory[i].checked) {
+                    checkedAnswer = quizCategory[i].value;
+                    break;
+                }
+            }
+
+            if (checkedAnswer == null) {
+                alert('Select an answer');
+                return;
+            }
+
+            var answer = JSON.parse(localStorage.getItem('correctAnswer'));
+            var validAnswer = checkAnswer(answer);
+            if (validAnswer == 1) {
+                alert('The answer is ' + toUnicodeVariant('correct', 'bold sans', 'bold'));
+            } else {
+                alert('The answer is ' + toUnicodeVariant('false', 'bold sans', 'bold') + '. The correct country is  ' + toUnicodeVariant(answer['country'], 'bold sans', 'bold'));
+            }
+
+            gradeJSON['grade'] = Number(gradeJSON['grade']) + validAnswer;
+            gradeJSON['total'] = Number(gradeJSON['total']) + 1;
+            localStorage.setItem('quizGrade', JSON.stringify(gradeJSON));
+
+        }
+
+        if (Number(gradeJSON['total']) < Number(categoryJSON['size'])) {
+            document.getElementById('modalTitle').innerHTML = 'Quiz for Countries (' + 
+            toUnicodeVariant(String( (gradeJSON['total'] + 1) ), 'bold sans', 'bold') + '/' + 
+            toUnicodeVariant(String( categoryJSON['size'] ), 'bold sans', 'bold') + ' questions)';
+
+            createQuestion(categoryJSON['key'], categoryJSON['value']);
+        } else {
+            alert('Grade: ' + toUnicodeVariant(String(gradeJSON['grade']), 'bold sans', 'bold') + '/' + 
+            toUnicodeVariant(String(gradeJSON['total']), 'bold sans', 'bold'));
+
+            if(gradeJSON['grade'] == categoryJSON['size']){
+                alert('!! WINNER !!');
+            }
+
+            $('#closeQuizModal').click();
+            return;
+        }
+
     });
 });
 
@@ -429,9 +558,25 @@ function getCountriesLanguages() { //read from file and create option to selecti
         }
         localStorage.setItem('languages', JSON.stringify(languageJson));
 
+        var countriesJson = {};
+
         var optionElem = null;
         var countryElem = null;
         for (var key in country['countries']) {
+            if (country['countries'][key]['name'] &&
+                country['countries'][key]['capital'] &&
+                country['countries'][key]['emoji'] &&
+                country['countries'][key]['continent']) {
+
+                countriesJson[country['countries'][key]['name']] = {
+                    'capital': country['countries'][key]['capital'],
+                    'flag': country['countries'][key]['emoji'],
+                    'country': country['countries'][key]['name'],
+                }
+            }else{
+                continue;
+            }
+
             countryElem = country['countries'][key]['name'];
 
             optionElem = document.createElement('option');
@@ -439,5 +584,275 @@ function getCountriesLanguages() { //read from file and create option to selecti
             optionElem.innerHTML = country['countries'][key]['emoji'] + ' ' + countryElem;
             countrySelectElems.appendChild(optionElem);
         }
+
+        localStorage.setItem('countries', JSON.stringify(countriesJson));
     }
+}
+
+
+//Quiz Functionality
+function getCountryArray(categoryKey, categoryValue) {
+    var countriesJson = JSON.parse(localStorage.getItem('countries'));
+
+    var countryInfoJson = {};
+    var categoryKeyJson = {}
+
+    var flagsArray = [];
+    for (var key in countriesJson) {
+        countryInfoJson = {};
+
+        countryInfoJson = {
+            [categoryKey]: countriesJson[key][categoryKey],
+            [categoryValue]: countriesJson[key][categoryValue]
+        }
+
+        categoryKeyJson[countriesJson[key][categoryKey]] = countriesJson[key][categoryValue];
+
+        flagsArray.push(countryInfoJson);
+    }
+
+    return [categoryKeyJson, flagsArray];
+}
+
+function getRandomCountry(countryArray) {
+    var selectedCountry = Math.floor(Math.random() * countryArray.length);
+    return selectedCountry;
+}
+
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
+function createQuestion(categoryKey, categoryValue) {
+    $('#quizQuestions').html('');
+
+    var [flagsJson, flagsArray] = getCountryArray(categoryKey, categoryValue);
+
+    var answersArray = null;
+    var selectedCountryIndex = null;
+    while (true) {
+        selectedCountryIndex = getRandomCountry(flagsArray);
+
+        if (flagsArray[selectedCountryIndex] != null) {
+            break;
+        }
+    }
+
+    if (questionsArray.length == 0) {
+        questionsArray = JSON.parse(JSON.stringify(flagsArray));
+    }
+
+    delete questionsArray[selectedCountryIndex];
+
+    answersArray = [];
+    var answerSelected = null;
+    for (var j = 0; j < 2; j++) {
+        while (true) {
+            answerSelected = getRandomCountry(questionsArray);
+
+            if (questionsArray[answerSelected] && questionsArray[answerSelected][categoryKey]) {
+                break;
+            }
+        }
+
+        answersArray.push(questionsArray[answerSelected][categoryKey]);
+    }
+
+    var divElem = document.createElement('div');
+    if (categoryKey == 'continent') {
+        divElem.innerHTML = flagsArray[selectedCountryIndex][categoryKey];
+    } else {
+        divElem.innerHTML = flagsArray[selectedCountryIndex][categoryKey];
+    }
+    if (categoryKey == 'flag') {
+        divElem.style = 'zoom: 500%; text-align: center';
+    } else {
+        divElem.style = 'font-size: 30px; color: red; text-align: center';
+    }
+    document.getElementById('quizQuestions').appendChild(divElem);
+
+    var divElemSymbol = document.createElement('div');
+    divElemSymbol.innerHTML = 'Which ' + categoryValue + ' belongs this ' + categoryKey + '?';
+    divElemSymbol.style = 'text-align: center';
+    document.getElementById('quizQuestions').appendChild(divElemSymbol);
+
+    var labelElem = null;
+    var inputElem = null;
+    var brElem = null;
+    answersArray.push(flagsArray[selectedCountryIndex][categoryKey]);
+
+    var shuffledArray = shuffle(answersArray);
+    for (var j = 0; j < shuffledArray.length; j++) {
+        inputElem = document.createElement('input');
+        inputElem.setAttribute('type', 'radio');
+        inputElem.id = 'answer' + j;
+        inputElem.name = 'quizAnswer';
+        inputElem.value = flagsJson[shuffledArray[j]];
+
+        labelElem = document.createElement('label');
+        labelElem.setAttribute('for', 'answer' + j);
+        labelElem.style = 'margin-left: 10px';
+        labelElem.innerHTML = flagsJson[shuffledArray[j]];
+
+        brElem = document.createElement('br');
+
+        document.getElementById('quizQuestions').appendChild(inputElem);
+        document.getElementById('quizQuestions').appendChild(labelElem);
+        document.getElementById('quizQuestions').appendChild(brElem);
+    }
+
+    localStorage.setItem('correctAnswer', JSON.stringify(flagsArray[selectedCountryIndex]));
+    return;
+}
+
+function checkAnswer(correctAnswer) {
+    var answer = 0;
+
+    var quizCategory = document.getElementsByName('quizAnswer');
+    var checkedAnswer = null;
+    for (var i = 0, length = quizCategory.length; i < length; i++) {
+        if (quizCategory[i].checked) {
+            checkedAnswer = quizCategory[i].value;
+            break;
+        }
+    }
+
+    if (checkedAnswer == correctAnswer['country']) {
+        answer = 1;
+    }
+
+    return answer;
+}
+
+/*
+*   Bold text in js alert by converting a string into different kind of unicode variants
+*       https://github.com/davidkonrad/toUnicodeVariant
+*/
+function toUnicodeVariant(str, variant, flags) {
+    const offsets = {
+        m: [0x1d670, 0x1d7f6],
+        b: [0x1d400, 0x1d7ce],
+        i: [0x1d434, 0x00030],
+        bi: [0x1d468, 0x00030],
+        c: [0x1d49c, 0x00030],
+        bc: [0x1d4d0, 0x00030],
+        g: [0x1d504, 0x00030],
+        d: [0x1d538, 0x1d7d8],
+        bg: [0x1d56c, 0x00030],
+        s: [0x1d5a0, 0x1d7e2],
+        bs: [0x1d5d4, 0x1d7ec],
+        is: [0x1d608, 0x00030],
+        bis: [0x1d63c, 0x00030],
+        o: [0x24B6, 0x2460],
+        p: [0x249C, 0x2474],
+        w: [0xff21, 0xff10],
+        u: [0x2090, 0xff10]
+    }
+
+    const variantOffsets = {
+        'monospace': 'm',
+        'bold': 'b',
+        'italic': 'i',
+        'bold italic': 'bi',
+        'script': 'c',
+        'bold script': 'bc',
+        'gothic': 'g',
+        'gothic bold': 'bg',
+        'doublestruck': 'd',
+        'sans': 's',
+        'bold sans': 'bs',
+        'italic sans': 'is',
+        'bold italic sans': 'bis',
+        'parenthesis': 'p',
+        'circled': 'o',
+        'fullwidth': 'w'
+    }
+
+    // special characters (absolute values)
+    var special = {
+        m: {
+            ' ': 0x2000,
+            '-': 0x2013
+        },
+        i: {
+            'h': 0x210e
+        },
+        g: {
+            'C': 0x212d,
+            'H': 0x210c,
+            'I': 0x2111,
+            'R': 0x211c,
+            'Z': 0x2128
+        },
+        o: {
+            '0': 0x24EA,
+            '1': 0x2460,
+            '2': 0x2461,
+            '3': 0x2462,
+            '4': 0x2463,
+            '5': 0x2464,
+            '6': 0x2465,
+            '7': 0x2466,
+            '8': 0x2467,
+            '9': 0x2468,
+        },
+        p: {},
+        w: {}
+    }
+    //support for parenthesized latin letters small cases 
+    for (var i = 97; i <= 122; i++) {
+        special.p[String.fromCharCode(i)] = 0x249C + (i - 97)
+    }
+    //support for full width latin letters small cases 
+    for (var i = 97; i <= 122; i++) {
+        special.w[String.fromCharCode(i)] = 0xff41 + (i - 97)
+    }
+
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+
+    var getType = function (variant) {
+        if (variantOffsets[variant]) return variantOffsets[variant]
+        if (offsets[variant]) return variant;
+        return 'm'; //monospace as default
+    }
+    var getFlag = function (flag, flags) {
+        if (!flags) return false
+        return flags.split(',').indexOf(flag) > -1
+    }
+
+    var type = getType(variant);
+    var underline = getFlag('underline', flags);
+    var strike = getFlag('strike', flags);
+    var result = '';
+
+    for (var k of str) {
+        let index
+        let c = k
+        if (special[type] && special[type][c]) c = String.fromCodePoint(special[type][c])
+        if (type && (index = chars.indexOf(c)) > -1) {
+            result += String.fromCodePoint(index + offsets[type][0])
+        } else if (type && (index = numbers.indexOf(c)) > -1) {
+            result += String.fromCodePoint(index + offsets[type][1])
+        } else {
+            result += c
+        }
+        if (underline) result += '\u0332' // add combining underline
+        if (strike) result += '\u0336' // add combining strike
+    }
+    return result
 }

@@ -74,12 +74,13 @@
                     <br>
                     &nbsp;&nbsp;Remove Background from Image (Transparent) [<a href="url">https://www.remove.bg/</a>]
                 </p>
+                <br>
+                <h2>Usefull Links</h2>
+                Bold text in js alert by converting a string into different kind of unicode variants
+                <br>
+                [<a href="url">https://github.com/davidkonrad/toUnicodeVariant</a>]
             </div>
         </div>
-
-
-
-
     </div>
 
     <div id="mapContainer" hidden>
@@ -93,6 +94,10 @@
                     <li class="border-top border-bottom">
                         <a href="#sidebar-country" style="overflow:hidden" title="Country Information" role="tab"><i
                                 class="far fa-flag"></i></a>
+                    </li>
+                    <li class="border-top border-bottom">
+                        <a id="sidebar-quiz" style="overflow:hidden" title="Quiz" role="tab"><i
+                                class="fas fa-question-circle"></i></a>
                     </li>
                     <li class="border-top border-bottom">
                         <a id="sidebar-disconnect" style="overflow:hidden" title="LogOut" role="tab"><i
@@ -170,7 +175,7 @@
                     <br>
                     <div id="sidebar-country-body">
                         <div id="countryForm">
-                            <select id="countrySelection" class="form-select form-select-sm" required>
+                            <select id="countrySelection" class="form-select form-select-sm">
                                 <option value="" selected disabled>Select Country</option>
                             </select>
                         </div>
@@ -184,6 +189,56 @@
                         </div>
                         <hr>
                         <div id="countryData"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="quizModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id='modalTitle' class="modal-title">Quiz for Countries</h5>
+                    <button id='closeQuizModal' type="button" class="btn btn-secondary" data-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id='quizModalBody' style="margin-left: 20px;" class="modal-body">
+                    <div id="defaultBody" max=5>
+                        <p>Select the Quiz category</p>
+                        <input type="radio" id="flag" name="quizCategory" value="flag">
+                        <label for="flag">Flag</label><br>
+
+                        <input type="radio" id="capital" name="quizCategory" value="capital">
+                        <label for="capital">Capital</label><br>
+
+                        <br>
+                        <br>
+                        <p>Size of Quiz</p>
+                        <input type="radio" id="small" name="quizSize" value=5 checked>
+                        <label for="small">Small (5 questions)</label><br>
+
+                        <input type="radio" id="medium" name="quizSize" value=25>
+                        <label for="medium">Medium (25 questions)</label><br>
+                        
+                        <input type="radio" id="large" name="quizSize" value=50>
+                        <label for="large">Large (50 questions)</label><br>
+
+                        <div class="modal-footer">
+                            <button id='startQuiz' type="button" class="btn btn-primary">Start Quiz</button>
+                        </div>
+
+                    </div>
+
+                    <div id="quizBody">
+                        <div id="quizQuestions"></div>
+
+                        <div class="modal-footer">
+                            <button id='nextQuestion' type="button" class="btn btn-primary">Next Question</button>
+                        </div>
                     </div>
                 </div>
             </div>
