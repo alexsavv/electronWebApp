@@ -56,6 +56,10 @@ CREATE TABLE users (
     username varchar(25),
     password varchar(25),
     gender varchar(25),
+    quizcorrectanswers int,
+    quiztotal int,
+    quizpercentage int,
+
     UNIQUE (username)
 );
 ```
