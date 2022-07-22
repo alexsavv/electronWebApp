@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, session } = require('electron');
 const L = require('leaflet');
 var mysql = require('mysql');
 
@@ -8,8 +8,8 @@ require('leaflet-sidebar-v2');
 require('../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js');
 
 //npm packages for country information
-const country = require('countries-list');
-const countryjs = require('countryjs');
+const countryListNpm = require('countries-list');
+const countryjsNpm = require('countryjs');
 
 //npm packages for currency information
 const currencyCountry = require('iso-country-currency');
@@ -62,8 +62,8 @@ $(document).ready(function () {
         submitPwd();
     });
 
-    $('#privacyTerms-changePwd-btn').on('click', () => {
-        privacyTerms();
+    $('#privacyTerms-btn-change').on('click', () => {
+        privacyPwdTerms();
     });
     //End Password functionality
 
@@ -97,7 +97,7 @@ $(document).ready(function () {
 
         var countryInfoJson = {};
         var preElem = document.createElement('pre');
-        if (!countryjs.info(countryHtmlElem.value)) {
+        if (!countryjsNpm.info(countryHtmlElem.value)) {
             outputValue = 'No Information for this country';
 
             varString = outputValue;
@@ -109,23 +109,23 @@ $(document).ready(function () {
             return;
         }
 
-        countryInfoJson['name'] = countryjs.info(countryHtmlElem.value)['name'];
-        countryInfoJson['nativeName'] = countryjs.info(countryHtmlElem.value)['nativeName'];
-        countryInfoJson['capital'] = countryjs.info(countryHtmlElem.value)['capital'];
-        countryInfoJson['population'] = countryjs.info(countryHtmlElem.value)['population'];
+        countryInfoJson['name'] = countryjsNpm.info(countryHtmlElem.value)['name'];
+        countryInfoJson['nativeName'] = countryjsNpm.info(countryHtmlElem.value)['nativeName'];
+        countryInfoJson['capital'] = countryjsNpm.info(countryHtmlElem.value)['capital'];
+        countryInfoJson['population'] = countryjsNpm.info(countryHtmlElem.value)['population'];
 
-        countryInfoJson['region'] = countryjs.info(countryHtmlElem.value)['region'];
-        countryInfoJson['subregion'] = countryjs.info(countryHtmlElem.value)['subregion'];
+        countryInfoJson['region'] = countryjsNpm.info(countryHtmlElem.value)['region'];
+        countryInfoJson['subregion'] = countryjsNpm.info(countryHtmlElem.value)['subregion'];
 
-        countryInfoJson['languages'] = countryjs.info(countryHtmlElem.value)['languages'];
+        countryInfoJson['languages'] = countryjsNpm.info(countryHtmlElem.value)['languages'];
 
-        countryInfoJson['callingCodes'] = countryjs.info(countryHtmlElem.value)['callingCodes'];
-        countryInfoJson['currencies'] = countryjs.info(countryHtmlElem.value)['currencies'];
-        countryInfoJson['timezones'] = countryjs.info(countryHtmlElem.value)['timezones'];
+        countryInfoJson['callingCodes'] = countryjsNpm.info(countryHtmlElem.value)['callingCodes'];
+        countryInfoJson['currencies'] = countryjsNpm.info(countryHtmlElem.value)['currencies'];
+        countryInfoJson['timezones'] = countryjsNpm.info(countryHtmlElem.value)['timezones'];
 
-        countryInfoJson['latlng'] = countryjs.info(countryHtmlElem.value)['latlng'];
+        countryInfoJson['latlng'] = countryjsNpm.info(countryHtmlElem.value)['latlng'];
 
-        var countrySelected = country['countries'][countryHtmlElem.value];
+        var countrySelected = countryListNpm['countries'][countryHtmlElem.value];
 
         countryInfoJson['emoji'] = countrySelected['emoji'];
 
@@ -207,6 +207,9 @@ $(document).ready(function () {
     $('#sidebar-quiz').on('click', () => {
         $('#quizModal').show('modal');
 
+        // console.warn("geia");
+        // $( "sidebar-disconnect" ).removeAttr('href');
+
         $('#defaultBody').show();
         $('#quizBody').hide();
 
@@ -225,12 +228,24 @@ $(document).ready(function () {
         $('#quizBody').hide();
 
         $('#quizModal').hide('modal');
+
+        // document.getElementById('sidebar-userProfile-btn').disabled = false;
+        // document.getElementById('sidebar-country-btn').disabled = false;
+        // document.getElementById('sidebar-disconnect').disabled = false;
+    });
+
+    $("#disablePanel").on("click", function () {
+        $(".accordion-toggle").attr("data-toggle", "");
+    });
+
+    $("#enablePanel").on("click", function () {
+        $(".accordion-toggle").attr("data-toggle", "collapse");
     });
 
     $('#startQuiz').on('click', () => {
         questionsArray = [];
 
-        localStorage.setItem('quizGrade', JSON.stringify({ 'grade': 0, 'total': 0 }));
+        localStorage.setItem('quizGrade', JSON.stringify({ 'grade': 0, 'total': 0, 'percentage': 0 }));
 
         var quizCategory = document.getElementsByName('quizCategory');
         var categoryKey = null;
@@ -257,14 +272,9 @@ $(document).ready(function () {
             $('#quizBody').show();
 
             var categoryValue = null;
-            if (categoryKey == 'capital') {
-                categoryKey = 'country';
-                categoryValue = 'capital'
-            } else {
-                categoryValue = 'country';
-            }
+            categoryValue = 'country';
 
-            var categoryJson = { 'key': categoryKey, 'value': categoryValue, 'size':  quizLen}
+            var categoryJson = { 'key': categoryKey, 'value': categoryValue, 'size': quizLen }
             localStorage.setItem('quizCategory', JSON.stringify(categoryJson));
 
             $('#nextQuestion').click();
@@ -301,22 +311,42 @@ $(document).ready(function () {
 
             gradeJSON['grade'] = Number(gradeJSON['grade']) + validAnswer;
             gradeJSON['total'] = Number(gradeJSON['total']) + 1;
+            gradeJSON['percentage'] = (parseFloat(Number(gradeJSON['grade']) / Number(gradeJSON['total'])).toFixed(2)) * 100;
             localStorage.setItem('quizGrade', JSON.stringify(gradeJSON));
 
         }
 
         if (Number(gradeJSON['total']) < Number(categoryJSON['size'])) {
-            document.getElementById('modalTitle').innerHTML = 'Quiz for Countries (' + 
-            toUnicodeVariant(String( (gradeJSON['total'] + 1) ), 'bold sans', 'bold') + '/' + 
-            toUnicodeVariant(String( categoryJSON['size'] ), 'bold sans', 'bold') + ' questions)';
+            document.getElementById('modalTitle').innerHTML = 'Quiz for Countries (' +
+                toUnicodeVariant(String((gradeJSON['total'] + 1)), 'bold sans', 'bold') + '/' +
+                toUnicodeVariant(String(categoryJSON['size']), 'bold sans', 'bold') + ' questions)';
 
             createQuestion(categoryJSON['key'], categoryJSON['value']);
         } else {
-            alert('Grade: ' + toUnicodeVariant(String(gradeJSON['grade']), 'bold sans', 'bold') + '/' + 
-            toUnicodeVariant(String(gradeJSON['total']), 'bold sans', 'bold'));
+            var emojiGrade = '';
 
-            if(gradeJSON['grade'] == categoryJSON['size']){
-                alert('!! WINNER !!');
+            if (gradeJSON['percentage'] == 0) {
+                emojiGrade = '🤫';
+            } else if (gradeJSON['percentage'] <= 25) {
+                emojiGrade = '😡';
+            } else if (gradeJSON['percentage'] <= 50) {
+                emojiGrade = '🤔';
+            } else if (gradeJSON['percentage'] <= 75) {
+                emojiGrade = '🤗';
+            } else if (gradeJSON['percentage'] >= 95 && gradeJSON['percentage'] <= 99) {
+                emojiGrade = '🤬';
+            } else if (gradeJSON['percentage'] <= 100) {
+                emojiGrade = '😱';
+            }
+
+            alert('Grade: ' + 
+                toUnicodeVariant(String(gradeJSON['percentage']), 'bold sans', 'bold') + '% (' +
+                toUnicodeVariant(String(gradeJSON['grade']), 'bold sans', 'bold') + '/' +
+                toUnicodeVariant(String(gradeJSON['total']), 'bold sans', 'bold') + ') ' + 
+                emojiGrade);
+
+            if (gradeJSON['grade'] == categoryJSON['size']) {
+                alert(' 📢 📢 🥳🥳 WINNER 🥳🥳');
             }
 
             $('#closeQuizModal').click();
@@ -551,44 +581,49 @@ function getCountriesLanguages() { //read from file and create option to selecti
 
     if (countryElemLen == 3) {
         var languageJson = {};
-        for (var key in country['languages']) {
-            languageElem = country['languages'][key];
+        for (var key in countryListNpm['languages']) {
+            languageElem = countryListNpm['languages'][key];
 
             languageJson[key] = languageElem;
         }
         localStorage.setItem('languages', JSON.stringify(languageJson));
 
         var countriesJson = {};
-
-        var optionElem = null;
         var countryElem = null;
-        for (var key in country['countries']) {
-            if (country['countries'][key]['name'] &&
-                country['countries'][key]['capital'] &&
-                country['countries'][key]['emoji'] &&
-                country['countries'][key]['continent']) {
+        for (var key in countryListNpm['countries']) {
+            if (countryListNpm['countries'][key]['name'] &&
+                countryListNpm['countries'][key]['capital'] &&
+                countryListNpm['countries'][key]['emoji'] &&
+                countryListNpm['countries'][key]['continent']) {
 
-                countriesJson[country['countries'][key]['name']] = {
-                    'capital': country['countries'][key]['capital'],
-                    'flag': country['countries'][key]['emoji'],
-                    'country': country['countries'][key]['name'],
+                countriesJson[countryListNpm['countries'][key]['name']] = {
+                    'capital': countryListNpm['countries'][key]['capital'],
+                    'flag': countryListNpm['countries'][key]['emoji'],
+                    'country': countryListNpm['countries'][key]['name'],
                 }
-            }else{
+            } else {
                 continue;
             }
 
-            countryElem = country['countries'][key]['name'];
+            countryElem = countryListNpm['countries'][key]['name'];
+        }
+
+        var optionElem = null;
+        countryElem = null;
+        var sortedCountries = sortByKey(countriesJson);
+        for (var key in sortedCountries) {
+            countryElem = sortedCountries[key]['country'];
 
             optionElem = document.createElement('option');
             optionElem.value = key;
-            optionElem.innerHTML = country['countries'][key]['emoji'] + ' ' + countryElem;
+            optionElem.innerHTML = sortedCountries[key]['flag'] + ' ' + countryElem;
             countrySelectElems.appendChild(optionElem);
         }
+
 
         localStorage.setItem('countries', JSON.stringify(countriesJson));
     }
 }
-
 
 //Quiz Functionality
 function getCountryArray(categoryKey, categoryValue) {
@@ -736,6 +771,28 @@ function checkAnswer(correctAnswer) {
     }
 
     return answer;
+}
+
+/*
+* Sort JSON by key
+*   https://smoothprogramming.com/javascript/sort-json-key-value-javascript/
+*/
+function sortByKey(jsObj) {
+    var sortedArray = [];
+
+    // Push each JSON Object entry in array by [key, value]
+    for (var i in jsObj) {
+        sortedArray.push([i, jsObj[i]]);
+    }
+
+    // Run native sort function and returns sorted array.
+    var tmpArray = sortedArray.sort();
+    var sortedJson = {};
+    for (var i = 0; i < tmpArray.length; i++) {
+        sortedJson[tmpArray[i][0]] = tmpArray[i][1];
+    }
+
+    return sortedJson;
 }
 
 /*
