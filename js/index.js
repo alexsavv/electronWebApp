@@ -109,7 +109,7 @@ function getConnectionDB(con, host, user, password, database, table = null) {
     return con;
 }
 
-function actionTOInputsButtons(value){
+function actionTOInputsButtons(value) {
     for (const buttons of document.getElementsByClassName('btn')) {
         buttons.disabled = value;
     }
@@ -188,7 +188,13 @@ function signUp() {
     if (validatedUsername && validatedPassword) {
         con.connect(function (err) {
             if (err) throw err;
-            let sqlQuery = 'INSERT INTO users(username,gender,password) VALUES ( "' + usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '" )';
+            let sqlQuery = 'INSERT INTO users(username,gender,password,correctanswersquiz,totalquiz,percentagequiz) VALUES ( "' + 
+            usernameSignUp + '","' + 
+            genderSignUp + '","' + 
+            passwordSignUp + '","' +
+            0 + '","' +
+            0 + '","' +
+            0 + '" )';
             con.query(sqlQuery, function (err, result) {
                 if (err)
                     throw alert("There is already user with these credentials. You can login to the user account.");
