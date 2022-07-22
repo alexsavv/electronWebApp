@@ -404,6 +404,10 @@ function GetUsername() {
                 userInfo['profileImage'] = "../img/otherProfile.png";
             }
 
+            userInfo['correctanswersquiz'] = result[0]['correctanswersquiz'];
+            userInfo['totalquiz'] = result[0]['totalquiz'];
+            userInfo['percentagequiz'] = result[0]['percentagequiz'];
+
             return result;
         });
     });
@@ -422,6 +426,9 @@ function disconnect() {
 function profile() {
     document.getElementById('unameProfile').value = userInfo['username'];
     document.getElementById('genderProfile').value = userInfo['gender'];
+
+    document.getElementById('gradeQuiz').style="font-size: 13px; font-weight: bold; color: red;";
+    document.getElementById('gradeQuiz').value = '' + userInfo['percentagequiz'] + '% ' + ' ' + userInfo['correctanswersquiz'] + '/' + userInfo['totalquiz'];
 
     document.getElementById('imgProfile').src = userInfo['profileImage'];
 }
