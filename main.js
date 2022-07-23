@@ -2,9 +2,32 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
+function createSpecificWindow(htmlFile) {
+  // Create the window.
+  const specificWindow = new BrowserWindow({
+    show: false,
+    width: 1000,
+    height: 850,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      // preload: path.join(__dirname, 'preload.js')
+    }
+  })
+
+  //load map html page to specificWindow
+  specificWindow.loadFile('./pages/' + htmlFile);
+  specificWindow.on('close', function (evt) {
+    evt.preventDefault();
+    specificWindow.hide();
+  });
+
+  return specificWindow;
+}
+
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  let mainWindow = new BrowserWindow({
     width: 1000,
     height: 850,
     webPreferences: {
@@ -24,41 +47,8 @@ function createWindow() {
 
   mainWindow.maximize();
 
-  // Create the mapWindow.
-  const mapWindow = new BrowserWindow({
-    show: false,
-    width: 1000,
-    height: 850,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    }
-  })
-
-  //load map html page to mapWindow
-  mapWindow.loadFile('./pages/map.html');
-  mapWindow.on('close', function (evt) {
-    evt.preventDefault();
-    mapWindow.hide();
-  });
-
-  // Create the sqlWindow.
-  const sqlWindow = new BrowserWindow({
-    show: false,
-    width: 1000,
-    height: 850,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    }
-  })
-
-  //load map html page to mapWindow
-  sqlWindow.loadFile('./pages/sql.html');
-  sqlWindow.on('close', function (evt) {
-    evt.preventDefault();
-    sqlWindow.hide();
-  });
+  let mapWindow = null;
+  let sqlWindow = createSpecificWindow('sql.html');
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -66,6 +56,8 @@ function createWindow() {
   ipcMain.on('changeWindow', function (event, arg) {
     switch (arg) {
       case 'map':
+        mapWindow = createSpecificWindow('map.html');
+
         mapWindow.show();
         mapWindow.maximize();
         mainWindow.close();
@@ -81,6 +73,8 @@ function createWindow() {
         sqlWindow.close();
         break;
       case 'sqlTomap':
+        mapWindow = createSpecificWindow('map.html');
+
         mapWindow.show();
         mapWindow.maximize();
         sqlWindow.close();
@@ -93,7 +87,7 @@ function createWindow() {
       case 'main':
         mainWindow.show();
         mainWindow.maximize();
-        mapWindow.close();
+        mapWindow.destroy();
         break;
     }
   });

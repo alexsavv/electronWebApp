@@ -323,22 +323,8 @@ $(document).ready(function () {
 
             createQuestion(categoryJSON['key'], categoryJSON['value']);
         } else {
-            var emojiGrade = '';
-
-            if (gradeJSON['percentage'] == 0) {
-                emojiGrade = '🤫';
-            } else if (gradeJSON['percentage'] <= 25) {
-                emojiGrade = '😡';
-            } else if (gradeJSON['percentage'] <= 50) {
-                emojiGrade = '🤔';
-            } else if (gradeJSON['percentage'] <= 75) {
-                emojiGrade = '🤗';
-            } else if (gradeJSON['percentage'] >= 95 && gradeJSON['percentage'] <= 99) {
-                emojiGrade = '🤬';
-            } else if (gradeJSON['percentage'] <= 100) {
-                emojiGrade = '😱';
-            }
-
+            var emojiGrade = getGradeEmoji(gradeJSON['percentage']);
+            
             alert('Grade: ' + 
                 toUnicodeVariant(String(gradeJSON['percentage']), 'bold sans', 'bold') + '% (' +
                 toUnicodeVariant(String(gradeJSON['grade']), 'bold sans', 'bold') + '/' +
@@ -348,6 +334,13 @@ $(document).ready(function () {
             if (gradeJSON['grade'] == categoryJSON['size']) {
                 alert(' 📢 📢 🥳🥳 WINNER 🥳🥳');
             }
+
+            userInfo['quiz']['correctAnswersQuiz'] = Number(userInfo['quiz']['correctAnswersQuiz']) + Number(gradeJSON['grade']);
+            userInfo['quiz']['totalAnswersQuiz'] = Number(userInfo['quiz']['totalAnswersQuiz']) + Number(gradeJSON['total']);
+            userInfo['quiz']['percentageAnswersQuiz'] = (parseFloat(Number(userInfo['quiz']['correctAnswersQuiz']) / Number(userInfo['quiz']['totalAnswersQuiz'])).toFixed(2)) * 100;
+            userInfo['quiz']['totalQuiz'] = Number(userInfo['quiz']['totalQuiz']) + 1;
+
+            localStorage.setItem('quiz', JSON.stringify(userInfo['quiz']));
 
             $('#closeQuizModal').click();
             return;
@@ -363,7 +356,13 @@ let con = null;
 let userInfo = {
     'username': localStorage.getItem('userID'),
     'gender': '',
-    'profileImage': ''
+    'profileImage': '',
+    'quiz':{
+        'correctAnswersQuiz' : 0,
+        'totalAnswersQuiz' : 0,
+        'percentageAnswersQuiz' : 0,
+        'totalQuiz' : 0
+    }
 }
 
 GetUsername();
@@ -404,10 +403,12 @@ function GetUsername() {
                 userInfo['profileImage'] = "../img/otherProfile.png";
             }
 
-            userInfo['correctanswersquiz'] = result[0]['correctanswersquiz'];
-            userInfo['totalquiz'] = result[0]['totalquiz'];
-            userInfo['percentagequiz'] = result[0]['percentagequiz'];
-
+            userInfo['quiz']['correctAnswersQuiz'] = result[0]['correctAnswersQuiz'];
+            userInfo['quiz']['totalAnswersQuiz'] = result[0]['totalAnswersQuiz'];
+            userInfo['quiz']['percentageAnswersQuiz'] = result[0]['percentageAnswersQuiz'];
+            userInfo['quiz']['totalQuiz'] = result[0]['totalQuiz'];
+            
+            localStorage.setItem('quiz', JSON.stringify(userInfo['quiz']));
             return result;
         });
     });
@@ -420,15 +421,40 @@ function disconnect() {
     document.getElementById('mapContainer').hidden = true;
     document.getElementById('mapFunctionality-btn').disabled = false;
 
-    ipcRenderer.send('changeWindow', 'main');
+    con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+
+    con.connect(function (err) {
+        if (err) throw err;
+        let sqlQuery = 'UPDATE users SET ' +
+        'correctAnswersquiz = "' + userInfo['quiz']['correctAnswersQuiz'] + 
+        '", totalAnswersQuiz = "' + userInfo['quiz']['totalAnswersQuiz'] + 
+        '", percentageAnswersQuiz = "' + userInfo['quiz']['percentageAnswersQuiz'] +
+        '", totalQuiz = "' + userInfo['quiz']['totalQuiz'] + 
+        '" WHERE username = "' + userInfo['username'] + '"';
+
+        con.query(sqlQuery, function (err, result) {
+            if (err)
+                throw alert("Error in Table Update for userProfile");
+
+            ipcRenderer.send('changeWindow', 'main');
+        });
+    });
+
+    // ipcRenderer.send('changeWindow', 'main');
 }
 
 function profile() {
     document.getElementById('unameProfile').value = userInfo['username'];
     document.getElementById('genderProfile').value = userInfo['gender'];
 
+    userInfo['quiz'] = JSON.parse(localStorage.getItem('quiz'));
+    
+    var emojiGrade = getGradeEmoji(userInfo['quiz']['percentageAnswersQuiz']);
+
     document.getElementById('gradeQuiz').style="font-size: 13px; font-weight: bold; color: red;";
-    document.getElementById('gradeQuiz').value = '' + userInfo['percentagequiz'] + '% ' + ' ' + userInfo['correctanswersquiz'] + '/' + userInfo['totalquiz'];
+    document.getElementById('gradeQuiz').value = '' + userInfo['quiz']['percentageAnswersQuiz'] + '% ' +
+     ' ' + userInfo['quiz']['correctAnswersQuiz'] + '/' + userInfo['quiz']['totalAnswersQuiz'] +
+     ' Total quizs: ' + userInfo['quiz']['totalQuiz'] + ' ' + emojiGrade;
 
     document.getElementById('imgProfile').src = userInfo['profileImage'];
 }
@@ -513,6 +539,24 @@ function deleteUser() {
             return result;
         });
     });
+}function getGradeEmoji(gradePercentageQuiz){
+    var emojiGrade = '';
+
+    if (gradePercentageQuiz == 0) {
+        emojiGrade = '🤫';
+    } else if (gradePercentageQuiz <= 25) {
+        emojiGrade = '😡';
+    } else if (gradePercentageQuiz <= 50) {
+        emojiGrade = '🤔';
+    } else if (gradePercentageQuiz <= 75) {
+        emojiGrade = '🤗';
+    } else if (gradePercentageQuiz >= 95 && gradePercentageQuiz <= 99) {
+        emojiGrade = '🤬';
+    } else if (gradePercentageQuiz <= 100) {
+        emojiGrade = '😱';
+    }
+
+    return emojiGrade
 }
 
 function editRePassword(value) {
@@ -633,6 +677,26 @@ function getCountriesLanguages() { //read from file and create option to selecti
 }
 
 //Quiz Functionality
+function getGradeEmoji(gradePercentageQuiz){
+    var emojiGrade = '';
+
+    if (gradePercentageQuiz == 0) {
+        emojiGrade = '🤫';
+    } else if (gradePercentageQuiz <= 25) {
+        emojiGrade = '😡';
+    } else if (gradePercentageQuiz <= 50) {
+        emojiGrade = '🤔';
+    } else if (gradePercentageQuiz <= 75) {
+        emojiGrade = '🤗';
+    } else if (gradePercentageQuiz >= 95 && gradePercentageQuiz <= 99) {
+        emojiGrade = '🤬';
+    } else if (gradePercentageQuiz <= 100) {
+        emojiGrade = '😱';
+    }
+
+    return emojiGrade
+}
+
 function getCountryArray(categoryKey, categoryValue) {
     var countriesJson = JSON.parse(localStorage.getItem('countries'));
 

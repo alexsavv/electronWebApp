@@ -185,13 +185,14 @@ function signUp() {
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    if (validatedUsername && validatedPassword) {
+    if (validatedUsername && validatedPassword && gender != '') {
         con.connect(function (err) {
             if (err) throw err;
-            let sqlQuery = 'INSERT INTO users(username,gender,password,correctanswersquiz,totalquiz,percentagequiz) VALUES ( "' + 
+            let sqlQuery = 'INSERT INTO users(username,gender,password,correctAnswersQuiz,totalAnswersQuiz,percentageAnswersQuiz,totalQuiz) VALUES ( "' + 
             usernameSignUp + '","' + 
             genderSignUp + '","' + 
             passwordSignUp + '","' +
+            0 + '","' +
             0 + '","' +
             0 + '","' +
             0 + '" )';
@@ -209,5 +210,5 @@ function signUp() {
 }
 
 function privacyPwdTerms() {
-    alert("The username has to contain from 7 to 20 characters/numbers/underscore, starting with character.\n\nThe password has to contain from 7 to 20 characters, containing at least a number and special character");
+    alert("The username has to contain from 7 to 20 characters/numbers/underscore, starting with character.\n\nThe password has to contain from 7 to 20 characters, containing at least a number and special character \n\n The gender has to be one of the selections");
 }
