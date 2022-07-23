@@ -57,8 +57,9 @@ CREATE TABLE users (
     password varchar(25),
     gender varchar(25),
     correctanswersquiz int,
+    totalanswersquiz int,
+    percentageanswersquiz int,
     totalquiz int,
-    percentagequiz int,
 
     UNIQUE (username)
 );
