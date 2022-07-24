@@ -187,7 +187,6 @@ $(document).ready(function () {
                 divElem.innerHTML = outputValue;
                 divElem.style = 'zoom: 500%; display: inline';
                 divElem.id = 'emojiSymbol';
-                let infoDB = JSON.parse(localStorage.getItem('infoDB'));
                 divCont.appendChild(divElem);
 
                 countryData.appendChild(divCont);
@@ -603,7 +602,7 @@ function deleteUser() {
             document.getElementById('mapFunctionality-btn').disabled = false;
 
             ipcRenderer.send('changeWindow', 'main');
-            
+
             return result;
         });
     });

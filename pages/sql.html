@@ -18,7 +18,8 @@
 </div>
 
 <body onload="checkExistDB()">
-    <button id='homePage-btn' style="overflow:hidden" title="Home Page" class="btn btn-primary" type="button" style="margin:10px;">HomePage <i class="fas fa-home"></i></button>
+    <button id='homePage-btn' style="overflow:hidden" title="Home Page" class="btn btn-primary" type="button"
+        style="margin:10px;">HomePage <i class="fas fa-home"></i></button>
 
     <div id="connectDatabase">
         <img src="../img/sql.png" alt="Avatar" class="avatar center">
@@ -33,16 +34,23 @@
             <label for="pwdSql"></label><b>Password</b></label>
             <input type="password" placeholder="Enter Password" id="pwdSql" value="electronwebAPP13!">
             <input type="checkbox" onclick="showPassword('pwdSql')"> Show Password
-            
+
             <br><br>
             <label for="tableSql"><b>Table</b></label>
             <input type="text" placeholder="Enter Table" id="tableSql" value="users">
             <br>
             <label for="dbSql"><b>Database</b></label>
             <input type="text" placeholder="Enter Database" id="dbSql" value="electronwebappDB">
-            <br><br>
+            <br>
             <div>
-                <button class="btn btn-secondary" type="submit" id="submitDB">Connect to Database <i class="fas fa-database"></i></button>
+                <div style="display: inline">
+                    <button class="btn btn-secondary" type="button" id="createTableDB">Create Table <i
+                            class="fas fa-table"></i></button>
+                </div>
+                <div style="display: inline">
+                    <button class="btn btn-secondary" type="submit" id="submitDB">Connect <i
+                            class="fas fa-database"></i></button>
+                </div>
             </div>
         </div>
     </div>

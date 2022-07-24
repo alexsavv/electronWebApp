@@ -1,8 +1,10 @@
 const { ipcRenderer } = require('electron');
+const { tablet } = require('fontawesome');
 var mysql = require('mysql');
 
 window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.js');
 
+let infoDB = {};
 let con = null;
 
 $(document).ready(function () {
@@ -36,6 +38,65 @@ $(document).ready(function () {
             }
         }, 10);
     });
+
+    $('#createTableDB').on('click', () => {
+        con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+
+        let sqlQuery = 'CREATE TABLE users (' +
+            'username varchar(25),' +
+            'password varchar(25),' +
+            'gender varchar(25),' +
+            'correctAnswersQuiz int,' +
+            'totalAnswersQuiz int,' +
+            'percentageAnswersQuiz int,' +
+            'totalQuiz int,' +
+            'correctSmallAnswersQuiz int,' +
+            'totalSmallAnswersQuiz int,' +
+            'percentageSmallAnswersQuiz int,' +
+            'totalSmallQuiz int,' +
+            'correctMediumAnswersQuiz int,' +
+            'totalMediumAnswersQuiz int,' +
+            'percentageMediumAnswersQuiz int,' +
+            'totalMediumQuiz int,' +
+            'correctLargeAnswersQuiz int,' +
+            'totalLargeAnswersQuiz int,' +
+            'percentageLargeAnswersQuiz int,' +
+            'totalLargeQuiz int,' +
+            'UNIQUE (username)' +
+            ')';
+
+        actionTOInputsButtons(true);
+        document.getElementById('progressSql').hidden = false;
+
+        var maxTimer = document.getElementById('progressbarSql').getAttribute('max');
+        var minTimer = document.getElementById('progressbarSql').getAttribute('min');
+        var timerValue = -1;
+
+        document.getElementById('progressbarSql').setAttribute('value', minTimer);
+        document.getElementById('progressbarSql').style = 'width: ' + minTimer + ' %;';
+        var counterBack = setInterval(function () {
+            timerValue = Number(document.getElementById('progressbarSql').getAttribute('value'));
+
+            if (timerValue <= maxTimer) {
+                document.getElementById('progressbarSql').setAttribute('value', (timerValue + 1));
+                $('.progress-bar').css('width', timerValue + '%');
+                document.getElementById('progressTextSql').innerHTML = timerValue + '%';
+            } else {
+                clearInterval(counterBack);
+
+                con.query(sqlQuery, function (err, result) {
+                    if (err) throw alert(err);
+
+                    alert('Table was created successfully');
+                    return result;
+                });
+
+                document.getElementById('progressSql').hidden = true;
+                actionTOInputsButtons(false);
+            }
+        }, 10);
+    });
+
 });
 
 function getConnectionDB(con, host, user, password, database, table = null) {
@@ -60,7 +121,6 @@ function checkExistDB() {
     var database = document.getElementById('dbSql').value;
     var table = document.getElementById('tableSql').value;
 
-    var infoDB = {};
     infoDB['host'] = host;
     infoDB['user'] = username;
     infoDB['password'] = pwd;
@@ -71,13 +131,17 @@ function checkExistDB() {
 
     con = getConnectionDB(con, host, username, pwd, database);
 
-    con.connect(function (err) {
-        if (err) throw alert('There is not database with these credentials. Please check the credentials.');
+    var sqlQuery = 'SELECT * FROM ' + table;
+    con.query(sqlQuery, function (err, result) {
+        if (err) throw alert('Please create the table or even check the database credentials');
+
         ipcRenderer.send('changeWindow', 'sqlTomain');
+
+        return result;
     });
 }
 
-function actionTOInputsButtons(value){
+function actionTOInputsButtons(value) {
     for (const buttons of document.getElementsByClassName('btn')) {
         buttons.disabled = value;
     }
