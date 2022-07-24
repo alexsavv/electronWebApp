@@ -7,7 +7,7 @@ You can learn more about: <br/>
   &nbsp;&nbsp;&nbsp; [SQL database](https://www.w3schools.com/sql/sql_intro.asp) <br/>
   &nbsp;&nbsp;&nbsp; [Leaflet](https://leafletjs.com/SlavaUkraini/examples/quick-start/) <br/>
    
-## To Use
+## To Use [Linux System]
 
 To clone and run this repository you'll need: <br/>
   &nbsp;&nbsp;&nbsp; [Git](https://git-scm.com) <br/>
