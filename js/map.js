@@ -718,6 +718,7 @@ function getCountriesLanguages() { //read from file and create option to selecti
                     'capital': countryListNpm['countries'][key]['capital'],
                     'flag': countryListNpm['countries'][key]['emoji'],
                     'country': countryListNpm['countries'][key]['name'],
+                    'iso': key
                 }
             } else {
                 continue;
@@ -733,7 +734,7 @@ function getCountriesLanguages() { //read from file and create option to selecti
             countryElem = sortedCountries[key]['country'];
 
             optionElem = document.createElement('option');
-            optionElem.value = key;
+            optionElem.value = sortedCountries[key]['iso'];
             optionElem.innerHTML = sortedCountries[key]['flag'] + ' ' + countryElem;
             countrySelectElems.appendChild(optionElem);
         }
