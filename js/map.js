@@ -207,9 +207,6 @@ $(document).ready(function () {
     $('#sidebar-quiz').on('click', () => {
         $('#quizModal').show('modal');
 
-        // console.warn("geia");
-        // $( "sidebar-disconnect" ).removeAttr('href');
-
         $('#defaultBody').show();
         $('#quizBody').hide();
 
@@ -228,10 +225,6 @@ $(document).ready(function () {
         $('#quizBody').hide();
 
         $('#quizModal').hide('modal');
-
-        // document.getElementById('sidebar-userProfile-btn').disabled = false;
-        // document.getElementById('sidebar-country-btn').disabled = false;
-        // document.getElementById('sidebar-disconnect').disabled = false;
     });
 
     $("#disablePanel").on("click", function () {
@@ -258,9 +251,11 @@ $(document).ready(function () {
 
         var quizSize = document.getElementsByName('quizSize');
         var quizLen = null;
+        var quizId = null;
         for (var i = 0, length = quizSize.length; i < length; i++) {
             if (quizSize[i].checked) {
                 quizLen = quizSize[i].value;
+                quizId = quizSize[i].id;
                 break;
             }
         }
@@ -274,7 +269,7 @@ $(document).ready(function () {
             var categoryValue = null;
             categoryValue = 'country';
 
-            var categoryJson = { 'key': categoryKey, 'value': categoryValue, 'size': quizLen }
+            var categoryJson = { 'key': categoryKey, 'value': categoryValue, 'numQuestions': quizLen, 'sizeQuiz': quizId }
             localStorage.setItem('quizCategory', JSON.stringify(categoryJson));
 
             $('#nextQuestion').click();
@@ -316,22 +311,22 @@ $(document).ready(function () {
 
         }
 
-        if (Number(gradeJSON['total']) < Number(categoryJSON['size'])) {
+        if (Number(gradeJSON['total']) < Number(categoryJSON['numQuestions'])) {
             document.getElementById('modalTitle').innerHTML = 'Quiz for Countries (' +
                 toUnicodeVariant(String((gradeJSON['total'] + 1)), 'bold sans', 'bold') + '/' +
-                toUnicodeVariant(String(categoryJSON['size']), 'bold sans', 'bold') + ' questions)';
+                toUnicodeVariant(String(categoryJSON['numQuestions']), 'bold sans', 'bold') + ' questions)';
 
             createQuestion(categoryJSON['key'], categoryJSON['value']);
         } else {
             var emojiGrade = getGradeEmoji(gradeJSON['percentage']);
-            
-            alert('Grade: ' + 
+
+            alert('Grade: ' +
                 toUnicodeVariant(String(gradeJSON['percentage']), 'bold sans', 'bold') + '% (' +
                 toUnicodeVariant(String(gradeJSON['grade']), 'bold sans', 'bold') + '/' +
-                toUnicodeVariant(String(gradeJSON['total']), 'bold sans', 'bold') + ') ' + 
+                toUnicodeVariant(String(gradeJSON['total']), 'bold sans', 'bold') + ') ' +
                 emojiGrade);
 
-            if (gradeJSON['grade'] == categoryJSON['size']) {
+            if (gradeJSON['grade'] == categoryJSON['numQuestions']) {
                 alert(' 📢 📢 🥳🥳 WINNER 🥳🥳');
             }
 
@@ -339,6 +334,11 @@ $(document).ready(function () {
             userInfo['quiz']['totalAnswersQuiz'] = Number(userInfo['quiz']['totalAnswersQuiz']) + Number(gradeJSON['total']);
             userInfo['quiz']['percentageAnswersQuiz'] = (parseFloat(Number(userInfo['quiz']['correctAnswersQuiz']) / Number(userInfo['quiz']['totalAnswersQuiz'])).toFixed(2)) * 100;
             userInfo['quiz']['totalQuiz'] = Number(userInfo['quiz']['totalQuiz']) + 1;
+
+            userInfo['quiz']['correct' + categoryJSON['sizeQuiz'] + 'AnswersQuiz'] = Number(userInfo['quiz']['correct' + categoryJSON['sizeQuiz'] + 'AnswersQuiz']) + Number(gradeJSON['grade']);
+            userInfo['quiz']['total' + categoryJSON['sizeQuiz'] + 'AnswersQuiz'] = Number(userInfo['quiz']['total' + categoryJSON['sizeQuiz'] + 'AnswersQuiz']) + Number(gradeJSON['total']);
+            userInfo['quiz']['percentage' + categoryJSON['sizeQuiz'] + 'AnswersQuiz'] = (parseFloat(Number(userInfo['quiz']['correct' + categoryJSON['sizeQuiz'] + 'AnswersQuiz']) / Number(userInfo['quiz']['total' + categoryJSON['sizeQuiz'] + 'AnswersQuiz'])).toFixed(2)) * 100;
+            userInfo['quiz']['total' + categoryJSON['sizeQuiz'] + 'Quiz'] = Number(userInfo['quiz']['totalSmallQuiz']) + 1;
 
             localStorage.setItem('quiz', JSON.stringify(userInfo['quiz']));
 
@@ -357,11 +357,26 @@ let userInfo = {
     'username': localStorage.getItem('userID'),
     'gender': '',
     'profileImage': '',
-    'quiz':{
-        'correctAnswersQuiz' : 0,
-        'totalAnswersQuiz' : 0,
-        'percentageAnswersQuiz' : 0,
-        'totalQuiz' : 0
+    'quiz': {
+        'correctAnswersQuiz': 0,
+        'totalAnswersQuiz': 0,
+        'percentageAnswersQuiz': 0,
+        'totalQuiz': 0,
+
+        'correctSmallAnswersQuiz': 0,
+        'totalSmallAnswersQuiz': 0,
+        'percentageSmallAnswersQuiz': 0,
+        'totalSmallQuiz': 0,
+
+        'correctMediumAnswersQuiz': 0,
+        'totalMediumAnswersQuiz': 0,
+        'percentageMediumAnswersQuiz': 0,
+        'totalMediumQuiz': 0,
+
+        'correctLargeAnswersQuiz': 0,
+        'totalLargeAnswersQuiz': 0,
+        'percentageLargeAnswersQuiz': 0,
+        'totalLargeQuiz': 0,
     }
 }
 
@@ -407,7 +422,7 @@ function GetUsername() {
             userInfo['quiz']['totalAnswersQuiz'] = result[0]['totalAnswersQuiz'];
             userInfo['quiz']['percentageAnswersQuiz'] = result[0]['percentageAnswersQuiz'];
             userInfo['quiz']['totalQuiz'] = result[0]['totalQuiz'];
-            
+
             localStorage.setItem('quiz', JSON.stringify(userInfo['quiz']));
             return result;
         });
@@ -426,11 +441,27 @@ function disconnect() {
     con.connect(function (err) {
         if (err) throw err;
         let sqlQuery = 'UPDATE users SET ' +
-        'correctAnswersquiz = "' + userInfo['quiz']['correctAnswersQuiz'] + 
-        '", totalAnswersQuiz = "' + userInfo['quiz']['totalAnswersQuiz'] + 
-        '", percentageAnswersQuiz = "' + userInfo['quiz']['percentageAnswersQuiz'] +
-        '", totalQuiz = "' + userInfo['quiz']['totalQuiz'] + 
-        '" WHERE username = "' + userInfo['username'] + '"';
+            'correctAnswersquiz = "' + userInfo['quiz']['correctAnswersQuiz'] +
+            '", totalAnswersQuiz = "' + userInfo['quiz']['totalAnswersQuiz'] +
+            '", percentageAnswersQuiz = "' + userInfo['quiz']['percentageAnswersQuiz'] +
+            '", totalQuiz = "' + userInfo['quiz']['totalQuiz'] +
+
+            '", correctSmallAnswersQuiz = "' + userInfo['quiz']['correctSmallAnswersQuiz'] +
+            '", totalSmallAnswersQuiz = "' + userInfo['quiz']['totalSmallAnswersQuiz'] +
+            '", percentageSmallAnswersQuiz = "' + userInfo['quiz']['percentageSmallAnswersQuiz'] +
+            '", totalSmallQuiz = "' + userInfo['quiz']['totalSmallQuiz'] +
+
+            '", correctMediumAnswersQuiz = "' + userInfo['quiz']['correctMediumAnswersQuiz'] +
+            '", totalMediumAnswersQuiz = "' + userInfo['quiz']['totalMediumAnswersQuiz'] +
+            '", percentageMediumAnswersQuiz = "' + userInfo['quiz']['percentageMediumAnswersQuiz'] +
+            '", totalMediumQuiz = "' + userInfo['quiz']['totalMediumQuiz'] +
+
+            '", correctLargeAnswersQuiz = "' + userInfo['quiz']['correctLargeAnswersQuiz'] +
+            '", totalLargeAnswersQuiz = "' + userInfo['quiz']['totalLargeAnswersQuiz'] +
+            '", percentageLargeAnswersQuiz = "' + userInfo['quiz']['percentageLargeAnswersQuiz'] +
+            '", totalLargeQuiz = "' + userInfo['quiz']['totalLargeQuiz'] +
+
+            '" WHERE username = "' + userInfo['username'] + '"';
 
         con.query(sqlQuery, function (err, result) {
             if (err)
@@ -439,8 +470,6 @@ function disconnect() {
             ipcRenderer.send('changeWindow', 'main');
         });
     });
-
-    // ipcRenderer.send('changeWindow', 'main');
 }
 
 function profile() {
@@ -448,13 +477,46 @@ function profile() {
     document.getElementById('genderProfile').value = userInfo['gender'];
 
     userInfo['quiz'] = JSON.parse(localStorage.getItem('quiz'));
-    
-    var emojiGrade = getGradeEmoji(userInfo['quiz']['percentageAnswersQuiz']);
 
-    document.getElementById('gradeQuiz').style="font-size: 13px; font-weight: bold; color: red;";
+    var emojiGrade = null;
+
+    emojiGrade = getGradeEmoji(userInfo['quiz']['percentageAnswersQuiz']);
+
+    document.getElementById('gradeQuiz').style = "font-size: 13px; font-weight: bold; color: red;";
     document.getElementById('gradeQuiz').value = '' + userInfo['quiz']['percentageAnswersQuiz'] + '% ' +
-     ' ' + userInfo['quiz']['correctAnswersQuiz'] + '/' + userInfo['quiz']['totalAnswersQuiz'] +
-     ' Total quizs: ' + userInfo['quiz']['totalQuiz'] + ' ' + emojiGrade;
+        ' ' + userInfo['quiz']['correctAnswersQuiz'] + '/' + userInfo['quiz']['totalAnswersQuiz'] +
+        ' Total quiz: ' + userInfo['quiz']['totalQuiz'] + ' ' + emojiGrade;
+
+    emojiGrade = getGradeEmoji(userInfo['quiz']['percentageSmallAnswersQuiz']);
+
+    document.getElementById('gradeSmallQuiz').style = "font-size: 13px; font-weight: bold; color: red;";
+    document.getElementById('gradeSmallQuiz').value = '' + userInfo['quiz']['percentageSmallAnswersQuiz'] + '% ' +
+        ' ' + userInfo['quiz']['correctSmallAnswersQuiz'] + '/' + userInfo['quiz']['totalSmallAnswersQuiz'] +
+        ' Total Small quiz: ' + userInfo['quiz']['totalSmallQuiz'] + ' ' + emojiGrade;
+
+    emojiGrade = getGradeEmoji(userInfo['quiz']['percentageMediumAnswersQuiz']);
+
+    document.getElementById('gradeMediumQuiz').style = "font-size: 13px; font-weight: bold; color: red;";
+    document.getElementById('gradeMediumQuiz').value = '' + userInfo['quiz']['percentageMediumAnswersQuiz'] + '% ' +
+        ' ' + userInfo['quiz']['correctMediumAnswersQuiz'] + '/' + userInfo['quiz']['totalMediumAnswersQuiz'] +
+        ' Total Medium quiz: ' + userInfo['quiz']['totalMediumQuiz'] + ' ' + emojiGrade;
+
+    emojiGrade = getGradeEmoji(userInfo['quiz']['percentageMediumAnswersQuiz']);
+
+    document.getElementById('gradeMediumQuiz').style = "font-size: 13px; font-weight: bold; color: red;";
+    document.getElementById('gradeMediumQuiz').value = '' + userInfo['quiz']['percentageMediumAnswersQuiz'] + '% ' +
+        ' ' + userInfo['quiz']['correctMediumAnswersQuiz'] + '/' + userInfo['quiz']['totalMediumAnswersQuiz'] +
+        ' Total Medium quiz: ' + userInfo['quiz']['totalMediumQuiz'] + ' ' + emojiGrade;
+
+    emojiGrade = getGradeEmoji(userInfo['quiz']['percentageLargeAnswersQuiz']);
+
+    document.getElementById('gradeLargeQuiz').style = "font-size: 13px; font-weight: bold; color: red;";
+    document.getElementById('gradeLargeQuiz').value = '' + userInfo['quiz']['percentageLargeAnswersQuiz'] + '% ' +
+        ' ' + userInfo['quiz']['correctLargeAnswersQuiz'] + '/' + userInfo['quiz']['totalLargeAnswersQuiz'] +
+        ' Total Large quiz: ' + userInfo['quiz']['totalLargeQuiz'] + ' ' + emojiGrade;
+
+
+
 
     document.getElementById('imgProfile').src = userInfo['profileImage'];
 }
@@ -534,12 +596,18 @@ function deleteUser() {
         con.query(sqlQuery, function (err, result) {
             if (err) throw alert(err);
 
-            disconnect();
+            document.getElementById('intro-login').hidden = false;
+            document.getElementById('intro-info').disabled = true;
 
+            document.getElementById('mapContainer').hidden = true;
+            document.getElementById('mapFunctionality-btn').disabled = false;
+
+            ipcRenderer.send('changeWindow', 'main');
+            
             return result;
         });
     });
-}function getGradeEmoji(gradePercentageQuiz){
+} function getGradeEmoji(gradePercentageQuiz) {
     var emojiGrade = '';
 
     if (gradePercentageQuiz == 0) {
@@ -677,7 +745,7 @@ function getCountriesLanguages() { //read from file and create option to selecti
 }
 
 //Quiz Functionality
-function getGradeEmoji(gradePercentageQuiz){
+function getGradeEmoji(gradePercentageQuiz) {
     var emojiGrade = '';
 
     if (gradePercentageQuiz == 0) {
