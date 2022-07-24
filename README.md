@@ -60,6 +60,21 @@ CREATE TABLE users (
     totalAnswersQuiz int,
     percentageAnswersQuiz int,
     totalQuiz int,
+	  
+    correctSmallAnswersQuiz int,
+    totalSmallAnswersQuiz int,
+    percentageSmallAnswersQuiz int,
+    totalSmallQuiz int,
+    
+    correctMediumAnswersQuiz int,
+    totalMediumAnswersQuiz int,
+    percentageMediumAnswersQuiz int,
+    totalMediumQuiz int,
+    
+    correctLargeAnswersQuiz int,
+    totalLargeAnswersQuiz int,
+    percentageLargeAnswersQuiz int,
+    totalLargeQuiz int,
 
     UNIQUE (username)
 );
