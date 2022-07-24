@@ -48,37 +48,6 @@ CREATE USER '<username>'@'<host>' IDENTIFIED WITH mysql_native_password BY '<pas
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'<host>';
 FLUSH PRIVILEGES;
 ```
-<br>
-
-Create Table users
-```bash
-CREATE TABLE users (
-    username varchar(25),
-    password varchar(25),
-    gender varchar(25),
-    correctAnswersQuiz int,
-    totalAnswersQuiz int,
-    percentageAnswersQuiz int,
-    totalQuiz int,
-	  
-    correctSmallAnswersQuiz int,
-    totalSmallAnswersQuiz int,
-    percentageSmallAnswersQuiz int,
-    totalSmallQuiz int,
-    
-    correctMediumAnswersQuiz int,
-    totalMediumAnswersQuiz int,
-    percentageMediumAnswersQuiz int,
-    totalMediumQuiz int,
-    
-    correctLargeAnswersQuiz int,
-    totalLargeAnswersQuiz int,
-    percentageLargeAnswersQuiz int,
-    totalLargeQuiz int,
-
-    UNIQUE (username)
-);
-```
 
 <hr>
 
