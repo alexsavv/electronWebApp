@@ -45,11 +45,16 @@ $(document).ready(function () {
         var gender = document.getElementById('gender-notDB').value;
 
         if ((username && username != '') && (gender && gender != '')) {
-            userInfo['username'] = username;
-            userInfo['gender'] = gender;
-            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            var validUsername = usernameValidation(username);
+            if (validUsername) {
+                userInfo['username'] = username;
+                userInfo['gender'] = gender;
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
 
-            ipcRenderer.send('changeWindow', 'map');
+                ipcRenderer.send('changeWindow', 'map');
+            } else {
+                privacyPwdTerms(true);
+            }
         } else {
             alert('Please give a username and select your gender');
         }
@@ -103,6 +108,10 @@ $(document).ready(function () {
 
     $('#showPassword-signUp-btn').on('click', () => {
         showPassword('pwdSignUp');
+    });
+
+    $('#privacyTerms-username-btn').on('click', () => {
+        privacyPwdTerms(true);
     });
 
     $('#privacyTerms-btn').on('click', () => {
@@ -260,6 +269,10 @@ function signUp() {
     }
 }
 
-function privacyPwdTerms() {
-    alert("The username has to contain from 7 to 20 characters/numbers/underscore, starting with character.\n\nThe password has to contain from 7 to 20 characters, containing at least a number and special character \n\n The gender has to be one of the selections");
+function privacyPwdTerms(checkOnlyUsername = false) {
+    if (checkOnlyUsername) {
+        alert("The username has to contain from 7 to 20 characters/numbers/underscore, starting with character.");
+    } else {
+        alert("The username has to contain from 7 to 20 characters/numbers/underscore, starting with character.\n\nThe password has to contain from 7 to 20 characters, containing at least a number and special character \n\n The gender has to be one of the selections");
+    }
 }
