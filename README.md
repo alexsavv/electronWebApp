@@ -51,14 +51,3 @@ CREATE USER '<username>'@'<host>' IDENTIFIED WITH mysql_native_password BY '<pas
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'<host>';
 FLUSH PRIVILEGES;
 ```
-
-<hr>
-
-Usefull SQL commands
-```bash
-##check password policy
-SHOW VARIABLES LIKE 'validate_password%';
-
-##change validate password length
-SET GLOBAL validate_password.length = 6;
-```
