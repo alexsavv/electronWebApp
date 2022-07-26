@@ -18,13 +18,8 @@ $(document).ready(function () {
             if (checkQuestionDB == 'true') {
                 document.getElementById('loginForm').hidden = false;
                 document.getElementById('connectDatabase').hidden = false;
-
-                if (document.getElementById('unameSql') == null) {
-                    ipcRenderer.send('changeWindow', 'sql');
-                }
             } else {
                 document.getElementById('loginForm-notDB').hidden = false;
-
             }
         } else {
             alert('Please select an answer');
