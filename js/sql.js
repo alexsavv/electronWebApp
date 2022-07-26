@@ -116,8 +116,6 @@ $(document).ready(function () {
 
 function setGlobalVariableDB(con, sqlQuery) {
     con.query(sqlQuery, function (err, result) {
-        if (err) throw alert(err);
-
         return result;
     });
 }
