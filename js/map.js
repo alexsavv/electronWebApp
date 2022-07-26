@@ -125,6 +125,7 @@ $(document).ready(function () {
     $('#countrySubmit').on('click', () => {
         document.getElementById('countryData').innerHTML = '';
 
+        var allCountriesJson = JSON.parse(localStorage.getItem('countries'));
         var languagesJson = JSON.parse(localStorage.getItem('languages'));
 
         var countryHtmlElem = document.getElementById('countrySelection');
@@ -140,36 +141,39 @@ $(document).ready(function () {
         var countryInfoJson = {};
         var preElem = document.createElement('pre');
         if (!countryjsNpm.info(countryHtmlElem.value)) {
-            outputValue = 'No Information for this country';
+            for (var key in allCountriesJson) {
+                if (allCountriesJson[key]['iso'] == countryHtmlElem.value) {
+                    countryInfoJson['name'] = allCountriesJson[key]['country'];
+                    countryInfoJson['nativeName'] = allCountriesJson[key]['native'];
+                    countryInfoJson['capital'] = allCountriesJson[key]['capital'];
+                    countryInfoJson['region'] = allCountriesJson[key]['continent'];
+                    countryInfoJson['languages'] = allCountriesJson[key]['languages'];
+                    countryInfoJson['callingCodes'] = allCountriesJson[key]['phone'];
+                    countryInfoJson['currencies'] = allCountriesJson[key]['currency'];
+                    countryInfoJson['emoji'] = allCountriesJson[key]['flag'];
+                }
+            }
+        } else {
+            countryInfoJson['name'] = countryjsNpm.info(countryHtmlElem.value)['name'];
+            countryInfoJson['nativeName'] = countryjsNpm.info(countryHtmlElem.value)['nativeName'];
+            countryInfoJson['capital'] = countryjsNpm.info(countryHtmlElem.value)['capital'];
+            countryInfoJson['population'] = countryjsNpm.info(countryHtmlElem.value)['population'];
 
-            varString = outputValue;
+            countryInfoJson['region'] = countryjsNpm.info(countryHtmlElem.value)['region'];
+            countryInfoJson['subregion'] = countryjsNpm.info(countryHtmlElem.value)['subregion'];
 
-            preElem = document.createElement('pre');
-            preElem.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;' + varString;
+            countryInfoJson['languages'] = countryjsNpm.info(countryHtmlElem.value)['languages'];
 
-            countryData.appendChild(preElem);
-            return;
+            countryInfoJson['callingCodes'] = countryjsNpm.info(countryHtmlElem.value)['callingCodes'];
+            countryInfoJson['currencies'] = countryjsNpm.info(countryHtmlElem.value)['currencies'];
+            countryInfoJson['timezones'] = countryjsNpm.info(countryHtmlElem.value)['timezones'];
+
+            countryInfoJson['latlng'] = countryjsNpm.info(countryHtmlElem.value)['latlng'];
+
+            var countrySelected = countryListNpm['countries'][countryHtmlElem.value];
+
+            countryInfoJson['emoji'] = countrySelected['emoji'];
         }
-
-        countryInfoJson['name'] = countryjsNpm.info(countryHtmlElem.value)['name'];
-        countryInfoJson['nativeName'] = countryjsNpm.info(countryHtmlElem.value)['nativeName'];
-        countryInfoJson['capital'] = countryjsNpm.info(countryHtmlElem.value)['capital'];
-        countryInfoJson['population'] = countryjsNpm.info(countryHtmlElem.value)['population'];
-
-        countryInfoJson['region'] = countryjsNpm.info(countryHtmlElem.value)['region'];
-        countryInfoJson['subregion'] = countryjsNpm.info(countryHtmlElem.value)['subregion'];
-
-        countryInfoJson['languages'] = countryjsNpm.info(countryHtmlElem.value)['languages'];
-
-        countryInfoJson['callingCodes'] = countryjsNpm.info(countryHtmlElem.value)['callingCodes'];
-        countryInfoJson['currencies'] = countryjsNpm.info(countryHtmlElem.value)['currencies'];
-        countryInfoJson['timezones'] = countryjsNpm.info(countryHtmlElem.value)['timezones'];
-
-        countryInfoJson['latlng'] = countryjsNpm.info(countryHtmlElem.value)['latlng'];
-
-        var countrySelected = countryListNpm['countries'][countryHtmlElem.value];
-
-        countryInfoJson['emoji'] = countrySelected['emoji'];
 
         for (var key in countryInfoJson) {
             if (key == 'latlng') {
@@ -731,15 +735,21 @@ function getCountriesLanguages() { //read from file and create option to selecti
         for (var key in countryListNpm['countries']) {
             if (countryListNpm['countries'][key]['name'] &&
                 countryListNpm['countries'][key]['capital'] &&
-                countryListNpm['countries'][key]['emoji'] &&
-                countryListNpm['countries'][key]['continent']) {
+                countryListNpm['countries'][key]['emoji']) {
 
                 countriesJson[countryListNpm['countries'][key]['name']] = {
-                    'capital': countryListNpm['countries'][key]['capital'],
-                    'flag': countryListNpm['countries'][key]['emoji'],
-                    'country': countryListNpm['countries'][key]['name'],
-                    'iso': key
+                    'capital': countryListNpm['countries'][key]['capital'], //required field
+                    'flag': countryListNpm['countries'][key]['emoji'], //required field
+                    'country': countryListNpm['countries'][key]['name'], //required field
+                    'iso': key, //required field
+
+                    'native': countryListNpm['countries'][key]['native'],
+                    'phone': countryListNpm['countries'][key]['phone'],
+                    'continent': countryListNpm['continents'][countryListNpm['countries'][key]['continent']],
+                    'currency': countryListNpm['countries'][key]['currency'],
+                    'languages': countryListNpm['countries'][key]['languages']
                 }
+
             } else {
                 continue;
             }
