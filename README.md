@@ -1,6 +1,7 @@
 # electronWebApp with SQL database
 
-This is a Electron Web Application with a SQL database interacting with Leaflet Map. The user can learn country information as well as the country in the world and play quiz for countries according to the flags and capitals.
+An Electron Web App with SQL database in which the user can interact with Leaflet Map and learn countries' information. 
+There is also country quiz with flags and capitals. This application has been implemented with JavaScript, HTML, CSS, JQuery, bootstrap, Node.js, SQL Database.
 
 You can run this application with or not SQL database. There is a question in the start of the application in order to check if you prefer or not database.
 
