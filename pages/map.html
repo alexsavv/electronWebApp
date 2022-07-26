@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="../css/leafletSidebar.css">
 </head>
 
-<body>
+<body onload="checkContainDB()">
     <button id='logOut-btn' style="overflow:hidden" title="LogOut" class="btn btn-primary" type="button"><i
             class="fa fa-sign-out" aria-hidden="true"></i></button>
 
@@ -138,46 +138,49 @@
 
                                 <label for="gradeMediumQuiz"><b>Medium Quiz</b></label>
                                 <input type="text" id="gradeMediumQuiz" disabled></input>
-                                
+
                                 <label for="gradeLargeQuiz"><b>Large Quiz</b></label>
                                 <input type="text" id="gradeLargeQuiz" disabled></input>
 
-                                <br><br>
+                                <div id="passwordAndDelete">
+                                    <br><br>
 
-                                <label for="changePwd"></label><b>Password</b></label>
-                                <br>
-                                <input id='changePwd' type="password" style='margin-top: 5px; width: 90%;'
-                                    placeholder="Change Password" disabled>
-                                <br>
-                                <input id='showRePwd' style='margin-top: 5px;' type="checkbox" disabled> Show Password
-
-
-                                <br><br>
-                                <label for="changePwdRepeat"><b>Repeat Password</b></label>
-                                <br>
-                                <input id="changePwdRepeat" type="password" style='margin-top: 5px; width: 90%;'
-                                    placeholder="Repeat Password" value="" disabled>
-                                <br>
-                                <p>By creating an account you agree to our <a href="#" id='privacyTerms-btn-change'
-                                        style="color:dodgerblue;">Terms & Privacy</a>.</p>
+                                    <label for="changePwd"></label><b>Password</b></label>
+                                    <br>
+                                    <input id='changePwd' type="password" style='margin-top: 5px; width: 90%;'
+                                        placeholder="Change Password" disabled>
+                                    <br>
+                                    <input id='showRePwd' style='margin-top: 5px;' type="checkbox" disabled> Show
+                                    Password
 
 
-                                <div style="margin-top: 5px;">
-                                    <button id='editRePwd' type="button" class="btn btn-info">Edit Password
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                    <button id='submitRePwd' type="button" class="btn btn-warning" disabled>Change
-                                        Password
-                                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                    <br><br>
+                                    <label for="changePwdRepeat"><b>Repeat Password</b></label>
+                                    <br>
+                                    <input id="changePwdRepeat" type="password" style='margin-top: 5px; width: 90%;'
+                                        placeholder="Repeat Password" value="" disabled>
+                                    <br>
+                                    <p>By creating an account you agree to our <a href="#" id='privacyTerms-btn-change'
+                                            style="color:dodgerblue;">Terms & Privacy</a>.</p>
+
+
+                                    <div style="margin-top: 5px;">
+                                        <button id='editRePwd' type="button" class="btn btn-info">Edit Password
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                        <button id='submitRePwd' type="button" class="btn btn-warning" disabled>Change
+                                            Password
+                                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+
+                                    <hr>
+                                    <button id="deleteUser" type="button"
+                                        class='btn btn-outline-danger rounded-2'>Delete
+                                        User
+                                        <i class="fa fa-trash"></i>
                                     </button>
                                 </div>
-
-                                <hr>
-                                <button id="deleteUser" type="button" class='btn btn-outline-danger rounded-2'>Delete
-                                    User
-                                    <i class="fa fa-trash"></i>
-                                </button>
-
                             </div>
                         </form>
                     </div>

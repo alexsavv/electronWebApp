@@ -12,7 +12,7 @@ body{
     margin-right: auto;
 }
 
-#loginForm, #signUpForm {
+#loginForm, #signUpForm, #loginForm-notDB, #question-notDB {
     margin: 20px auto;
     width: 320px;
     padding: 10px;
@@ -28,7 +28,7 @@ input[type=text], input[type=password] {
     box-sizing: border-box;
 }
 
-#genderSignUp{
+#genderSignUp, #genderLogin-notDB{
     width: 95%;
     padding: 8px 15px;
     margin: 8px 0;

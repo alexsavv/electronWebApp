@@ -14,8 +14,8 @@
 </head>
 
 <body>
-    <button class="btn btn-primary" style="overflow:hidden" title="SQL Database" type="button"
-        onclick="ipcRenderer.send('changeWindow', 'sql');" style="margin:10px;"> Connect to Database <i
+    <button id='connectDatabase' class="btn btn-primary" style="overflow:hidden" title="SQL Database" type="button"
+         style="margin:10px;" hidden> Connect to Database <i
             class="fas fa-database"></i></button>
 
     <div class="imgcontainer" style="margin:30px;">
@@ -24,13 +24,50 @@
         <h2 align="center" style="margin-top: 30px; color: rgba(22, 86, 146, 0.808);"> Electron WebApp </h2>
     </div>
 
-    <div class="progress" id="progress"hidden>
+    <div class="progress" id="progress" hidden>
         <div id="progressbar" class="progress-bar" role="progressbar" min=0 max=100 value=0 style="width: 100%;">
             <div id="progressText" style="text-align: center;">0</div>
         </div>
     </div>
 
-    <div id="loginForm">
+    <div id="question-notDB">
+        <label for="exist-notDB"><b>Do you want Database?</b></label>
+        <select id="exist-notDB" required>
+            <option value="" selected disabled>Select an Answer</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+
+        <br><br>
+        <div>
+            <button id="question-notDB-btn" class="btn btn-secondary">Continue</button>
+        </div>
+    </div>
+
+    <div id="loginForm-notDB" hidden>
+        <img src="./img/login.png" alt="Avatar" class="avatar center">
+
+        <label for="unameLogin-notDB"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" id="unameLogin-notDB" value="">
+
+        <br>
+        <label for="gender-notDB"><b>Select your gender</b></label>
+        <br>
+        <select id="gender-notDB" required>
+            <option value="" selected disabled>Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">I dont prefer to say</option>
+        </select>
+
+        <br><br>
+        <div>
+            <button id="login-notDB-btn" class="btn btn-secondary">Login</button>
+            <button id="back-notDB-btn" class="btn btn-secondary">Back</button>
+        </div>
+    </div>
+
+    <div id="loginForm" hidden>
         <img src="./img/login.png" alt="Avatar" class="avatar center">
 
         <div class="container">
@@ -45,6 +82,7 @@
             <div>
                 <button id="login-btn" class="btn btn-secondary">Login</button>
                 <button id='signUp-btn' class="btn btn-secondary" type="button" style="margin:10px;">SignUp</button>
+                <button id="back-btn" class="btn btn-secondary">Back</button>
             </div>
         </div>
     </div>
@@ -65,7 +103,7 @@
                 <option value="" selected disabled>Select Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
-                <option value="other">other</option>
+                <option value="other">I dont prefer to say</option>
             </select>
 
             <label for="pwd"><b>Password</b></label>

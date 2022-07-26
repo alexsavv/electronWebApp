@@ -24,6 +24,48 @@ var circleMarkers = [];
 
 let questionsArray = [];
 
+let userInfoLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
+
+let infoDB = JSON.parse(localStorage.getItem('infoDB'));
+
+let con = null;
+
+let userInfo = {
+    'username': userInfoLocalStorage['username'],
+    'gender': '',
+    'profileImage': '',
+    'quiz': {
+        'correctAnswersQuiz': 0,
+        'totalAnswersQuiz': 0,
+        'percentageAnswersQuiz': 0,
+        'totalQuiz': 0,
+
+        'correctSmallAnswersQuiz': 0,
+        'totalSmallAnswersQuiz': 0,
+        'percentageSmallAnswersQuiz': 0,
+        'totalSmallQuiz': 0,
+
+        'correctMediumAnswersQuiz': 0,
+        'totalMediumAnswersQuiz': 0,
+        'percentageMediumAnswersQuiz': 0,
+        'totalMediumQuiz': 0,
+
+        'correctLargeAnswersQuiz': 0,
+        'totalLargeAnswersQuiz': 0,
+        'percentageLargeAnswersQuiz': 0,
+        'totalLargeQuiz': 0,
+    }
+}
+
+if (userInfoLocalStorage['containDB'] == 'false') {
+    userInfo['gender'] = userInfoLocalStorage['gender'];
+
+    userInfo['profileImage'] = getImageSrc(userInfo['gender']);
+} else {
+    GetUsername();
+}
+
+
 $(document).ready(function () {
     $('#sidebar-disconnect').on('click', () => {
         disconnect();
@@ -348,39 +390,6 @@ $(document).ready(function () {
     });
 });
 
-let infoDB = JSON.parse(localStorage.getItem('infoDB'));
-
-let con = null;
-
-let userInfo = {
-    'username': localStorage.getItem('userID'),
-    'gender': '',
-    'profileImage': '',
-    'quiz': {
-        'correctAnswersQuiz': 0,
-        'totalAnswersQuiz': 0,
-        'percentageAnswersQuiz': 0,
-        'totalQuiz': 0,
-
-        'correctSmallAnswersQuiz': 0,
-        'totalSmallAnswersQuiz': 0,
-        'percentageSmallAnswersQuiz': 0,
-        'totalSmallQuiz': 0,
-
-        'correctMediumAnswersQuiz': 0,
-        'totalMediumAnswersQuiz': 0,
-        'percentageMediumAnswersQuiz': 0,
-        'totalMediumQuiz': 0,
-
-        'correctLargeAnswersQuiz': 0,
-        'totalLargeAnswersQuiz': 0,
-        'percentageLargeAnswersQuiz': 0,
-        'totalLargeQuiz': 0,
-    }
-}
-
-GetUsername();
-
 function getConnectionDB(con, host, user, password, database, table = null) {
     if (con) {
         con.end();
@@ -396,6 +405,22 @@ function getConnectionDB(con, host, user, password, database, table = null) {
     return con;
 }
 
+//get Image Profile Image according to the gender
+function getImageSrc(gender) {
+    var imageSrc = '';
+
+    if (gender == 'female') {
+        imageSrc = "../img/femaleProfile.png";
+    } else if (gender == 'male') {
+        imageSrc = "../img/maleProfile.png";
+    } else {
+        imageSrc = "../img/otherProfile.png";
+    }
+
+    return imageSrc;
+}
+
+
 //get username, gender, profileImage
 function GetUsername() {
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
@@ -409,13 +434,7 @@ function GetUsername() {
 
             userInfo['gender'] = result[0]['gender'];
 
-            if (result[0]['gender'] == 'female') {
-                userInfo['profileImage'] = "../img/femaleProfile.png";
-            } else if (result[0]['gender'] == 'male') {
-                userInfo['profileImage'] = "../img/maleProfile.png";
-            } else {
-                userInfo['profileImage'] = "../img/otherProfile.png";
-            }
+            userInfo['profileImage'] = getImageSrc(result[0]['gender']);
 
             userInfo['quiz']['correctAnswersQuiz'] = result[0]['correctAnswersQuiz'];
             userInfo['quiz']['totalAnswersQuiz'] = result[0]['totalAnswersQuiz'];
@@ -429,49 +448,53 @@ function GetUsername() {
 }
 
 function disconnect() {
-    document.getElementById('intro-login').hidden = false;
-    document.getElementById('intro-info').disabled = true;
+    if (userInfoLocalStorage['containDB'] == false) {
+        ipcRenderer.send('changeWindow', 'mapTomain');
+    } else {
+        con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    document.getElementById('mapContainer').hidden = true;
-    document.getElementById('mapFunctionality-btn').disabled = false;
+        con.connect(function (err) {
+            if (err) throw err;
+            let sqlQuery = 'UPDATE users SET ' +
+                'correctAnswersquiz = "' + userInfo['quiz']['correctAnswersQuiz'] +
+                '", totalAnswersQuiz = "' + userInfo['quiz']['totalAnswersQuiz'] +
+                '", percentageAnswersQuiz = "' + userInfo['quiz']['percentageAnswersQuiz'] +
+                '", totalQuiz = "' + userInfo['quiz']['totalQuiz'] +
 
-    con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+                '", correctSmallAnswersQuiz = "' + userInfo['quiz']['correctSmallAnswersQuiz'] +
+                '", totalSmallAnswersQuiz = "' + userInfo['quiz']['totalSmallAnswersQuiz'] +
+                '", percentageSmallAnswersQuiz = "' + userInfo['quiz']['percentageSmallAnswersQuiz'] +
+                '", totalSmallQuiz = "' + userInfo['quiz']['totalSmallQuiz'] +
 
-    con.connect(function (err) {
-        if (err) throw err;
-        let sqlQuery = 'UPDATE users SET ' +
-            'correctAnswersquiz = "' + userInfo['quiz']['correctAnswersQuiz'] +
-            '", totalAnswersQuiz = "' + userInfo['quiz']['totalAnswersQuiz'] +
-            '", percentageAnswersQuiz = "' + userInfo['quiz']['percentageAnswersQuiz'] +
-            '", totalQuiz = "' + userInfo['quiz']['totalQuiz'] +
+                '", correctMediumAnswersQuiz = "' + userInfo['quiz']['correctMediumAnswersQuiz'] +
+                '", totalMediumAnswersQuiz = "' + userInfo['quiz']['totalMediumAnswersQuiz'] +
+                '", percentageMediumAnswersQuiz = "' + userInfo['quiz']['percentageMediumAnswersQuiz'] +
+                '", totalMediumQuiz = "' + userInfo['quiz']['totalMediumQuiz'] +
 
-            '", correctSmallAnswersQuiz = "' + userInfo['quiz']['correctSmallAnswersQuiz'] +
-            '", totalSmallAnswersQuiz = "' + userInfo['quiz']['totalSmallAnswersQuiz'] +
-            '", percentageSmallAnswersQuiz = "' + userInfo['quiz']['percentageSmallAnswersQuiz'] +
-            '", totalSmallQuiz = "' + userInfo['quiz']['totalSmallQuiz'] +
+                '", correctLargeAnswersQuiz = "' + userInfo['quiz']['correctLargeAnswersQuiz'] +
+                '", totalLargeAnswersQuiz = "' + userInfo['quiz']['totalLargeAnswersQuiz'] +
+                '", percentageLargeAnswersQuiz = "' + userInfo['quiz']['percentageLargeAnswersQuiz'] +
+                '", totalLargeQuiz = "' + userInfo['quiz']['totalLargeQuiz'] +
 
-            '", correctMediumAnswersQuiz = "' + userInfo['quiz']['correctMediumAnswersQuiz'] +
-            '", totalMediumAnswersQuiz = "' + userInfo['quiz']['totalMediumAnswersQuiz'] +
-            '", percentageMediumAnswersQuiz = "' + userInfo['quiz']['percentageMediumAnswersQuiz'] +
-            '", totalMediumQuiz = "' + userInfo['quiz']['totalMediumQuiz'] +
+                '" WHERE username = "' + userInfo['username'] + '"';
 
-            '", correctLargeAnswersQuiz = "' + userInfo['quiz']['correctLargeAnswersQuiz'] +
-            '", totalLargeAnswersQuiz = "' + userInfo['quiz']['totalLargeAnswersQuiz'] +
-            '", percentageLargeAnswersQuiz = "' + userInfo['quiz']['percentageLargeAnswersQuiz'] +
-            '", totalLargeQuiz = "' + userInfo['quiz']['totalLargeQuiz'] +
+            con.query(sqlQuery, function (err, result) {
+                if (err)
+                    throw alert("Error in Table Update for userProfile");
 
-            '" WHERE username = "' + userInfo['username'] + '"';
-
-        con.query(sqlQuery, function (err, result) {
-            if (err)
-                throw alert("Error in Table Update for userProfile");
-
-            ipcRenderer.send('changeWindow', 'main');
+                ipcRenderer.send('changeWindow', 'mapTomain');
+            });
         });
-    });
+    }
 }
 
 function profile() {
+    if (userInfoLocalStorage['containDB'] == 'false') {
+        document.getElementById('passwordAndDelete').hidden = true;
+    } else {
+        document.getElementById('passwordAndDelete').hidden = false;
+    }
+
     document.getElementById('unameProfile').value = userInfo['username'];
     document.getElementById('genderProfile').value = userInfo['gender'];
 
@@ -513,9 +536,6 @@ function profile() {
     document.getElementById('gradeLargeQuiz').value = '' + userInfo['quiz']['percentageLargeAnswersQuiz'] + '% ' +
         ' ' + userInfo['quiz']['correctLargeAnswersQuiz'] + '/' + userInfo['quiz']['totalLargeAnswersQuiz'] +
         ' Total Large quiz: ' + userInfo['quiz']['totalLargeQuiz'] + ' ' + emojiGrade;
-
-
-
 
     document.getElementById('imgProfile').src = userInfo['profileImage'];
 }
@@ -601,7 +621,7 @@ function deleteUser() {
             document.getElementById('mapContainer').hidden = true;
             document.getElementById('mapFunctionality-btn').disabled = false;
 
-            ipcRenderer.send('changeWindow', 'main');
+            ipcRenderer.send('changeWindow', 'mapTomain');
 
             return result;
         });

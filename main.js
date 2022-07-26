@@ -16,7 +16,7 @@ function createSpecificWindow(htmlFile) {
   })
 
   //load map html page to specificWindow
-  specificWindow.loadFile('./pages/' + htmlFile);
+  specificWindow.loadFile(htmlFile);
   specificWindow.on('close', function (evt) {
     evt.preventDefault();
     specificWindow.hide();
@@ -48,7 +48,7 @@ function createWindow() {
   mainWindow.maximize();
 
   let mapWindow = null;
-  let sqlWindow = createSpecificWindow('sql.html');
+  let sqlWindow = createSpecificWindow('./pages/sql.html');
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -56,11 +56,11 @@ function createWindow() {
   ipcMain.on('changeWindow', function (event, arg) {
     switch (arg) {
       case 'map':
-        mapWindow = createSpecificWindow('map.html');
+        mapWindow = createSpecificWindow('./pages/map.html');
 
         mapWindow.show();
         mapWindow.maximize();
-        mainWindow.close();
+        mainWindow.destroy();
         break;
       case 'sql':
         sqlWindow.show();
@@ -73,7 +73,7 @@ function createWindow() {
         sqlWindow.close();
         break;
       case 'sqlTomap':
-        mapWindow = createSpecificWindow('map.html');
+        mapWindow = createSpecificWindow('./pages/map.html');
 
         mapWindow.show();
         mapWindow.maximize();
@@ -84,7 +84,9 @@ function createWindow() {
         sqlWindow.maximize();
         sqlWindow.close();
         break;
-      case 'main':
+      case 'mapTomain':
+        mainWindow = createSpecificWindow('index.html');
+
         mainWindow.show();
         mainWindow.maximize();
         mapWindow.destroy();

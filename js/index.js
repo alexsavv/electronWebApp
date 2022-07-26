@@ -1,13 +1,71 @@
 const { ipcRenderer } = require('electron');
+const { commentAltEdit } = require('fontawesome');
 var mysql = require('mysql');
 
 window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
 
-if (document.getElementById('unameSql') == null) {
-    ipcRenderer.send('changeWindow', 'sql');
-}
+let con = null;
+
+const infoDB = JSON.parse(localStorage.getItem('infoDB'));
 
 $(document).ready(function () {
+    $('#question-notDB-btn').on('click', () => {
+        var checkQuestionDB = document.getElementById('exist-notDB').value;
+        localStorage.setItem('userInfo', JSON.stringify({ 'containDB': checkQuestionDB }));
+        if (checkQuestionDB != '') {
+            document.getElementById('question-notDB').hidden = true;
+
+            if (checkQuestionDB == 'true') {
+                document.getElementById('loginForm').hidden = false;
+                document.getElementById('connectDatabase').hidden = false;
+
+                if (document.getElementById('unameSql') == null) {
+                    ipcRenderer.send('changeWindow', 'sql');
+                }
+            } else {
+                document.getElementById('loginForm-notDB').hidden = false;
+
+            }
+        } else {
+            alert('Please select an answer');
+        }
+
+    });
+
+    $('#back-notDB-btn').on('click', () => {
+        document.getElementById('question-notDB').hidden = false;
+
+        document.getElementById('loginForm-notDB').hidden = true;
+    });
+
+    $('#login-notDB-btn').on('click', () => {
+        var userInfo = JSON.parse(localStorage.getItem('userInfo'));
+
+        var username = document.getElementById('unameLogin-notDB').value;
+        var gender = document.getElementById('gender-notDB').value;
+
+        if ((username && username != '') && (gender && gender != '')) {
+            userInfo['username'] = username;
+            userInfo['gender'] = gender;
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+            ipcRenderer.send('changeWindow', 'map');
+        } else {
+            alert('Please give a username and select your gender');
+        }
+    });
+
+    $('#connectDatabase').on('click', () => {
+        ipcRenderer.send('changeWindow', 'sql');
+    });
+
+    $('#back-btn').on('click', () => {
+        document.getElementById('question-notDB').hidden = false;
+
+        document.getElementById('loginForm').hidden = true;
+        document.getElementById('connectDatabase').hidden = true;
+    });
+
     $('#login-btn').on('click', () => {
         actionTOInputsButtons(true);
         document.getElementById('progress').hidden = false;
@@ -84,16 +142,6 @@ $(document).ready(function () {
 
 });
 
-const infoDB = {
-    host: 'localhost',
-    user: 'electronwebapp',
-    password: 'electronwebAPP13!',
-    database: 'electronwebappDB',
-    table: 'users'
-};
-
-let con = null;
-
 function getConnectionDB(con, host, user, password, database, table = null) {
     if (con) {
         con.end();
@@ -140,7 +188,7 @@ function login(host, user, password, database, table = null) {
             if (err) throw alert(err);
 
             if (result != "") {
-                localStorage.setItem('userID', usernameLogin);
+                localStorage.setItem('userInfo', JSON.stringify({ 'username': usernameLogin }));
                 ipcRenderer.send('changeWindow', 'map');
             } else {
                 alert("There is not user with these credentials or you try to connect to wrong database. Please check the user's and database credentials or create a new user or even a new database.");
@@ -188,17 +236,17 @@ function signUp() {
     if (validatedUsername && validatedPassword && genderSignUp != '') {
         con.connect(function (err) {
             if (err) throw err;
-            let sqlQuery = 'INSERT INTO users(username,gender,password,' + 
-            'correctAnswersQuiz,totalAnswersQuiz,percentageAnswersQuiz,totalQuiz,' +
-            'correctSmallAnswersQuiz,totalSmallAnswersQuiz,percentageSmallAnswersQuiz,totalSmallQuiz,' +
-            'correctMediumAnswersQuiz,totalMediumAnswersQuiz,percentageMediumAnswersQuiz,totalMediumQuiz,' +
-            'correctLargeAnswersQuiz,totalLargeAnswersQuiz,percentageLargeAnswersQuiz,totalLargeQuiz' +
-            ') VALUES ( "' + 
-            usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '","' +
-            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-            0 + '","' + 0 + '","' + 0 + '","' + 0 + '" )';
+            let sqlQuery = 'INSERT INTO users(username,gender,password,' +
+                'correctAnswersQuiz,totalAnswersQuiz,percentageAnswersQuiz,totalQuiz,' +
+                'correctSmallAnswersQuiz,totalSmallAnswersQuiz,percentageSmallAnswersQuiz,totalSmallQuiz,' +
+                'correctMediumAnswersQuiz,totalMediumAnswersQuiz,percentageMediumAnswersQuiz,totalMediumQuiz,' +
+                'correctLargeAnswersQuiz,totalLargeAnswersQuiz,percentageLargeAnswersQuiz,totalLargeQuiz' +
+                ') VALUES ( "' +
+                usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '","' +
+                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+                0 + '","' + 0 + '","' + 0 + '","' + 0 + '" )';
             con.query(sqlQuery, function (err, result) {
                 if (err)
                     throw alert("There is already user with these credentials. You can login to the user account.");
