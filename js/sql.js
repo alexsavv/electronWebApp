@@ -31,6 +31,14 @@ $(document).ready(function () {
                 document.getElementById('progressTextSql').innerHTML = timerValue + '%';
             } else {
                 clearInterval(counterBack);
+
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.check_user_name = ON;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.length = 8;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.mixed_case_count = 1;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.number_count = 1;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.policy = MEDIUM;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.special_char_count = 1;');
+
                 checkExistDB();
 
                 document.getElementById('progressSql').hidden = true;
@@ -42,7 +50,7 @@ $(document).ready(function () {
     $('#createTableDB').on('click', () => {
         con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-        let sqlQuery = 'CREATE TABLE users (' +
+        var sqlQuery = 'CREATE TABLE users (' +
             'username varchar(25),' +
             'password varchar(25),' +
             'gender varchar(25),' +
@@ -84,6 +92,13 @@ $(document).ready(function () {
             } else {
                 clearInterval(counterBack);
 
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.check_user_name = ON;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.length = 8;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.mixed_case_count = 1;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.number_count = 1;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.policy = MEDIUM;');
+                setGlobalVariableDB(con, 'SET GLOBAL validate_password.special_char_count = 1;');
+
                 con.query(sqlQuery, function (err, result) {
                     if (err) throw alert(err);
 
@@ -98,6 +113,14 @@ $(document).ready(function () {
     });
 
 });
+
+function setGlobalVariableDB(con, sqlQuery) {
+    con.query(sqlQuery, function (err, result) {
+        if (err) throw alert(err);
+
+        return result;
+    });
+}
 
 function getConnectionDB(con, host, user, password, database, table = null) {
     if (con) {
