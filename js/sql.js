@@ -137,7 +137,7 @@ function getConnectionDB(con, host, user, password, database, table = null) {
 
 function checkExistDB() {
     var userInfoLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
-
+    
     if(userInfoLocalStorage['containDB'] == 'false'){
         return;
     }

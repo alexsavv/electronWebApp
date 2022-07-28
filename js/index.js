@@ -4,6 +4,8 @@ var mysql = require('mysql');
 
 window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.js');
 
+localStorage.clear(); //clear localStorage in the start of app
+
 let con = null;
 
 const infoDB = JSON.parse(localStorage.getItem('infoDB'));
@@ -151,12 +153,16 @@ function getConnectionDB(con, host, user, password, database, table = null) {
         con.end();
     }
 
-    con = mysql.createConnection({
-        host: host,
-        user: user,
-        password: password,
-        database: database
-    });
+    if (host && user && password && database) {
+        con = mysql.createConnection({
+            host: host,
+            user: user,
+            password: password,
+            database: database
+        });
+    } else {
+        con = 'error';
+    }
 
     return con;
 }
@@ -185,20 +191,24 @@ function login(host, user, password, database, table = null) {
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    con.connect(function (err) {
-        if (err) throw alert(err);
-        let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '" AND password="' + passwordLogin + '"';
-        var resultQuery = con.query(sqlQuery, function (err, result) {
+    if (con == 'error') {
+        alert('Please check the database credentials');
+    } else {
+        con.connect(function (err) {
             if (err) throw alert(err);
+            let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '" AND password="' + passwordLogin + '"';
+            var resultQuery = con.query(sqlQuery, function (err, result) {
+                if (err) throw alert(err);
 
-            if (result != "") {
-                localStorage.setItem('userInfo', JSON.stringify({ 'username': usernameLogin }));
-                ipcRenderer.send('changeWindow', 'map');
-            } else {
-                alert("There is not user with these credentials or you try to connect to wrong database. Please check the user's and database credentials or create a new user or even a new database.");
-            }
+                if (result != "") {
+                    localStorage.setItem('userInfo', JSON.stringify({ 'username': usernameLogin }));
+                    ipcRenderer.send('changeWindow', 'map');
+                } else {
+                    alert("There is not user with these credentials or you try to connect to wrong database. Please check the user's and database credentials or create a new user or even a new database.");
+                }
+            });
         });
-    });
+    }
 }
 
 function signUpButton(value) {
@@ -237,27 +247,31 @@ function signUp() {
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    if (validatedUsername && validatedPassword && genderSignUp != '') {
-        let sqlQuery = 'INSERT INTO users(username,gender,password,' +
-            'correctAnswersQuiz,totalAnswersQuiz,percentageAnswersQuiz,totalQuiz,' +
-            'correctSmallAnswersQuiz,totalSmallAnswersQuiz,percentageSmallAnswersQuiz,totalSmallQuiz,' +
-            'correctMediumAnswersQuiz,totalMediumAnswersQuiz,percentageMediumAnswersQuiz,totalMediumQuiz,' +
-            'correctLargeAnswersQuiz,totalLargeAnswersQuiz,percentageLargeAnswersQuiz,totalLargeQuiz' +
-            ') VALUES ( "' +
-            usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '","' +
-            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-            0 + '","' + 0 + '","' + 0 + '","' + 0 + '" )';
-        con.query(sqlQuery, function (err, result) {
-            if (err)
-                throw alert("There is already user with these credentials or problem with database. You can login to the user account or even check the database credentials.");
-
-            document.getElementById('cancelSignUp').click();
-        });
+    if (con == 'error') {
+        alert('Please check the database credentials');
     } else {
-        privacyPwdTerms();
-        signUpButton(true);
+        if (validatedUsername && validatedPassword && genderSignUp != '') {
+            let sqlQuery = 'INSERT INTO users(username,gender,password,' +
+                'correctAnswersQuiz,totalAnswersQuiz,percentageAnswersQuiz,totalQuiz,' +
+                'correctSmallAnswersQuiz,totalSmallAnswersQuiz,percentageSmallAnswersQuiz,totalSmallQuiz,' +
+                'correctMediumAnswersQuiz,totalMediumAnswersQuiz,percentageMediumAnswersQuiz,totalMediumQuiz,' +
+                'correctLargeAnswersQuiz,totalLargeAnswersQuiz,percentageLargeAnswersQuiz,totalLargeQuiz' +
+                ') VALUES ( "' +
+                usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '","' +
+                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+                0 + '","' + 0 + '","' + 0 + '","' + 0 + '" )';
+            con.query(sqlQuery, function (err, result) {
+                if (err)
+                    throw alert("There is already user with these credentials or problem with database. You can login to the user account or even check the database credentials.");
+
+                document.getElementById('cancelSignUp').click();
+            });
+        } else {
+            privacyPwdTerms();
+            signUpButton(true);
+        }
     }
 }
 

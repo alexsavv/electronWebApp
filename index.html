@@ -5,6 +5,7 @@
     <title>Electron WebApp</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <script src="js/index.js"></script>
 
     <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,8 +15,9 @@
 </head>
 
 <body>
-    <button id='connectDatabase' class="btn btn-primary" style="overflow:hidden" title="SQL Database" type="button"
-        style="margin:10px;" hidden> Connect to Database <i class="fas fa-database"></i> / Create Table <i class="fas fa-table"></i> </button>
+    <button id='connectDatabase' class="btn btn-primary" style="overflow:hidden" title="` Database" type="button"
+        style="margin:10px;" hidden> Connect to Database <i class="fas fa-database"></i> / Create Table <i
+            class="fas fa-table"></i> </button>
 
     <div class="imgcontainer" style="margin:30px;">
         <img src="./img/electronWeb.png" alt="Avatar" class="avatar center">
@@ -50,7 +52,7 @@
         <input type="text" placeholder="Enter Username" id="unameLogin-notDB" value="">
 
         <p>By giving the username you agree to our <a href="#" id='privacyTerms-username-btn'
-            style="color:dodgerblue">Terms & Privacy</a>.</p>
+                style="color:dodgerblue">Terms & Privacy</a>.</p>
 
         <label for="gender-notDB"><b>Select your gender</b></label>
         <br>
@@ -73,10 +75,10 @@
 
         <div class="container">
             <label for="uname"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" id="unameLogin" value="alexandros">
+            <input type="text" placeholder="Enter Username" id="unameLogin" value="">
 
             <label for="pwd"></label><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" id="pwdLogin" value="alex13!">
+            <input type="password" placeholder="Enter Password" id="pwdLogin" value="">
             <input id='showPassword-login-btn' type="checkbox"> Show Password
 
             <br><br>
@@ -97,7 +99,7 @@
             <hr>
 
             <label for="unameSignUp"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" id="unameSignUp" value="alexandros">
+            <input type="text" placeholder="Enter Username" id="unameSignUp" value="">
 
             <label for="genderSignUp"><b>Select your gender</b></label>
             <select id="genderSignUp" required>
@@ -108,15 +110,15 @@
             </select>
 
             <label for="pwd"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" id="pwdSignUp" value="alex13!">
+            <input type="password" placeholder="Enter Password" id="pwdSignUp" value="">
             <input id='showPassword-signUp-btn' type="checkbox"> Show Password
 
             <br><br>
             <label for="changePwdRepeat"><b>Repeat Password</b></label>
-            <input type="password" placeholder="Repeat Password" id="changePwdRepeat" value="alex13!">
+            <input type="password" placeholder="Repeat Password" id="changePwdRepeat" value="">
 
-            <p>By creating an account you agree to our <a href="#" id='privacyTerms-btn'
-                    style="color:dodgerblue">Terms & Privacy</a>.</p>
+            <p>By creating an account you agree to our <a href="#" id='privacyTerms-btn' style="color:dodgerblue">Terms
+                    & Privacy</a>.</p>
 
             <div class="clearfix">
                 <button id='cancelSignUp' class="btn btn-secondary" type="button">Cancel</button>
