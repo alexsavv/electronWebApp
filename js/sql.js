@@ -113,12 +113,12 @@ $(document).ready(function () {
                         return result;
                     });
 
-                    document.getElementById('progressSql').hidden = true;
-                    actionTOInputsButtons(false);
-
                 } else {
                     alert('There is a problem with database. Please check the database');
                 }
+
+                document.getElementById('progressSql').hidden = true;
+                actionTOInputsButtons(false);
             }
         }, 10);
     });
