@@ -60,6 +60,8 @@ if (userInfoLocalStorage['containDB'] == 'false') {
     userInfo['gender'] = userInfoLocalStorage['gender'];
 
     userInfo['profileImage'] = getImageSrc(userInfo['gender']);
+
+    localStorage.setItem('quiz', JSON.stringify(userInfo['quiz']));
 } else {
     GetUsername();
 }
@@ -448,6 +450,21 @@ function GetUsername() {
                 userInfo['quiz']['totalAnswersQuiz'] = result[0]['totalAnswersQuiz'];
                 userInfo['quiz']['percentageAnswersQuiz'] = result[0]['percentageAnswersQuiz'];
                 userInfo['quiz']['totalQuiz'] = result[0]['totalQuiz'];
+
+                userInfo['quiz']['correctSmallAnswersQuiz'] = result[0]['correctSmallAnswersQuiz'];
+                userInfo['quiz']['totalSmallAnswersQuiz'] = result[0]['totalSmallAnswersQuiz'];
+                userInfo['quiz']['percentageSmallAnswersQuiz'] = result[0]['percentageSmallAnswersQuiz'];
+                userInfo['quiz']['totalSmallQuiz'] = result[0]['totalSmallQuiz'];
+
+                userInfo['quiz']['correctMediumAnswersQuiz'] = result[0]['correctMediumAnswersQuiz'];
+                userInfo['quiz']['totalMediumAnswersQuiz'] = result[0]['totalMediumAnswersQuiz'];
+                userInfo['quiz']['percentageMediumAnswersQuiz'] = result[0]['percentageMediumAnswersQuiz'];
+                userInfo['quiz']['totalMediumQuiz'] = result[0]['totalMediumQuiz'];
+
+                userInfo['quiz']['correctLargeAnswersQuiz'] = result[0]['correctLargeAnswersQuiz'];
+                userInfo['quiz']['totalLargeAnswersQuiz'] = result[0]['totalLargeAnswersQuiz'];
+                userInfo['quiz']['percentageLargeAnswersQuiz'] = result[0]['percentageLargeAnswersQuiz'];
+                userInfo['quiz']['totalLargeQuiz'] = result[0]['totalLargeQuiz'];
 
                 localStorage.setItem('quiz', JSON.stringify(userInfo['quiz']));
                 return result;
