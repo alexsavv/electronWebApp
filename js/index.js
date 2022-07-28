@@ -16,6 +16,8 @@ let infoDB = {
     'table': null
 }
 
+localStorage.setItem('infoDB', infoDB);
+
 $(document).ready(function () {
     $('#question-notDB-btn').on('click', () => {
         var checkQuestionDB = document.getElementById('exist-notDB').value;
