@@ -13,6 +13,22 @@ $(document).ready(function () {
     });
 
     $('#submitDB').on('click', () => {
+        var host = document.getElementById('hostSql').value;
+        var username = document.getElementById('unameSql').value;
+        var pwd = document.getElementById('pwdSql').value;
+        var database = document.getElementById('dbSql').value;
+        var table = document.getElementById('tableSql').value;
+
+        infoDB['host'] = host;
+        infoDB['user'] = username;
+        infoDB['password'] = pwd;
+        infoDB['database'] = database;
+        infoDB['table'] = table;
+
+        localStorage.setItem('infoDB', JSON.stringify(infoDB));
+
+        con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+
         actionTOInputsButtons(true);
         document.getElementById('progressSql').hidden = false;
 
@@ -40,7 +56,7 @@ $(document).ready(function () {
                     setGlobalVariableDB(con, 'SET GLOBAL validate_password.policy = MEDIUM;');
                     setGlobalVariableDB(con, 'SET GLOBAL validate_password.special_char_count = 1;');
 
-                    checkExistDB();
+                    checkExistDB(con, infoDB['table']);
                 } else {
                     alert('There is a problem with database. Please check the database');
                 }
@@ -98,7 +114,6 @@ $(document).ready(function () {
                 clearInterval(counterBack);
 
                 if (con != null && con != 'error') {
-
                     setGlobalVariableDB(con, 'SET GLOBAL validate_password.check_user_name = ON;');
                     setGlobalVariableDB(con, 'SET GLOBAL validate_password.length = 8;');
                     setGlobalVariableDB(con, 'SET GLOBAL validate_password.mixed_case_count = 1;');
@@ -150,41 +165,21 @@ function getConnectionDB(con, host, user, password, database, table = null) {
     return con;
 }
 
-function checkExistDB() {
+function checkExistDB(con, table = null) {
     var userInfoLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
 
     if (userInfoLocalStorage == null || userInfoLocalStorage['containDB'] == 'false') {
         return;
     }
 
-    var host = document.getElementById('hostSql').value;
-    var username = document.getElementById('unameSql').value;
-    var pwd = document.getElementById('pwdSql').value;
-    var database = document.getElementById('dbSql').value;
-    var table = document.getElementById('tableSql').value;
+    var sqlQuery = 'SELECT * FROM ' + table;
+    con.query(sqlQuery, function (err, result) {
+        if (err) throw alert('Please create the table or even check the database credentials');
 
-    infoDB['host'] = host;
-    infoDB['user'] = username;
-    infoDB['password'] = pwd;
-    infoDB['database'] = database;
-    infoDB['table'] = table;
+        ipcRenderer.send('changeWindow', 'sqlTomain');
 
-    localStorage.setItem('infoDB', JSON.stringify(infoDB));
-
-    con = getConnectionDB(con, host, username, pwd, database);
-
-    if (con != null && con != 'error') {
-        var sqlQuery = 'SELECT * FROM ' + table;
-        con.query(sqlQuery, function (err, result) {
-            if (err) throw alert('Please create the table or even check the database credentials');
-
-            ipcRenderer.send('changeWindow', 'sqlTomain');
-
-            return result;
-        });
-    } else {
-        alert('There is a problem with database. Please check the database');
-    }
+        return result;
+    });
 
 }
 
