@@ -136,6 +136,12 @@ function getConnectionDB(con, host, user, password, database, table = null) {
 }
 
 function checkExistDB() {
+    var userInfoLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
+
+    if(userInfoLocalStorage['containDB'] == 'false'){
+        return;
+    }
+
     var host = document.getElementById('hostSql').value;
     var username = document.getElementById('unameSql').value;
     var pwd = document.getElementById('pwdSql').value;
@@ -160,6 +166,7 @@ function checkExistDB() {
 
         return result;
     });
+    
 }
 
 function actionTOInputsButtons(value) {
