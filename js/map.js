@@ -904,11 +904,25 @@ function createQuestion(categoryKey, categoryValue) {
 
     answersArray = [];
     var answerSelected = null;
+
+    var checkedExistElem = false;
     for (var j = 0; j < 2; j++) {
         while (true) {
             answerSelected = getRandomCountry(questionsArray);
 
-            if (questionsArray[answerSelected] && questionsArray[answerSelected][categoryKey]) {
+            for (var k = 0; k < answersArray.length; k++) {
+                if (questionsArray[answerSelected] && questionsArray[answerSelected][categoryKey]) {
+
+                    if(answersArray[k] == questionsArray[answerSelected][categoryKey]){
+                        checkedExistElem = true;
+                        break;
+                    }
+                }
+            }
+
+            if(checkedExistElem){
+                continue;
+            }else{
                 break;
             }
         }
@@ -968,7 +982,7 @@ function checkAnswer(correctAnswer) {
 
     var quizCategory = document.getElementsByName('quizAnswer');
     var checkedAnswer = null;
-    for (var i = 0, length = quizCategory.length; i < length; i++) {
+    for (var i = 0; i < quizCategory.length; i++) {
         if (quizCategory[i].checked) {
             checkedAnswer = quizCategory[i].value;
             break;
