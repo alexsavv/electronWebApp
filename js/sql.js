@@ -32,14 +32,18 @@ $(document).ready(function () {
             } else {
                 clearInterval(counterBack);
 
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.check_user_name = ON;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.length = 8;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.mixed_case_count = 1;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.number_count = 1;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.policy = MEDIUM;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.special_char_count = 1;');
+                if (con != null && con != 'error') {
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.check_user_name = ON;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.length = 8;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.mixed_case_count = 1;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.number_count = 1;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.policy = MEDIUM;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.special_char_count = 1;');
 
-                checkExistDB();
+                    checkExistDB();
+                } else {
+                    alert('There is a problem with database. Please check the database');
+                }
 
                 document.getElementById('progressSql').hidden = true;
                 actionTOInputsButtons(false);
@@ -149,7 +153,7 @@ function getConnectionDB(con, host, user, password, database, table = null) {
 function checkExistDB() {
     var userInfoLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
 
-    if (userInfoLocalStorage['containDB'] == 'false') {
+    if (userInfoLocalStorage == null || userInfoLocalStorage['containDB'] == 'false') {
         return;
     }
 
