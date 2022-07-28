@@ -8,15 +8,12 @@ localStorage.clear(); //clear localStorage in the start of app
 
 let con = null;
 
-var infoDB = JSON.parse(localStorage.getItem('infoDB'));
-if (!infoDB) {
-    infoDB = {
-        'host': null,
-        'user': null,
-        'password': null,
-        'database': null,
-        'table': null
-    }
+let infoDB = {
+    'host': null,
+    'user': null,
+    'password': null,
+    'database': null,
+    'table': null
 }
 
 $(document).ready(function () {
@@ -96,7 +93,7 @@ $(document).ready(function () {
                 document.getElementById('progressText').innerHTML = timerValue + '%';
             } else {
                 clearInterval(counterBack);
-                login(infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
+                login();
 
                 document.getElementById('progress').hidden = true;
                 actionTOInputsButtons(false);
@@ -194,7 +191,9 @@ function showPassword(pwdID) {
     }
 }
 
-function login(host, user, password, database, table = null) {
+function login() {
+    infoDB = JSON.parse(localStorage.getItem('infoDB'));
+
     var usernameLogin = document.getElementById('unameLogin').value;
     var passwordLogin = document.getElementById('pwdLogin').value;
 
@@ -245,13 +244,15 @@ function passwordValidation(password, repassword) {
 }
 
 function signUp() {
+    infoDB = JSON.parse(localStorage.getItem('infoDB'));
+
     var genderSignUp = document.getElementById('genderSignUp').value;
 
     var usernameSignUp = document.getElementById('unameSignUp').value;
     var validatedUsername = usernameValidation(usernameSignUp);
 
     var passwordSignUp = document.getElementById('pwdSignUp').value;
-    var repassword = document.getElementById('changePwdRepeat').value;
+    var repassword = document.getElementById('pwdSignUpRepeat').value;
     var validatedPassword = passwordValidation(passwordSignUp, repassword);
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
