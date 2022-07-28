@@ -910,14 +910,15 @@ function createQuestion(categoryKey, categoryValue) {
         while (true) {
             answerSelected = getRandomCountry(questionsArray);
 
-            for (var k = 0; k < answersArray.length; k++) {
-                if (questionsArray[answerSelected] && questionsArray[answerSelected][categoryKey]) {
-
+            if (questionsArray[answerSelected] && questionsArray[answerSelected][categoryKey]) {
+                for (var k = 0; k < answersArray.length; k++) {
                     if (answersArray[k] == questionsArray[answerSelected][categoryKey]) {
                         checkedExistElem = true;
                         break;
                     }
                 }
+            }else{
+                checkedExistElem = true; //get another answer as it was undefined because this answer has been selected from previous question, now it is undefined
             }
 
             if (checkedExistElem) {
