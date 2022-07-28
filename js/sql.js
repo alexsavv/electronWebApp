@@ -48,6 +48,7 @@ $(document).ready(function () {
     });
 
     $('#createTableDB').on('click', () => {
+
         con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
         var sqlQuery = 'CREATE TABLE users (' +
@@ -92,22 +93,28 @@ $(document).ready(function () {
             } else {
                 clearInterval(counterBack);
 
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.check_user_name = ON;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.length = 8;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.mixed_case_count = 1;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.number_count = 1;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.policy = MEDIUM;');
-                setGlobalVariableDB(con, 'SET GLOBAL validate_password.special_char_count = 1;');
+                if (con != null && con != 'error') {
 
-                con.query(sqlQuery, function (err, result) {
-                    if (err) throw alert(err);
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.check_user_name = ON;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.length = 8;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.mixed_case_count = 1;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.number_count = 1;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.policy = MEDIUM;');
+                    setGlobalVariableDB(con, 'SET GLOBAL validate_password.special_char_count = 1;');
 
-                    alert('Table was created successfully');
-                    return result;
-                });
+                    con.query(sqlQuery, function (err, result) {
+                        if (err) throw alert(err);
 
-                document.getElementById('progressSql').hidden = true;
-                actionTOInputsButtons(false);
+                        alert('Table was created successfully');
+                        return result;
+                    });
+
+                    document.getElementById('progressSql').hidden = true;
+                    actionTOInputsButtons(false);
+
+                } else {
+                    alert('There is a problem with database. Please check the database');
+                }
             }
         }, 10);
     });
@@ -121,24 +128,28 @@ function setGlobalVariableDB(con, sqlQuery) {
 }
 
 function getConnectionDB(con, host, user, password, database, table = null) {
-    if (con) {
+    if (con != null && con != 'error') {
         con.end();
     }
 
-    con = mysql.createConnection({
-        host: host,
-        user: user,
-        password: password,
-        database: database
-    });
+    if (host != null && user != null && password != null && database != null) {
+        con = mysql.createConnection({
+            host: host,
+            user: user,
+            password: password,
+            database: database
+        });
+    } else {
+        con = 'error';
+    }
 
     return con;
 }
 
 function checkExistDB() {
     var userInfoLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
-    
-    if(userInfoLocalStorage['containDB'] == 'false'){
+
+    if (userInfoLocalStorage['containDB'] == 'false') {
         return;
     }
 
@@ -158,15 +169,19 @@ function checkExistDB() {
 
     con = getConnectionDB(con, host, username, pwd, database);
 
-    var sqlQuery = 'SELECT * FROM ' + table;
-    con.query(sqlQuery, function (err, result) {
-        if (err) throw alert('Please create the table or even check the database credentials');
+    if (con != null && con != 'error') {
+        var sqlQuery = 'SELECT * FROM ' + table;
+        con.query(sqlQuery, function (err, result) {
+            if (err) throw alert('Please create the table or even check the database credentials');
 
-        ipcRenderer.send('changeWindow', 'sqlTomain');
+            ipcRenderer.send('changeWindow', 'sqlTomain');
 
-        return result;
-    });
-    
+            return result;
+        });
+    } else {
+        alert('There is a problem with database. Please check the database');
+    }
+
 }
 
 function actionTOInputsButtons(value) {

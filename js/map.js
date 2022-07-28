@@ -394,16 +394,20 @@ $(document).ready(function () {
 });
 
 function getConnectionDB(con, host, user, password, database, table = null) {
-    if (con) {
+    if (con != null && con != 'error') {
         con.end();
     }
 
-    con = mysql.createConnection({
-        host: host,
-        user: user,
-        password: password,
-        database: database
-    });
+    if (host != null && user != null && password != null && database != null) {
+        con = mysql.createConnection({
+            host: host,
+            user: user,
+            password: password,
+            database: database
+        });
+    } else {
+        con = 'error';
+    }
 
     return con;
 }
@@ -428,26 +432,30 @@ function getImageSrc(gender) {
 function GetUsername() {
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    con.connect(function (err) {
-        if (err) throw alert(err);
-
-        let sqlQuery = 'SELECT * FROM users WHERE username="' + userInfo['username'] + '"';
-        con.query(sqlQuery, function (err, result) {
+    if (con != null && con != 'error') {
+        con.connect(function (err) {
             if (err) throw alert(err);
 
-            userInfo['gender'] = result[0]['gender'];
+            let sqlQuery = 'SELECT * FROM users WHERE username="' + userInfo['username'] + '"';
+            con.query(sqlQuery, function (err, result) {
+                if (err) throw alert(err);
 
-            userInfo['profileImage'] = getImageSrc(result[0]['gender']);
+                userInfo['gender'] = result[0]['gender'];
 
-            userInfo['quiz']['correctAnswersQuiz'] = result[0]['correctAnswersQuiz'];
-            userInfo['quiz']['totalAnswersQuiz'] = result[0]['totalAnswersQuiz'];
-            userInfo['quiz']['percentageAnswersQuiz'] = result[0]['percentageAnswersQuiz'];
-            userInfo['quiz']['totalQuiz'] = result[0]['totalQuiz'];
+                userInfo['profileImage'] = getImageSrc(result[0]['gender']);
 
-            localStorage.setItem('quiz', JSON.stringify(userInfo['quiz']));
-            return result;
+                userInfo['quiz']['correctAnswersQuiz'] = result[0]['correctAnswersQuiz'];
+                userInfo['quiz']['totalAnswersQuiz'] = result[0]['totalAnswersQuiz'];
+                userInfo['quiz']['percentageAnswersQuiz'] = result[0]['percentageAnswersQuiz'];
+                userInfo['quiz']['totalQuiz'] = result[0]['totalQuiz'];
+
+                localStorage.setItem('quiz', JSON.stringify(userInfo['quiz']));
+                return result;
+            });
         });
-    });
+    } else {
+        alert('There is a problem with database. Please check the database');
+    }
 }
 
 function disconnect() {
@@ -456,38 +464,42 @@ function disconnect() {
     } else {
         con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-        con.connect(function (err) {
-            if (err) throw err;
-            let sqlQuery = 'UPDATE users SET ' +
-                'correctAnswersquiz = "' + userInfo['quiz']['correctAnswersQuiz'] +
-                '", totalAnswersQuiz = "' + userInfo['quiz']['totalAnswersQuiz'] +
-                '", percentageAnswersQuiz = "' + userInfo['quiz']['percentageAnswersQuiz'] +
-                '", totalQuiz = "' + userInfo['quiz']['totalQuiz'] +
+        if (con != null && con != 'error') {
+            con.connect(function (err) {
+                if (err) throw err;
+                let sqlQuery = 'UPDATE users SET ' +
+                    'correctAnswersquiz = "' + userInfo['quiz']['correctAnswersQuiz'] +
+                    '", totalAnswersQuiz = "' + userInfo['quiz']['totalAnswersQuiz'] +
+                    '", percentageAnswersQuiz = "' + userInfo['quiz']['percentageAnswersQuiz'] +
+                    '", totalQuiz = "' + userInfo['quiz']['totalQuiz'] +
 
-                '", correctSmallAnswersQuiz = "' + userInfo['quiz']['correctSmallAnswersQuiz'] +
-                '", totalSmallAnswersQuiz = "' + userInfo['quiz']['totalSmallAnswersQuiz'] +
-                '", percentageSmallAnswersQuiz = "' + userInfo['quiz']['percentageSmallAnswersQuiz'] +
-                '", totalSmallQuiz = "' + userInfo['quiz']['totalSmallQuiz'] +
+                    '", correctSmallAnswersQuiz = "' + userInfo['quiz']['correctSmallAnswersQuiz'] +
+                    '", totalSmallAnswersQuiz = "' + userInfo['quiz']['totalSmallAnswersQuiz'] +
+                    '", percentageSmallAnswersQuiz = "' + userInfo['quiz']['percentageSmallAnswersQuiz'] +
+                    '", totalSmallQuiz = "' + userInfo['quiz']['totalSmallQuiz'] +
 
-                '", correctMediumAnswersQuiz = "' + userInfo['quiz']['correctMediumAnswersQuiz'] +
-                '", totalMediumAnswersQuiz = "' + userInfo['quiz']['totalMediumAnswersQuiz'] +
-                '", percentageMediumAnswersQuiz = "' + userInfo['quiz']['percentageMediumAnswersQuiz'] +
-                '", totalMediumQuiz = "' + userInfo['quiz']['totalMediumQuiz'] +
+                    '", correctMediumAnswersQuiz = "' + userInfo['quiz']['correctMediumAnswersQuiz'] +
+                    '", totalMediumAnswersQuiz = "' + userInfo['quiz']['totalMediumAnswersQuiz'] +
+                    '", percentageMediumAnswersQuiz = "' + userInfo['quiz']['percentageMediumAnswersQuiz'] +
+                    '", totalMediumQuiz = "' + userInfo['quiz']['totalMediumQuiz'] +
 
-                '", correctLargeAnswersQuiz = "' + userInfo['quiz']['correctLargeAnswersQuiz'] +
-                '", totalLargeAnswersQuiz = "' + userInfo['quiz']['totalLargeAnswersQuiz'] +
-                '", percentageLargeAnswersQuiz = "' + userInfo['quiz']['percentageLargeAnswersQuiz'] +
-                '", totalLargeQuiz = "' + userInfo['quiz']['totalLargeQuiz'] +
+                    '", correctLargeAnswersQuiz = "' + userInfo['quiz']['correctLargeAnswersQuiz'] +
+                    '", totalLargeAnswersQuiz = "' + userInfo['quiz']['totalLargeAnswersQuiz'] +
+                    '", percentageLargeAnswersQuiz = "' + userInfo['quiz']['percentageLargeAnswersQuiz'] +
+                    '", totalLargeQuiz = "' + userInfo['quiz']['totalLargeQuiz'] +
 
-                '" WHERE username = "' + userInfo['username'] + '"';
+                    '" WHERE username = "' + userInfo['username'] + '"';
 
-            con.query(sqlQuery, function (err, result) {
-                if (err)
-                    throw alert("Error in Table Update for userProfile");
+                con.query(sqlQuery, function (err, result) {
+                    if (err)
+                        throw alert("Error in Table Update for userProfile");
 
-                ipcRenderer.send('changeWindow', 'mapTomain');
+                    ipcRenderer.send('changeWindow', 'mapTomain');
+                });
             });
-        });
+        } else {
+            alert('There is a problem with database. Please check the database');
+        }
     }
 }
 
@@ -610,26 +622,32 @@ function deleteUser() {
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    con.connect(function (err) {
-        if (err) throw alert(err);
-
-        var username = document.getElementById('unameProfile').value;
-        let sqlQuery = 'DELETE FROM ' + infoDB['table'] + ' WHERE username = "' + username + '";';
-        con.query(sqlQuery, function (err, result) {
+    if (con != null && con != 'error') {
+        con.connect(function (err) {
             if (err) throw alert(err);
 
-            document.getElementById('intro-login').hidden = false;
-            document.getElementById('intro-info').disabled = true;
+            var username = document.getElementById('unameProfile').value;
+            let sqlQuery = 'DELETE FROM ' + infoDB['table'] + ' WHERE username = "' + username + '";';
+            con.query(sqlQuery, function (err, result) {
+                if (err) throw alert(err);
 
-            document.getElementById('mapContainer').hidden = true;
-            document.getElementById('mapFunctionality-btn').disabled = false;
+                document.getElementById('intro-login').hidden = false;
+                document.getElementById('intro-info').disabled = true;
 
-            ipcRenderer.send('changeWindow', 'mapTomain');
+                document.getElementById('mapContainer').hidden = true;
+                document.getElementById('mapFunctionality-btn').disabled = false;
 
-            return result;
+                ipcRenderer.send('changeWindow', 'mapTomain');
+
+                return result;
+            });
         });
-    });
-} function getGradeEmoji(gradePercentageQuiz) {
+    } else {
+        alert('There is a problem with database. Please check the database');
+    }
+}
+
+function getGradeEmoji(gradePercentageQuiz) {
     var emojiGrade = '';
 
     if (gradePercentageQuiz == 0) {
@@ -680,15 +698,19 @@ function submitPwd() {
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    let sqlQuery = 'UPDATE ' + infoDB['table'] + ' SET password = "' + rePwdValue + '" WHERE username = "' + username + '";';
-    con.query(sqlQuery, function (err, result) {
-        if (err) throw alert(err);
+    if (con != null && con != 'error') {
+        let sqlQuery = 'UPDATE ' + infoDB['table'] + ' SET password = "' + rePwdValue + '" WHERE username = "' + username + '";';
+        con.query(sqlQuery, function (err, result) {
+            if (err) throw alert(err);
 
-        return result;
-    });
+            return result;
+        });
 
-    document.getElementById('changePwd').value = '';
-    editRePassword(true);
+        document.getElementById('changePwd').value = '';
+        editRePassword(true);
+    } else {
+        alert('There is a problem with database. Please check the database');
+    }
 }
 
 function showRePassword(pwdID) {

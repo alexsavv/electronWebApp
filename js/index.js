@@ -8,7 +8,16 @@ localStorage.clear(); //clear localStorage in the start of app
 
 let con = null;
 
-const infoDB = JSON.parse(localStorage.getItem('infoDB'));
+var infoDB = JSON.parse(localStorage.getItem('infoDB'));
+if (!infoDB) {
+    infoDB = {
+        'host': null,
+        'user': null,
+        'password': null,
+        'database': null,
+        'table': null
+    }
+}
 
 $(document).ready(function () {
     $('#question-notDB-btn').on('click', () => {
@@ -149,11 +158,11 @@ $(document).ready(function () {
 });
 
 function getConnectionDB(con, host, user, password, database, table = null) {
-    if (con) {
+    if (con != null && con != 'error') {
         con.end();
     }
 
-    if (host && user && password && database) {
+    if (host != null && user != null && password != null && database != null) {
         con = mysql.createConnection({
             host: host,
             user: user,
@@ -191,9 +200,7 @@ function login(host, user, password, database, table = null) {
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    if (con == 'error') {
-        alert('Please check the database credentials');
-    } else {
+    if (con != null && con != 'error') {
         con.connect(function (err) {
             if (err) throw alert(err);
             let sqlQuery = 'SELECT * FROM users WHERE username="' + usernameLogin + '" AND password="' + passwordLogin + '"';
@@ -208,6 +215,8 @@ function login(host, user, password, database, table = null) {
                 }
             });
         });
+    } else {
+        alert('Please check the database credentials');
     }
 }
 
@@ -247,9 +256,7 @@ function signUp() {
 
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
-    if (con == 'error') {
-        alert('Please check the database credentials');
-    } else {
+    if (con != null && con != 'error') {
         if (validatedUsername && validatedPassword && genderSignUp != '') {
             let sqlQuery = 'INSERT INTO users(username,gender,password,' +
                 'correctAnswersQuiz,totalAnswersQuiz,percentageAnswersQuiz,totalQuiz,' +
@@ -272,6 +279,8 @@ function signUp() {
             privacyPwdTerms();
             signUpButton(true);
         }
+    } else {
+        alert('Please check the database credentials');
     }
 }
 
