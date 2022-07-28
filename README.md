@@ -45,9 +45,22 @@ mysql -u root -p
 ```
 <hr>
 
+You have to create user and database with SQL commands, if yoy prefer to use database in electronwebapp.
+
 Create SQL user with grand permissions (The host could be localhost)
 ```bash
+##Login to sql shell as root user
+mysql -u root -p
+
+
+##Create user with grant permissions
 CREATE USER '<username>'@'<host>' IDENTIFIED WITH mysql_native_password BY '<password>';
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'<host>';
 FLUSH PRIVILEGES;
+```
+Create Database to specific user
+```bash
+mysql -u <sql user> -p
+
+CREATE DATABASE <database name>;
 ```
