@@ -251,7 +251,7 @@ function signUp() {
             0 + '","' + 0 + '","' + 0 + '","' + 0 + '" )';
         con.query(sqlQuery, function (err, result) {
             if (err)
-                throw alert("There is already user with these credentials. You can login to the user account.");
+                throw alert("There is already user with these credentials or problem with database. You can login to the user account or even check the database credentials.");
 
             document.getElementById('cancelSignUp').click();
         });
