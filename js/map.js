@@ -350,7 +350,7 @@ $(document).ready(function () {
 
             gradeJSON['grade'] = Number(gradeJSON['grade']) + validAnswer;
             gradeJSON['total'] = Number(gradeJSON['total']) + 1;
-            gradeJSON['percentage'] = (parseFloat(Number(gradeJSON['grade']) / Number(gradeJSON['total'])).toFixed(2)) * 100;
+            gradeJSON['percentage'] = (Number(gradeJSON['grade']) / Number(gradeJSON['total'])).toFixed(2) * 100;
             localStorage.setItem('quizGrade', JSON.stringify(gradeJSON));
 
         }
@@ -376,7 +376,7 @@ $(document).ready(function () {
 
             userInfo['quiz']['correctAnswersQuiz'] = Number(userInfo['quiz']['correctAnswersQuiz']) + Number(gradeJSON['grade']);
             userInfo['quiz']['totalAnswersQuiz'] = Number(userInfo['quiz']['totalAnswersQuiz']) + Number(gradeJSON['total']);
-            userInfo['quiz']['percentageAnswersQuiz'] = (parseFloat(Number(userInfo['quiz']['correctAnswersQuiz']) / Number(userInfo['quiz']['totalAnswersQuiz'])).toFixed(2)) * 100;
+            userInfo['quiz']['percentageAnswersQuiz'] = (Number(userInfo['quiz']['correctAnswersQuiz']) / Number(userInfo['quiz']['totalAnswersQuiz'])).toFixed(2) * 100;
             userInfo['quiz']['totalQuiz'] = Number(userInfo['quiz']['totalQuiz']) + 1;
 
             userInfo['quiz']['correct' + categoryJSON['sizeQuiz'] + 'AnswersQuiz'] = Number(userInfo['quiz']['correct' + categoryJSON['sizeQuiz'] + 'AnswersQuiz']) + Number(gradeJSON['grade']);
@@ -699,15 +699,17 @@ function submitPwd() {
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
     if (con != null && con != 'error') {
-        let sqlQuery = 'UPDATE ' + infoDB['table'] + ' SET password = "' + rePwdValue + '" WHERE username = "' + username + '";';
+        let sqlQuery = 'UPDATE ' + infoDB['table'] + ' SET password = "' + rePwdValue + '" WHERE username = "' + userInfo['username'] + '";';
         con.query(sqlQuery, function (err, result) {
             if (err) throw alert(err);
 
+            alert('The password was changed successfully');
+
+            document.getElementById('changePwd').value = '';
+            editRePassword(true);
+
             return result;
         });
-
-        document.getElementById('changePwd').value = '';
-        editRePassword(true);
     } else {
         alert('There is a problem with database. Please check the database');
     }

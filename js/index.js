@@ -16,7 +16,7 @@ let infoDB = {
     'table': null
 }
 
-localStorage.setItem('infoDB', infoDB);
+localStorage.setItem('infoDB', JSON.stringify(infoDB));
 
 $(document).ready(function () {
     $('#question-notDB-btn').on('click', () => {
