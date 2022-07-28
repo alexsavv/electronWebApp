@@ -913,16 +913,16 @@ function createQuestion(categoryKey, categoryValue) {
             for (var k = 0; k < answersArray.length; k++) {
                 if (questionsArray[answerSelected] && questionsArray[answerSelected][categoryKey]) {
 
-                    if(answersArray[k] == questionsArray[answerSelected][categoryKey]){
+                    if (answersArray[k] == questionsArray[answerSelected][categoryKey]) {
                         checkedExistElem = true;
                         break;
                     }
                 }
             }
 
-            if(checkedExistElem){
+            if (checkedExistElem) {
                 continue;
-            }else{
+            } else {
                 break;
             }
         }
@@ -931,11 +931,9 @@ function createQuestion(categoryKey, categoryValue) {
     }
 
     var divElem = document.createElement('div');
-    if (categoryKey == 'continent') {
-        divElem.innerHTML = flagsArray[selectedCountryIndex][categoryKey];
-    } else {
-        divElem.innerHTML = flagsArray[selectedCountryIndex][categoryKey];
-    }
+
+    divElem.innerHTML = flagsArray[selectedCountryIndex][categoryKey];
+
     if (categoryKey == 'flag') {
         divElem.style = 'zoom: 500%; text-align: center';
     } else {
