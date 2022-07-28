@@ -60,7 +60,7 @@ function createWindow() {
 
         mapWindow.show();
         mapWindow.maximize();
-        mainWindow.destroy();
+        mainWindow.close();
         break;
       case 'sql':
         sqlWindow.show();
@@ -85,7 +85,7 @@ function createWindow() {
         sqlWindow.close();
         break;
       case 'mapTomain':
-        mainWindow = createSpecificWindow('index.html');
+        // mainWindow = createSpecificWindow('index.html');
 
         mainWindow.show();
         mainWindow.maximize();
