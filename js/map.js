@@ -25,7 +25,6 @@ var circleMarkers = [];
 let questionsArray = [];
 
 let userInfoLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
-
 let infoDB = JSON.parse(localStorage.getItem('infoDB'));
 
 let con = null;
@@ -452,7 +451,7 @@ function GetUsername() {
 }
 
 function disconnect() {
-    if (userInfoLocalStorage['containDB'] == false) {
+    if (userInfoLocalStorage['containDB'] == 'false') {
         ipcRenderer.send('changeWindow', 'mapTomain');
     } else {
         con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);

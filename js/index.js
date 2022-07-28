@@ -238,25 +238,22 @@ function signUp() {
     con = getConnectionDB(con, infoDB['host'], infoDB['user'], infoDB['password'], infoDB['database']);
 
     if (validatedUsername && validatedPassword && genderSignUp != '') {
-        con.connect(function (err) {
-            if (err) throw err;
-            let sqlQuery = 'INSERT INTO users(username,gender,password,' +
-                'correctAnswersQuiz,totalAnswersQuiz,percentageAnswersQuiz,totalQuiz,' +
-                'correctSmallAnswersQuiz,totalSmallAnswersQuiz,percentageSmallAnswersQuiz,totalSmallQuiz,' +
-                'correctMediumAnswersQuiz,totalMediumAnswersQuiz,percentageMediumAnswersQuiz,totalMediumQuiz,' +
-                'correctLargeAnswersQuiz,totalLargeAnswersQuiz,percentageLargeAnswersQuiz,totalLargeQuiz' +
-                ') VALUES ( "' +
-                usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '","' +
-                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-                0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
-                0 + '","' + 0 + '","' + 0 + '","' + 0 + '" )';
-            con.query(sqlQuery, function (err, result) {
-                if (err)
-                    throw alert("There is already user with these credentials. You can login to the user account.");
+        let sqlQuery = 'INSERT INTO users(username,gender,password,' +
+            'correctAnswersQuiz,totalAnswersQuiz,percentageAnswersQuiz,totalQuiz,' +
+            'correctSmallAnswersQuiz,totalSmallAnswersQuiz,percentageSmallAnswersQuiz,totalSmallQuiz,' +
+            'correctMediumAnswersQuiz,totalMediumAnswersQuiz,percentageMediumAnswersQuiz,totalMediumQuiz,' +
+            'correctLargeAnswersQuiz,totalLargeAnswersQuiz,percentageLargeAnswersQuiz,totalLargeQuiz' +
+            ') VALUES ( "' +
+            usernameSignUp + '","' + genderSignUp + '","' + passwordSignUp + '","' +
+            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+            0 + '","' + 0 + '","' + 0 + '","' + 0 + '","' +
+            0 + '","' + 0 + '","' + 0 + '","' + 0 + '" )';
+        con.query(sqlQuery, function (err, result) {
+            if (err)
+                throw alert("There is already user with these credentials. You can login to the user account.");
 
-                document.getElementById('cancelSignUp').click();
-            });
+            document.getElementById('cancelSignUp').click();
         });
     } else {
         privacyPwdTerms();
